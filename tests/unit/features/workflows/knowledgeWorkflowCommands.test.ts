@@ -62,6 +62,7 @@ describe('knowledge workflow commands', () => {
       addCommand: jest.fn((command) => {
         commands.push(command);
       }),
+      initializeKnowledgeWorkflow: jest.fn().mockResolvedValue(undefined),
       runKnowledgeWorkflow: jest.fn().mockResolvedValue(undefined),
       openKnowledgeWorkflowMap: jest.fn().mockResolvedValue(undefined),
     };
@@ -69,12 +70,14 @@ describe('knowledge workflow commands', () => {
     registerKnowledgeWorkflowCommands(host);
 
     expect(commands.map(command => command.id)).toEqual([
+      'initialize-knowledge-workflow',
       'workflow-compile-next-sources',
       'workflow-save-current-qa',
       'workflow-health-check',
       'open-knowledge-workflow-map',
     ]);
     expect(commands.map(command => command.name)).toEqual([
+      '初始化知识库工作流',
       '编译下一批候选来源',
       '保存当前问答',
       '运行知识库健康检查',
@@ -82,8 +85,10 @@ describe('knowledge workflow commands', () => {
     ]);
 
     await commands[0].callback();
-    await commands[3].callback();
+    await commands[1].callback();
+    await commands[4].callback();
 
+    expect(host.initializeKnowledgeWorkflow).toHaveBeenCalledTimes(1);
     expect(host.runKnowledgeWorkflow).toHaveBeenCalledWith('compile-next-sources');
     expect(host.openKnowledgeWorkflowMap).toHaveBeenCalledTimes(1);
   });
@@ -94,6 +99,7 @@ describe('knowledge workflow commands', () => {
       addRibbonIcon: jest.fn((icon, title, callback) => {
         icons.push({ icon, title, callback });
       }),
+      initializeKnowledgeWorkflow: jest.fn().mockResolvedValue(undefined),
       runKnowledgeWorkflow: jest.fn().mockResolvedValue(undefined),
       openKnowledgeWorkflowMap: jest.fn().mockResolvedValue(undefined),
     };
@@ -101,12 +107,14 @@ describe('knowledge workflow commands', () => {
     registerKnowledgeWorkflowRibbonIcons(host);
 
     expect(icons.map(item => item.title)).toEqual([
+      'Codexidian: 初始化知识库工作流',
       'Codexidian: 编译下一批候选来源',
       'Codexidian: 保存当前问答',
       'Codexidian: 运行知识库健康检查',
       'Codexidian: 打开知识库工作流入口',
     ]);
     expect(icons.map(item => item.icon)).toEqual([
+      'folder-tree',
       'file-plus-2',
       'save',
       'activity',
@@ -114,8 +122,10 @@ describe('knowledge workflow commands', () => {
     ]);
 
     await icons[0].callback();
-    await icons[3].callback();
+    await icons[1].callback();
+    await icons[4].callback();
 
+    expect(host.initializeKnowledgeWorkflow).toHaveBeenCalledTimes(1);
     expect(host.runKnowledgeWorkflow).toHaveBeenCalledWith('compile-next-sources');
     expect(host.openKnowledgeWorkflowMap).toHaveBeenCalledTimes(1);
   });

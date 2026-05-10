@@ -14,6 +14,7 @@ It embeds Codex in an Obsidian sidebar and uses your vault as the working direct
 - Instruction mode with `#`.
 - Multi-tab conversations, history, fork, resume, and compact.
 - Codex CLI-managed MCP support. Configure servers with `codex mcp`.
+- First-run knowledge-base bootstrap for the Karpathy-style `raw/`, `wiki/`, `outputs/` workflow, including `AGENTS.md`, indexes, workflow map, and vault-level Codex skills.
 
 ## Requirements
 
@@ -37,6 +38,21 @@ npm run build
 ```
 
 Then reload Obsidian and enable `Codexidian` under Community plugins if it is not already enabled.
+
+## Knowledge Base Workflow
+
+On first load, Codexidian creates any missing knowledge-base scaffold files without overwriting existing notes:
+
+- `raw/articles/`, `raw/posts/`, `raw/papers/`, `raw/transcripts/`
+- `wiki/indexes/`, `wiki/summaries/`, `wiki/concepts/`, `wiki/maps/`
+- `outputs/qa/`, `outputs/health/`, `outputs/reports/`
+- `AGENTS.md`
+- `wiki/indexes/All-Sources.md`
+- `wiki/indexes/All-Concepts.md`
+- `wiki/maps/LLM 个人知识库工作流.md`
+- `.codex/skills/compile-source`, `update-indexes`, `save-qa`, and `health-check`
+
+You can also run `Codexidian: 初始化知识库工作流` from the command palette or the left ribbon.
 
 ## Storage
 

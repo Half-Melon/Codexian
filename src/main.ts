@@ -41,6 +41,7 @@ import {
   registerKnowledgeWorkflowCommands,
   registerKnowledgeWorkflowRibbonIcons,
 } from './features/workflows/knowledgeWorkflowCommands';
+import { KnowledgeWorkflowInitializer } from './features/workflows/KnowledgeWorkflowInitializer';
 import { setLocale } from './i18n/i18n';
 import type { Locale } from './i18n/types';
 import { buildCursorContext } from './utils/editor';
@@ -61,6 +62,7 @@ export default class CodexidianPlugin extends Plugin {
   async onload() {
     await this.loadSettings();
     await ProviderWorkspaceRegistry.initializeAll(this);
+    await this.initializeKnowledgeWorkflow({ silent: true });
 
     this.registerView(
       VIEW_TYPE_CODEXIDIAN,
@@ -294,6 +296,32 @@ export default class CodexidianPlugin extends Plugin {
 
   async openKnowledgeWorkflowMap(): Promise<void> {
     await this.app.workspace.openLinkText(KNOWLEDGE_WORKFLOW_MAP_PATH, '', false);
+  }
+
+  async initializeKnowledgeWorkflow(options: { silent?: boolean } = {}): Promise<void> {
+    const initializer = new KnowledgeWorkflowInitializer(this.storage.getAdapter());
+    try {
+      const result = await initializer.initialize();
+      try {
+        await ProviderWorkspaceRegistry.getCommandCatalog('codex')?.refresh();
+      } catch (error) {
+        console.warn('Failed to refresh Codex skills after knowledge workflow initialization', error);
+      }
+
+      if (!options.silent) {
+        const createdCount = result.createdFiles.length + result.createdFolders.length;
+        const message = createdCount === 0
+          ? 'Codexidian 知识库工作流已就绪，没有需要新建的文件。'
+          : `Codexidian 知识库工作流已初始化：新建 ${result.createdFolders.length} 个目录、${result.createdFiles.length} 个文件。`;
+        new Notice(message);
+      }
+    } catch (error) {
+      console.error('Failed to initialize Codexidian knowledge workflow', error);
+      if (!options.silent) {
+        const message = error instanceof Error ? error.message : String(error);
+        new Notice(`Codexidian 知识库工作流初始化失败：${message}`);
+      }
+    }
   }
 
   async loadSettings() {

@@ -1,6 +1,9 @@
 import type { ProviderCommandEntry } from '../../core/providers/commands/ProviderCommandEntry';
 
+export const KNOWLEDGE_WORKFLOW_AGENTS_PATH = 'AGENTS.md';
 export const KNOWLEDGE_WORKFLOW_MAP_PATH = 'wiki/maps/LLM 个人知识库工作流.md';
+export const KNOWLEDGE_WORKFLOW_SOURCE_INDEX_PATH = 'wiki/indexes/All-Sources.md';
+export const KNOWLEDGE_WORKFLOW_CONCEPT_INDEX_PATH = 'wiki/indexes/All-Concepts.md';
 
 export type KnowledgeWorkflowKind =
   | 'compile-next-sources'
@@ -115,6 +118,7 @@ export interface KnowledgeWorkflowCommandHost {
   }): unknown;
   runKnowledgeWorkflow(kind: KnowledgeWorkflowKind): Promise<void>;
   openKnowledgeWorkflowMap(): Promise<void>;
+  initializeKnowledgeWorkflow(): Promise<void>;
 }
 
 export interface KnowledgeWorkflowRibbonHost {
@@ -125,9 +129,16 @@ export interface KnowledgeWorkflowRibbonHost {
   ): unknown;
   runKnowledgeWorkflow(kind: KnowledgeWorkflowKind): Promise<void>;
   openKnowledgeWorkflowMap(): Promise<void>;
+  initializeKnowledgeWorkflow(): Promise<void>;
 }
 
 export function registerKnowledgeWorkflowCommands(host: KnowledgeWorkflowCommandHost): void {
+  host.addCommand({
+    id: 'initialize-knowledge-workflow',
+    name: '初始化知识库工作流',
+    callback: () => host.initializeKnowledgeWorkflow(),
+  });
+
   for (const workflow of getKnowledgeWorkflowDefinitions()) {
     host.addCommand({
       id: workflow.commandId,
@@ -144,6 +155,12 @@ export function registerKnowledgeWorkflowCommands(host: KnowledgeWorkflowCommand
 }
 
 export function registerKnowledgeWorkflowRibbonIcons(host: KnowledgeWorkflowRibbonHost): void {
+  host.addRibbonIcon(
+    'folder-tree',
+    'Codexidian: 初始化知识库工作流',
+    () => host.initializeKnowledgeWorkflow(),
+  );
+
   for (const workflow of getKnowledgeWorkflowDefinitions()) {
     host.addRibbonIcon(
       workflow.ribbonIcon,
