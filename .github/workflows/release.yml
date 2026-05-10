@@ -17,10 +17,10 @@ jobs:
         with:
           fetch-depth: 0  # Full history for changelog generation
 
-      - name: Setup Node 20
+      - name: Setup Node 22
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: 'npm'
 
       - name: Install dependencies
@@ -28,6 +28,19 @@ jobs:
 
       - name: Build
         run: npm run build
+
+      - name: Check Obsidian plugin artifacts
+        run: |
+          test -s main.js
+          test -s manifest.json
+          test -s styles.css
+
+      - name: Create release package
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          mkdir -p release
+          zip -j "release/codexidian-${VERSION}.zip" main.js manifest.json styles.css
+          unzip -l "release/codexidian-${VERSION}.zip"
 
       - name: Get previous tag
         id: prev_tag
@@ -60,3 +73,4 @@ jobs:
             main.js
             manifest.json
             styles.css
+            release/*.zip

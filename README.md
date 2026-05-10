@@ -1,79 +1,189 @@
 # Codexidian
 
-Codexidian is a Codex-only Obsidian plugin.
+English | [简体中文](README.zh-CN.md)
 
-It embeds Codex in an Obsidian sidebar and uses your vault as the working directory, so Codex can read, edit, search, run commands, and work through multi-step knowledge-base tasks from inside Obsidian.
+Codexidian is an Obsidian desktop plugin that brings Codex into the vault as a local, vault-aware working assistant. It provides a chat sidebar, inline editing, file mentions, Codex skills, subagents, MCP support, and a structured knowledge-base workflow for turning saved sources into reusable notes.
 
-## What It Does
+![Codexidian screenshot](assets/screenshot.png)
 
-- Chat sidebar from the ribbon icon or command palette.
+## Why Codexidian
+
+Obsidian is strong at long-term knowledge storage, but maintaining a useful knowledge base still requires repetitive work: collecting sources, summarizing them, extracting concepts, keeping indexes current, recording useful Q&A, and checking whether the system is drifting.
+
+Codexidian connects that work to Codex inside the vault. The plugin keeps the interaction close to the notes, lets Codex use the vault as its working directory, and adds a first-class workflow for a sustainable `new/`, `raw/`, `wiki/`, and `outputs/` knowledge system.
+
+## Features
+
+- Codex chat sidebar inside Obsidian.
 - Inline edit for selected text or the current cursor position, with diff preview.
-- Codex skills from `.codex/skills/` and `.agents/skills/`.
 - `@mention` support for vault files, Codex subagents, and selected external context.
-- Plan mode through the shared permission-mode toolbar.
+- Codex skills loaded from `.codex/skills/` and `.agents/skills/`.
+- Multi-tab conversations, conversation history, fork, resume, and compact.
+- Plan mode and permission controls through the shared toolbar.
 - Instruction mode with `#`.
-- Multi-tab conversations, history, fork, resume, and compact.
 - Codex CLI-managed MCP support. Configure servers with `codex mcp`.
-- First-run knowledge-base bootstrap for the Karpathy-style `new/`, `raw/`, `wiki/`, `outputs/` workflow, including `AGENTS.md`, indexes, workflow map, and vault-level Codex skills.
+- Knowledge-base workflow controls from the ribbon and command palette:
+  - Compile new sources from `new/`.
+  - Save the current Q&A.
+  - Run a knowledge-base health check.
+  - Apply low-risk health fixes.
+  - Undo the latest source archive.
+  - Run an end-to-end workflow acceptance check.
+  - Open the workflow status and workflow map.
+- First-run initializer from the settings page for creating the knowledge-base scaffold.
+
+## Knowledge-Base Workflow
+
+Codexidian is designed around a three-layer knowledge-base structure:
+
+```text
+new/                  New sources waiting to be compiled
+raw/                  Archived original sources
+wiki/                 Reusable knowledge: summaries, concepts, indexes, maps
+outputs/              Q&A, health checks, reports, and other workflow outputs
+```
+
+The initializer creates the following scaffold without overwriting existing notes:
+
+```text
+new/
+raw/
+  inbox/
+  articles/
+  posts/
+  papers/
+  transcripts/
+wiki/
+  indexes/
+  summaries/
+  concepts/
+  maps/
+outputs/
+  qa/
+  health/
+  reports/
+AGENTS.md
+wiki/indexes/All-Sources.md
+wiki/indexes/All-Concepts.md
+wiki/maps/LLM 个人知识库工作流.md
+.codex/skills/
+```
+
+Put source files into the vault root `new/` folder, then click the ribbon action or run `Codexidian: 编译新来源` from the command palette. Codexidian sends Codex a workflow prompt that reads the new files, creates summaries, updates indexes and concepts, then archives the compiled originals into `raw/articles/`, `raw/posts/`, `raw/papers/`, `raw/transcripts/`, or `raw/inbox/`.
+
+Compiled source files are renamed from their content with clearer, topic-specific titles. Filename collisions are handled without overwriting existing files, and archive moves are recorded in `outputs/reports/YYYY-MM-DD-archive-log.md`.
 
 ## Requirements
 
-- Obsidian desktop v1.4.5 or newer.
-- Codex CLI available locally.
-- Recommended macOS CLI path when using Codex.app:
+- Obsidian desktop 1.4.5 or newer.
+- Node.js 22 or newer for development builds.
+- Codex CLI available on the local machine.
+- macOS, Windows, or Linux desktop environment supported by Obsidian and the Codex CLI.
 
-```bash
+When using Codex.app on macOS, the Codex CLI path is usually:
+
+```text
 /Applications/Codex.app/Contents/Resources/codex
 ```
 
-## Install From This Source Tree
+## Install in Obsidian
 
-To copy build output into an Obsidian vault during development, set `OBSIDIAN_VAULT` in `.env.local`.
+### Install from a GitHub release
 
-Build and install:
+1. Download `codexidian-1.0.0.zip` from the GitHub Releases page.
+2. Create this folder in your vault if it does not already exist:
+
+```text
+<your-vault>/.obsidian/plugins/codexidian/
+```
+
+3. Extract these three files into that folder:
+
+```text
+main.js
+manifest.json
+styles.css
+```
+
+4. Restart Obsidian or run `Reload app without saving` from the command palette.
+5. Open `Settings -> Community plugins`.
+6. Enable community plugins if required, then enable `Codexidian`.
+7. Open `Settings -> Codexidian` and confirm the Codex CLI path.
+
+### Build from source
 
 ```bash
 npm install
 npm run build
 ```
 
-Then reload Obsidian and enable `Codexidian` under Community plugins if it is not already enabled.
+The build produces `main.js`, `manifest.json`, and `styles.css` in the project root. Copy those files into:
 
-## Knowledge Base Workflow
+```text
+<your-vault>/.obsidian/plugins/codexidian/
+```
 
-On first load, Codexidian creates any missing knowledge-base scaffold files without overwriting existing notes:
+For local development, set `OBSIDIAN_VAULT` in `.env.local` and run:
 
-- `new/`
-- `raw/inbox/`, `raw/articles/`, `raw/posts/`, `raw/papers/`, `raw/transcripts/`
-- `wiki/indexes/`, `wiki/summaries/`, `wiki/concepts/`, `wiki/maps/`
-- `outputs/qa/`, `outputs/health/`, `outputs/reports/`
-- `AGENTS.md`
-- `wiki/indexes/All-Sources.md`
-- `wiki/indexes/All-Concepts.md`
-- `wiki/maps/LLM 个人知识库工作流.md`
-- `.codex/skills/compile-source`, `archive-source`, `update-indexes`, `save-qa`, `health-check`, `repair-health`, `undo-archive`, and `workflow-acceptance`
+```bash
+npm run build
+```
 
-You can also run `Codexidian: 初始化知识库工作流` from the command palette or from Codexidian settings.
+The build script will copy the plugin output into the configured vault plugin folder.
 
-Put new source files in the vault root `new/` folder, then click the left ribbon button `Codexidian: 编译新来源` or run the same command from the command palette. Codexidian compiles those sources into `wiki/summaries/`, updates concepts and indexes, archives successfully compiled originals into `raw/articles/`, `raw/posts/`, `raw/papers/`, `raw/transcripts/`, or `raw/inbox/`, and records the moves in `outputs/reports/YYYY-MM-DD-archive-log.md`.
+## Settings
 
-The workflow controls also include status review, health-check repair, archive undo, and end-to-end acceptance checks. Archive rules rename compiled files from their content with clearer titles, handle filename collisions without overwriting existing files, and keep source links aligned. Batch size, summary template, concept template, archive rules, and archive-log template are configurable in Codexidian settings.
+Codexidian stores plugin settings in:
 
-## Storage
+```text
+<vault>/.codexidian/codexidian-settings.json
+```
 
-- Plugin settings: `vault/.codexidian/codexidian-settings.json`
-- Codex sessions: `~/.codex/sessions/`
-- Codex vault skills: `vault/.codex/skills/` and `vault/.agents/skills/`
-- Codex vault subagents: `vault/.codex/agents/*.toml`
+The settings page includes:
 
-## Development Notes
+- Codex CLI path.
+- Provider and runtime options.
+- Knowledge-base initializer.
+- Compile batch size.
+- Summary, concept, archive, and report templates.
+- Archive rules for classifying compiled sources into `raw/`.
 
-Codexidian is intentionally Codex-only. The runtime provider registry only registers Codex, and Codex MCP tool calls are rendered from the Codex CLI session stream.
+## Development
 
-## Attribution
+```bash
+npm install
+npm run typecheck
+npm run lint
+npm run test
+npm run build
+```
 
-Codexidian adapts the original plugin architecture into a Codex-only Obsidian workflow.
+The project uses:
+
+- TypeScript.
+- Obsidian plugin API.
+- Codex CLI session/runtime integration.
+- esbuild.
+- Jest.
+- ESLint with TypeScript support.
+- `smol-toml` for TOML parsing.
+
+## Privacy and Security
+
+Codexidian runs locally inside Obsidian and uses the local Codex CLI. The plugin can read and write files in the active vault because that is required for vault-aware workflows. Codex can also run local commands when allowed by the configured permission mode.
+
+Review permission prompts carefully, keep secrets out of the vault, and avoid placing private credentials in notes that may be sent to a model or used by tools.
+
+## Author
+
+Codexidian is created and maintained by HalfMelon.
+
+## Acknowledgements
+
+Codexidian takes inspiration from Claudian's approach to agent-assisted Obsidian workflows, then adapts and extends the idea for a Codex-only workflow with a structured knowledge-base system, source compilation, archive handling, and health checks.
+
+Thanks to the Linux.Do community. Its open-source spirit and practical discussions encouraged this project.
 
 ## License
 
-MIT, following the upstream Codexidian license.
+MIT.

@@ -1,7 +1,7 @@
 {
   "name": "codexidian",
-  "version": "2.0.11",
-  "description": "Codexidian - Codex embedded in Obsidian sidebar",
+  "version": "1.0.0",
+  "description": "Codexidian - Codex embedded in Obsidian for vault-aware chat and knowledge workflows",
   "main": "main.js",
   "scripts": {
     "postinstall": "node scripts/postinstall.mjs",
@@ -23,7 +23,7 @@
     "productivity",
     "ide"
   ],
-  "author": "Codexidian contributors",
+  "author": "HalfMelon",
   "license": "MIT",
   "devDependencies": {
     "@eslint/js": "^10.0.1",
