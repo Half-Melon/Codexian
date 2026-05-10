@@ -77,7 +77,7 @@ describe('CodexSkillCatalog', () => {
       expect(entries).toHaveLength(5);
       expect(entries.some(e => e.name === 'compact')).toBe(false);
       expect(entries.map(e => e.name)).toEqual([
-        'kb-compile-next',
+        'kb-compile-new',
         'kb-save-qa',
         'kb-health-check',
         'my-skill',
@@ -132,7 +132,7 @@ describe('CodexSkillCatalog', () => {
       const entries = await catalog.listDropdownEntries({ includeBuiltIns: false });
 
       expect(entries.map(entry => entry.name)).toEqual([
-        'kb-compile-next',
+        'kb-compile-new',
         'kb-save-qa',
         'kb-health-check',
         'enabled-skill',
@@ -148,11 +148,11 @@ describe('CodexSkillCatalog', () => {
 
       expect(entries.map(entry => entry.name)).toEqual([
         'compact',
-        'kb-compile-next',
+        'kb-compile-new',
         'kb-save-qa',
         'kb-health-check',
       ]);
-      const compileEntry = entries.find(entry => entry.name === 'kb-compile-next');
+      const compileEntry = entries.find(entry => entry.name === 'kb-compile-new');
       expect(compileEntry).toEqual(expect.objectContaining({
         providerId: 'codex',
         kind: 'command',
@@ -163,7 +163,7 @@ describe('CodexSkillCatalog', () => {
         isEditable: false,
         isDeletable: false,
       }));
-      expect(compileEntry!.content).toBe(buildKnowledgeWorkflowPrompt('compile-next-sources'));
+      expect(compileEntry!.content).toBe(buildKnowledgeWorkflowPrompt('compile-new-sources'));
     });
   });
 

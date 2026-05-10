@@ -7,14 +7,18 @@ import {
 } from '@/features/workflows/knowledgeWorkflowCommands';
 
 describe('knowledge workflow commands', () => {
-  it('builds a compile prompt for the next candidate source batch', () => {
-    const prompt = buildKnowledgeWorkflowPrompt('compile-next-sources');
+  it('builds a compile prompt for new sources from the new folder', () => {
+    const prompt = buildKnowledgeWorkflowPrompt('compile-new-sources');
 
     expect(prompt).toContain('compile-source');
-    expect(prompt).toContain('下一批候选来源');
-    expect(prompt).toContain('3 到 5 篇');
+    expect(prompt).toContain('archive-source');
+    expect(prompt).toContain('编译新来源');
+    expect(prompt).toContain('new/');
+    expect(prompt).toContain('raw/inbox');
+    expect(prompt).toContain('outputs/reports/YYYY-MM-DD-archive-log.md');
     expect(prompt).toContain('wiki/indexes/All-Sources.md');
     expect(prompt).toContain('wiki/indexes/All-Concepts.md');
+    expect(prompt).toContain('同步修正 summary');
     expect(prompt).toContain('不迁移 Clippings');
     expect(prompt).toContain('不上 RAG');
     expect(prompt).toContain('大规模概念合并');
@@ -42,14 +46,14 @@ describe('knowledge workflow commands', () => {
     const entries = getKnowledgeWorkflowCommandEntries();
 
     expect(entries.map(entry => entry.name)).toEqual([
-      'kb-compile-next',
+      'kb-compile-new',
       'kb-save-qa',
       'kb-health-check',
     ]);
     expect(entries.every(entry => entry.providerId === 'codex')).toBe(true);
     expect(entries.every(entry => entry.displayPrefix === '/')).toBe(true);
     expect(entries.every(entry => entry.insertPrefix === '/')).toBe(true);
-    expect(entries[0].content).toBe(buildKnowledgeWorkflowPrompt('compile-next-sources'));
+    expect(entries[0].content).toBe(buildKnowledgeWorkflowPrompt('compile-new-sources'));
   });
 
   it('keeps the workflow map path stable for the Obsidian open command', () => {
@@ -71,14 +75,14 @@ describe('knowledge workflow commands', () => {
 
     expect(commands.map(command => command.id)).toEqual([
       'initialize-knowledge-workflow',
-      'workflow-compile-next-sources',
+      'workflow-compile-new-sources',
       'workflow-save-current-qa',
       'workflow-health-check',
       'open-knowledge-workflow-map',
     ]);
     expect(commands.map(command => command.name)).toEqual([
       '初始化知识库工作流',
-      '编译下一批候选来源',
+      '编译新来源',
       '保存当前问答',
       '运行知识库健康检查',
       '打开知识库工作流入口',
@@ -89,7 +93,7 @@ describe('knowledge workflow commands', () => {
     await commands[4].callback();
 
     expect(host.initializeKnowledgeWorkflow).toHaveBeenCalledTimes(1);
-    expect(host.runKnowledgeWorkflow).toHaveBeenCalledWith('compile-next-sources');
+    expect(host.runKnowledgeWorkflow).toHaveBeenCalledWith('compile-new-sources');
     expect(host.openKnowledgeWorkflowMap).toHaveBeenCalledTimes(1);
   });
 
@@ -107,14 +111,12 @@ describe('knowledge workflow commands', () => {
     registerKnowledgeWorkflowRibbonIcons(host);
 
     expect(icons.map(item => item.title)).toEqual([
-      'Codexidian: 初始化知识库工作流',
-      'Codexidian: 编译下一批候选来源',
+      'Codexidian: 编译新来源',
       'Codexidian: 保存当前问答',
       'Codexidian: 运行知识库健康检查',
       'Codexidian: 打开知识库工作流入口',
     ]);
     expect(icons.map(item => item.icon)).toEqual([
-      'folder-tree',
       'file-plus-2',
       'save',
       'activity',
@@ -122,11 +124,10 @@ describe('knowledge workflow commands', () => {
     ]);
 
     await icons[0].callback();
-    await icons[1].callback();
-    await icons[4].callback();
+    await icons[3].callback();
 
-    expect(host.initializeKnowledgeWorkflow).toHaveBeenCalledTimes(1);
-    expect(host.runKnowledgeWorkflow).toHaveBeenCalledWith('compile-next-sources');
+    expect(host.initializeKnowledgeWorkflow).not.toHaveBeenCalled();
+    expect(host.runKnowledgeWorkflow).toHaveBeenCalledWith('compile-new-sources');
     expect(host.openKnowledgeWorkflowMap).toHaveBeenCalledTimes(1);
   });
 });

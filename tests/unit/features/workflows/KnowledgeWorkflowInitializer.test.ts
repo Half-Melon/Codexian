@@ -53,7 +53,9 @@ describe('KnowledgeWorkflowInitializer', () => {
     const result = await initializer.initialize();
 
     expect(result.createdFolders).toEqual([
+      'new',
       'raw',
+      'raw/inbox',
       'raw/articles',
       'raw/posts',
       'raw/papers',
@@ -70,6 +72,7 @@ describe('KnowledgeWorkflowInitializer', () => {
       '.codex',
       '.codex/skills',
       '.codex/skills/compile-source',
+      '.codex/skills/archive-source',
       '.codex/skills/update-indexes',
       '.codex/skills/save-qa',
       '.codex/skills/health-check',
@@ -80,16 +83,26 @@ describe('KnowledgeWorkflowInitializer', () => {
       KNOWLEDGE_WORKFLOW_SOURCE_INDEX_PATH,
       KNOWLEDGE_WORKFLOW_CONCEPT_INDEX_PATH,
       '.codex/skills/compile-source/SKILL.md',
+      '.codex/skills/archive-source/SKILL.md',
       '.codex/skills/update-indexes/SKILL.md',
       '.codex/skills/save-qa/SKILL.md',
       '.codex/skills/health-check/SKILL.md',
     ]);
     expect(folders.has('raw/articles')).toBe(true);
+    expect(folders.has('raw/inbox')).toBe(true);
+    expect(folders.has('new')).toBe(true);
+    expect(files[KNOWLEDGE_WORKFLOW_AGENTS_PATH]).toContain('new/ 是新来源暂存区');
     expect(files[KNOWLEDGE_WORKFLOW_AGENTS_PATH]).toContain('raw/ 是来源层');
-    expect(files[KNOWLEDGE_WORKFLOW_MAP_PATH]).toContain('下一批候选来源');
+    expect(files[KNOWLEDGE_WORKFLOW_AGENTS_PATH]).toContain('raw/inbox/');
+    expect(files[KNOWLEDGE_WORKFLOW_AGENTS_PATH]).toContain('outputs/reports/YYYY-MM-DD-archive-log.md');
+    expect(files[KNOWLEDGE_WORKFLOW_MAP_PATH]).toContain('new/ 使用说明');
+    expect(files[KNOWLEDGE_WORKFLOW_MAP_PATH]).toContain('编译新来源');
     expect(files[KNOWLEDGE_WORKFLOW_SOURCE_INDEX_PATH]).toContain('All Sources');
     expect(files[KNOWLEDGE_WORKFLOW_CONCEPT_INDEX_PATH]).toContain('All Concepts');
     expect(files['.codex/skills/compile-source/SKILL.md']).toContain('name: compile-source');
+    expect(files['.codex/skills/compile-source/SKILL.md']).toContain('new/ folder');
+    expect(files['.codex/skills/archive-source/SKILL.md']).toContain('name: archive-source');
+    expect(files['.codex/skills/archive-source/SKILL.md']).toContain('raw/inbox');
   });
 
   it('does not overwrite existing user files or report existing folders as created', async () => {

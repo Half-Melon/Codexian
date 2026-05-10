@@ -180,6 +180,21 @@ export class CodexidianSettingTab extends PluginSettingTab {
           });
       });
 
+    // --- Setup ---
+
+    new Setting(container).setName(t('settings.setup')).setHeading();
+
+    new Setting(container)
+      .setName('初始化知识库工作流')
+      .setDesc('创建缺失的 new/raw/wiki/outputs 目录、AGENTS.md、索引、工作流入口和 Codex Skills；不会覆盖已有文件。')
+      .addButton((button) => {
+        button
+          .setButtonText('初始化')
+          .onClick(async () => {
+            await this.plugin.initializeKnowledgeWorkflow();
+          });
+      });
+
     // --- Display ---
 
     new Setting(container).setName(t('settings.display')).setHeading();

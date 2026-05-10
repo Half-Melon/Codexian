@@ -12,7 +12,9 @@ export interface KnowledgeWorkflowInitializationResult {
 }
 
 const KNOWLEDGE_WORKFLOW_FOLDERS = [
+  'new',
   'raw',
+  'raw/inbox',
   'raw/articles',
   'raw/posts',
   'raw/papers',
@@ -29,6 +31,7 @@ const KNOWLEDGE_WORKFLOW_FOLDERS = [
   '.codex',
   '.codex/skills',
   '.codex/skills/compile-source',
+  '.codex/skills/archive-source',
   '.codex/skills/update-indexes',
   '.codex/skills/save-qa',
   '.codex/skills/health-check',
@@ -41,6 +44,7 @@ const FILE_TEMPLATES: Record<string, string> = {
 
 ## 三层边界
 
+- new/ 是新来源暂存区：用户把待编译的新资料放在这里，Codexidian 编译新来源时只从这里读取。
 - raw/ 是来源层：保存原始资料，默认不改写、不总结到原文件里。
 - wiki/ 是知识层：保存 LLM 编译后的摘要、概念、索引和地图。
 - outputs/ 是运行输出层：保存问答沉淀、健康检查和报告。
@@ -48,6 +52,8 @@ const FILE_TEMPLATES: Record<string, string> = {
 
 ## 目录约定
 
+- new/：待编译的新来源。
+- raw/inbox/：已编译但分类依据不足的来源归档。
 - raw/articles/：网页、博客、长文。
 - raw/posts/：社媒帖、论坛帖、短内容。
 - raw/papers/：论文。
@@ -56,13 +62,17 @@ const FILE_TEMPLATES: Record<string, string> = {
 - wiki/concepts/：可复用概念，命名为 C-001 概念名.md。
 - wiki/indexes/All-Sources.md：来源索引。
 - wiki/indexes/All-Concepts.md：概念索引。
-- wiki/maps/LLM 个人知识库工作流.md：工作流入口和下一批候选来源。
+- wiki/maps/LLM 个人知识库工作流.md：工作流入口和运行说明。
 - outputs/qa/：复杂问答落文件。
 - outputs/health/：知识库健康检查。
 
 ## 编译来源规则
 
-每次只处理 3 到 5 篇候选来源。先读索引和工作流入口，再读取原文。为每篇来源生成 summary，必要时新建或更新 concept，并同步更新索引。
+编译新来源时，只读取根目录 new/ 里的文件；如果 new/ 为空，直接报告没有新来源。先读索引和工作流入口，再读取 new/ 原文。为每篇来源生成 summary，必要时新建或更新 concept，并同步更新索引。
+
+编译成功后，把已编译原文从 new/ 归档到 raw/articles、raw/posts、raw/papers 或 raw/transcripts。无法可靠判断类型时，归档到 raw/inbox/。归档后必须同步修正 summary source、正文来源链接、All-Sources 里的来源路径，以及本次创建或修改过的显式链接。
+
+每次发生归档移动时，生成或更新 outputs/reports/YYYY-MM-DD-archive-log.md，记录原路径、新路径、分类、分类理由、已同步更新的链接和不确定项。
 
 summary 模板：
 
@@ -126,36 +136,36 @@ status: active
 
 ## 安全边界
 
-不要删除、迁移或批量重命名用户文件，除非用户明确确认。不要上来就搭 RAG；先使用轻量索引，等规模和检索需求证明必要后再升级。
+不要删除用户文件，不要迁移 Clippings，不要做超出本次 new/ 已编译来源的批量重命名或目录迁移，除非用户明确确认。不要上来就搭 RAG；先使用轻量索引，等规模和检索需求证明必要后再升级。
 `,
 
   [KNOWLEDGE_WORKFLOW_MAP_PATH]: `# LLM 个人知识库工作流
 
-这是 Codexidian 的知识库工作流入口。把新资料放入 raw/ 或 Clippings/ 后，在这里维护下一批候选来源，然后运行“Codexidian: 编译下一批候选来源”。
+这是 Codexidian 的知识库工作流入口。把新资料放入根目录 new/ 后，运行“Codexidian: 编译新来源”。
 
-## 下一批候选来源
+## new/ 使用说明
 
-<!-- 每次放 3 到 5 条，示例：
-- [[raw/articles/example.md]]
-- [[Clippings/example.md]]
--->
+- new/ 是待编译来源的暂存区。
+- 只要文件放在 new/ 里，“编译新来源”就会把它纳入本次编译范围。
+- 编译成功后，原文件会从 new/ 归档到 raw/ 对应来源分类；判断不准的进入 raw/inbox/。
+- 归档会同步修正 summary、来源索引和本次生成内容里的显式链接，并写入 outputs/reports/YYYY-MM-DD-archive-log.md。
 
 ## 当前节奏
 
 - 每天：只收集资料，必要时写一句为什么保存。
-- 每周：选择 3 到 5 篇来源做小批量编译。
+- 每周：把要处理的新资料放入 new/，运行一次“编译新来源”。
 - 每周或每批次后：运行健康检查。
 - 每月：审查概念是否需要合并、拆分或升级为 map。
 
 ## 操作按钮
 
-- Codexidian: 编译下一批候选来源
+- Codexidian: 编译新来源
 - Codexidian: 保存当前问答
 - Codexidian: 运行知识库健康检查
 
 ## 开放问题
 
-- 哪些来源最值得进入下一批编译？
+- raw/inbox/ 里有哪些来源需要人工重新分类？
 - 哪些概念需要补来源、例子或适用边界？
 - 哪些 outputs/qa 值得反哺到 wiki？
 `,
@@ -196,12 +206,39 @@ Use when the user asks to compile raw sources into the LLM knowledge base.
 Workflow:
 
 1. Read AGENTS.md and wiki/maps/LLM 个人知识库工作流.md.
-2. Select 3 to 5 candidate sources from “下一批候选来源” or uncompiled entries in wiki/indexes/All-Sources.md.
+2. Read all Markdown and readable text source files from the vault root new/ folder. If new/ is empty, report that there are no new sources and stop.
 3. Read each source directly.
 4. Create the next wiki/summaries/S-xxx file for each source.
 5. Link summaries to existing concepts, or propose a new wiki/concepts/C-xxx file when the idea is reusable across contexts.
-6. Do not migrate Clippings or rewrite raw files unless the user explicitly asks.
-7. Report created files, modified files, uncertainties, and suggested next candidates.
+6. After each source is compiled successfully, use archive-source to move the original file from new/ into raw/articles, raw/posts, raw/papers, raw/transcripts, or raw/inbox.
+7. Report created files, modified files, moved files, uncertainties, and files still remaining in new/.
+`,
+
+  '.codex/skills/archive-source/SKILL.md': `---
+name: archive-source
+description: Archive compiled new/ sources into raw/ and keep links aligned.
+---
+
+# Archive Source
+
+Use after a source in new/ has been successfully compiled into wiki/summaries.
+
+Destination rules:
+
+1. raw/papers/ for papers, preprints, research articles, DOI/arXiv/PDF-style sources, or documents with abstract/references structure.
+2. raw/transcripts/ for podcast, video, meeting, interview, or talk transcripts, especially with timestamps or speakers.
+3. raw/posts/ for social posts, forum threads, short notes, and fragmented posts.
+4. raw/articles/ for web articles, essays, blog posts, newsletters, and long-form pages.
+5. raw/inbox/ when classification is uncertain.
+
+Workflow:
+
+1. Move only sources from new/ that were successfully compiled in the current task.
+2. Do not migrate Clippings or unrelated raw files.
+3. Preserve the original filename unless a collision requires a minimal suffix.
+4. After moving a file, update the summary frontmatter source, summary body links, wiki/indexes/All-Sources.md, and any explicit links created or modified in this task.
+5. Write or update outputs/reports/YYYY-MM-DD-archive-log.md with original path, new path, classification, reason, links updated, and uncertainties.
+6. If any move or link update is risky, stop and ask for confirmation.
 `,
 
   '.codex/skills/update-indexes/SKILL.md': `---
