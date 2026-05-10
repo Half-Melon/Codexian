@@ -1,7 +1,7 @@
 import { getDefaultHiddenProviderCommands } from '../../core/providers/commands/hiddenCommands';
 import { type CodexidianSettings } from '../../core/types/settings';
-import { getBuiltInProviderDefaultConfigs } from '../../providers/defaultProviderConfigs';
 import { DEFAULT_CODEX_PRIMARY_MODEL } from '../../providers/codex/types/models';
+import { getBuiltInProviderDefaultConfigs } from '../../providers/defaultProviderConfigs';
 
 export const DEFAULT_CODEXIDIAN_SETTINGS: CodexidianSettings = {
   userName: '',

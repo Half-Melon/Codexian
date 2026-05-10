@@ -4,6 +4,7 @@ import type {
 } from '../../../core/providers/commands/ProviderCommandCatalog';
 import type { ProviderCommandEntry } from '../../../core/providers/commands/ProviderCommandEntry';
 import type { SlashCommand } from '../../../core/types';
+import { getKnowledgeWorkflowCommandEntries } from '../../../features/workflows/knowledgeWorkflowCommands';
 import type { SkillMetadata } from '../runtime/codexAppServerTypes';
 import {
   type CodexSkillListProvider,
@@ -16,7 +17,6 @@ import {
   parseCodexSkillPersistenceKey,
   resolveCodexSkillLocationFromPath,
 } from '../storage/CodexSkillStorage';
-import { getKnowledgeWorkflowCommandEntries } from '../../../features/workflows/knowledgeWorkflowCommands';
 
 const CODEX_SKILL_ID_PREFIX = 'codex-skill-';
 

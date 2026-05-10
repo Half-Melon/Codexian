@@ -1,4 +1,5 @@
 import type { VaultFileAdapter } from '@/core/storage/VaultFileAdapter';
+import { buildKnowledgeWorkflowPrompt } from '@/features/workflows/knowledgeWorkflowCommands';
 import { CodexSkillCatalog } from '@/providers/codex/commands/CodexSkillCatalog';
 import type { SkillMetadata } from '@/providers/codex/runtime/codexAppServerTypes';
 import type { CodexSkillListProvider } from '@/providers/codex/skills/CodexSkillListingService';
@@ -6,7 +7,6 @@ import {
   CodexSkillStorage,
   createCodexSkillPersistenceKey,
 } from '@/providers/codex/storage/CodexSkillStorage';
-import { buildKnowledgeWorkflowPrompt } from '@/features/workflows/knowledgeWorkflowCommands';
 
 function createMockAdapter(files: Record<string, string> = {}): VaultFileAdapter {
   return {

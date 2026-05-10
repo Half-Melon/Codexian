@@ -41,12 +41,6 @@ import {
   type TabManagerViewHost,
 } from './types';
 
-function isTabManagerViewHost(value: unknown): value is TabManagerViewHost {
-  return !!value
-    && typeof value === 'object'
-    && 'getTabManager' in (value as Record<string, unknown>);
-}
-
 type CreateTabOptions = {
   activate?: boolean;
   draftModel?: string;
