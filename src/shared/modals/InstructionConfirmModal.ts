@@ -11,7 +11,7 @@ import type { App } from 'obsidian';
 import { Modal, TextAreaComponent } from 'obsidian';
 
 import { t } from '../../i18n/i18n';
-import type { TranslationKey } from '../../i18n/types';
+import { hideElement, runAsync, setElementVisible, showElement } from '../../utils/dom';
 
 export type InstructionDecision = 'accept' | 'reject';
 
@@ -62,12 +62,12 @@ export class InstructionModal extends Modal {
   onOpen() {
     const { contentEl } = this;
     contentEl.addClass('codexian-instruction-modal');
-    this.setTitle(t('inlineInstruction.title' as TranslationKey));
+    this.setTitle(t('inlineInstruction.title'));
 
     // User input section (always visible)
     const inputSection = contentEl.createDiv({ cls: 'codexian-instruction-section' });
     const inputLabel = inputSection.createDiv({ cls: 'codexian-instruction-label' });
-    inputLabel.setText(t('inlineInstruction.yourInput' as TranslationKey));
+    inputLabel.setText(t('inlineInstruction.yourInput'));
     const inputText = inputSection.createDiv({ cls: 'codexian-instruction-original' });
     inputText.setText(this.rawInstruction);
 
@@ -77,43 +77,41 @@ export class InstructionModal extends Modal {
     // Loading state
     this.loadingEl = this.contentSectionEl.createDiv({ cls: 'codexian-instruction-loading' });
     this.loadingEl.createDiv({ cls: 'codexian-instruction-spinner' });
-    this.loadingEl.createSpan({ text: t('inlineInstruction.processing' as TranslationKey) });
+    this.loadingEl.createSpan({ text: t('inlineInstruction.processing') });
 
     // Clarification state (hidden initially)
     this.clarificationEl = this.contentSectionEl.createDiv({ cls: 'codexian-instruction-clarification-section' });
-    this.clarificationEl.style.display = 'none';
+    hideElement(this.clarificationEl);
     this.clarificationTextEl = this.clarificationEl.createDiv({ cls: 'codexian-instruction-clarification' });
 
     const responseSection = this.clarificationEl.createDiv({ cls: 'codexian-instruction-section' });
     const responseLabel = responseSection.createDiv({ cls: 'codexian-instruction-label' });
-    responseLabel.setText(t('inlineInstruction.yourResponse' as TranslationKey));
+    responseLabel.setText(t('inlineInstruction.yourResponse'));
 
     this.responseTextarea = new TextAreaComponent(responseSection);
     this.responseTextarea.inputEl.addClass('codexian-instruction-response-textarea');
     this.responseTextarea.inputEl.rows = 3;
-    this.responseTextarea.inputEl.placeholder = t('inlineInstruction.responsePlaceholder' as TranslationKey);
+    this.responseTextarea.inputEl.placeholder = t('inlineInstruction.responsePlaceholder');
 
     this.responseTextarea.inputEl.addEventListener('keydown', (e) => {
       // Check !e.isComposing for IME support (Chinese, Japanese, Korean, etc.)
       if (e.key === 'Enter' && !e.shiftKey && !e.isComposing && !this.isSubmitting) {
         e.preventDefault();
-        this.submitClarification();
+        runAsync(() => this.submitClarification());
       }
     });
 
     // Confirmation state (hidden initially)
     this.confirmationEl = this.contentSectionEl.createDiv({ cls: 'codexian-instruction-confirmation-section' });
-    this.confirmationEl.style.display = 'none';
-
+    hideElement(this.confirmationEl);
     // Refined instruction display/edit
     const refinedSection = this.confirmationEl.createDiv({ cls: 'codexian-instruction-section' });
     const refinedLabel = refinedSection.createDiv({ cls: 'codexian-instruction-label' });
-    refinedLabel.setText(t('inlineInstruction.refinedSnippet' as TranslationKey));
+    refinedLabel.setText(t('inlineInstruction.refinedSnippet'));
 
     this.refinedDisplayEl = refinedSection.createDiv({ cls: 'codexian-instruction-refined' });
     this.editContainerEl = refinedSection.createDiv({ cls: 'codexian-instruction-edit-container' });
-    this.editContainerEl.style.display = 'none';
-
+    hideElement(this.editContainerEl);
     this.editTextarea = new TextAreaComponent(this.editContainerEl);
     this.editTextarea.inputEl.addClass('codexian-instruction-edit-textarea');
     this.editTextarea.inputEl.rows = 4;
@@ -150,7 +148,7 @@ export class InstructionModal extends Modal {
     this.showState('confirmation');
   }
 
-  showError(error: string) {
+  showError(_error: string) {
     // Just close - the error notice will be shown by caller
     this.resolved = true;
     this.close();
@@ -169,15 +167,9 @@ export class InstructionModal extends Modal {
   private showState(state: ModalState) {
     this.state = state;
 
-    if (this.loadingEl) {
-      this.loadingEl.style.display = state === 'loading' ? 'flex' : 'none';
-    }
-    if (this.clarificationEl) {
-      this.clarificationEl.style.display = state === 'clarification' ? 'block' : 'none';
-    }
-    if (this.confirmationEl) {
-      this.confirmationEl.style.display = state === 'confirmation' ? 'block' : 'none';
-    }
+    setElementVisible(this.loadingEl, state === 'loading', 'flex');
+    setElementVisible(this.clarificationEl, state === 'clarification', 'block');
+    setElementVisible(this.confirmationEl, state === 'confirmation', 'block');
 
     this.updateButtons();
   }
@@ -195,23 +187,25 @@ export class InstructionModal extends Modal {
 
     if (this.state === 'clarification') {
       const submitBtn = this.buttonsEl.createEl('button', {
-        text: t('inlineInstruction.submit' as TranslationKey),
+        text: t('inlineInstruction.submit'),
         cls: 'codexian-instruction-btn codexian-instruction-accept-btn',
-        attr: { 'aria-label': t('inlineInstruction.submitResponse' as TranslationKey) }
+        attr: { 'aria-label': t('inlineInstruction.submitResponse') }
       });
-      submitBtn.addEventListener('click', () => this.submitClarification());
+      submitBtn.addEventListener('click', () => {
+        runAsync(() => this.submitClarification());
+      });
     } else if (this.state === 'confirmation') {
       this.editBtnEl = this.buttonsEl.createEl('button', {
         text: t('common.edit'),
         cls: 'codexian-instruction-btn codexian-instruction-edit-btn',
-        attr: { 'aria-label': t('inlineInstruction.editInstruction' as TranslationKey) }
+        attr: { 'aria-label': t('inlineInstruction.editInstruction') }
       });
       this.editBtnEl.addEventListener('click', () => this.toggleEdit());
 
       const acceptBtn = this.buttonsEl.createEl('button', {
-        text: t('inlineInstruction.acceptInstruction' as TranslationKey),
+        text: t('inlineInstruction.acceptInstruction'),
         cls: 'codexian-instruction-btn codexian-instruction-accept-btn',
-        attr: { 'aria-label': t('inlineInstruction.acceptInstruction' as TranslationKey) }
+        attr: { 'aria-label': t('inlineInstruction.acceptInstruction') }
       });
       acceptBtn.addEventListener('click', () => this.handleAccept());
       acceptBtn.focus();
@@ -237,18 +231,18 @@ export class InstructionModal extends Modal {
     this.isEditing = !this.isEditing;
 
     if (this.isEditing) {
-      if (this.refinedDisplayEl) this.refinedDisplayEl.style.display = 'none';
-      if (this.editContainerEl) this.editContainerEl.style.display = 'block';
-      if (this.editBtnEl) this.editBtnEl.setText(t('inlineInstruction.preview' as TranslationKey));
+      hideElement(this.refinedDisplayEl);
+      showElement(this.editContainerEl, 'block');
+      if (this.editBtnEl) this.editBtnEl.setText(t('inlineInstruction.preview'));
       this.editTextarea?.inputEl.focus();
     } else {
       const edited = this.editTextarea?.getValue() || this.refinedInstruction;
       this.refinedInstruction = edited;
       if (this.refinedDisplayEl) {
         this.refinedDisplayEl.setText(edited);
-        this.refinedDisplayEl.style.display = 'block';
+        showElement(this.refinedDisplayEl, 'block');
       }
-      if (this.editContainerEl) this.editContainerEl.style.display = 'none';
+      hideElement(this.editContainerEl);
       if (this.editBtnEl) this.editBtnEl.setText(t('common.edit'));
     }
   }

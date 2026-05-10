@@ -1,5 +1,7 @@
 import { setIcon } from 'obsidian';
 
+import { hideElement, showElement } from '../../../../../utils/dom';
+
 export interface FileChipsViewCallbacks {
   onRemoveAttachment: (path: string) => void;
   onOpenFile: (path: string) => void;
@@ -29,11 +31,11 @@ export class FileChipsView {
     this.fileIndicatorEl.empty();
 
     if (!filePath) {
-      this.fileIndicatorEl.style.display = 'none';
+      hideElement(this.fileIndicatorEl);
       return;
     }
 
-    this.fileIndicatorEl.style.display = 'flex';
+    showElement(this.fileIndicatorEl, 'flex');
     this.renderFileChip(filePath, () => {
       this.callbacks.onRemoveAttachment(filePath);
     });

@@ -1,3 +1,4 @@
+import { readFileSync } from 'fs';
 import * as nodePath from 'path';
 
 import type { ExitPlanModeDecision } from '../../../core/types/tools';
@@ -146,9 +147,7 @@ export class InlineExitPlanMode {
     }
 
     try {
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      const fs = require('fs');
-      const content = fs.readFileSync(planFilePath, 'utf-8') as string;
+      const content = readFileSync(planFilePath, 'utf-8');
       return content.trim() || null;
     } catch (err) {
       this.planReadError = err instanceof Error ? err.message : 'unknown error';
@@ -239,7 +238,7 @@ export class InlineExitPlanMode {
 
         if (item.hasClass('codexian-ask-custom-item')) {
           const input = item.querySelector('.codexian-ask-custom-text') as HTMLInputElement;
-          if (input && document.activeElement === input) {
+          if (input && activeDocument.activeElement === input) {
             input.blur();
             this.isInputFocused = false;
           }

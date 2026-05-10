@@ -6,6 +6,7 @@
 
 import type { ChatMessage, ToolCallInfo } from '../core/types';
 import { extractUserQuery, formatCurrentNote } from './context';
+import { stringifySafe } from './dom';
 
 // ============================================
 // Session Recovery
@@ -65,7 +66,7 @@ function formatToolInput(input: Record<string, unknown>, maxLength = 200): strin
       } else if (typeof value === 'object') {
         valueStr = '[object]';
       } else {
-        valueStr = String(value);
+        valueStr = stringifySafe(value);
       }
       parts.push(`${key}=${valueStr}`);
     }
@@ -185,7 +186,7 @@ export function buildContextFromHistory(messages: ChatMessage[]): string {
     if (message.role === 'assistant' && message.toolCalls?.length) {
       const toolLines = message.toolCalls
         .map(tc => formatToolCallForContext(tc))
-        .filter(Boolean) as string[];
+        .filter(Boolean);
       if (toolLines.length > 0) {
         lines.push(...toolLines);
       }

@@ -9,6 +9,8 @@ import { ProviderRegistry } from '../../../core/providers/ProviderRegistry';
 import type { EnvironmentScope, EnvSnippet } from '../../../core/types';
 import { t } from '../../../i18n/i18n';
 import type CodexianPlugin from '../../../main';
+import { confirmDelete } from '../../../shared/modals/ConfirmModal';
+import { hideElement, runAsync, showElement } from '../../../utils/dom';
 import { formatContextLimit, parseContextLimit, parseEnvironmentVariables } from '../../../utils/env';
 import type { CodexianView } from '../../chat/CodexianView';
 
@@ -16,14 +18,14 @@ export class EnvSnippetModal extends Modal {
   plugin: CodexianPlugin;
   snippet: EnvSnippet | null;
   snippetScope: EnvironmentScope;
-  onSave: (snippet: EnvSnippet) => void;
+  onSave: (snippet: EnvSnippet) => void | Promise<void>;
 
   constructor(
     app: App,
     plugin: CodexianPlugin,
     snippet: EnvSnippet | null,
     scope: EnvironmentScope,
-    onSave: (snippet: EnvSnippet) => void,
+    onSave: (snippet: EnvSnippet) => void | Promise<void>,
   ) {
     super(app);
     this.plugin = plugin;
@@ -85,7 +87,9 @@ export class EnvSnippetModal extends Modal {
         contextLimits: Object.keys(contextLimits).length > 0 ? contextLimits : undefined,
       };
 
-      this.onSave(snippet);
+      runAsync(async () => {
+        await this.onSave(snippet);
+      });
       this.close();
     };
 
@@ -98,19 +102,18 @@ export class EnvSnippetModal extends Modal {
       const uniqueModelIds = ProviderRegistry.getCustomModelIds(envVars);
 
       if (uniqueModelIds.size === 0) {
-        contextLimitsContainer.style.display = 'none';
+        hideElement(contextLimitsContainer);
         return;
       }
 
-      contextLimitsContainer.style.display = 'block';
-
+      showElement(contextLimitsContainer, 'block');
       const existingLimits = this.snippet?.contextLimits ?? this.plugin.settings.customContextLimits ?? {};
 
-      contextLimitsContainer.createEl('div', {
+      contextLimitsContainer.createDiv({
         text: t('settings.customContextLimits.name'),
         cls: 'setting-item-name',
       });
-      contextLimitsContainer.createEl('div', {
+      contextLimitsContainer.createDiv({
         text: t('settings.customContextLimits.desc'),
         cls: 'setting-item-description',
       });
@@ -179,7 +182,7 @@ export class EnvSnippetModal extends Modal {
     saveBtn.addEventListener('click', () => saveSnippet());
 
     // Focus name input after modal is rendered (timeout for Windows compatibility)
-    setTimeout(() => nameEl?.focus(), 50);
+    activeWindow.setTimeout(() => nameEl?.focus(), 50);
   }
 
   onClose() {
@@ -218,7 +221,9 @@ export class EnvSnippetManager {
       attr: { 'aria-label': t('settings.envSnippets.addBtn') },
     });
     setIcon(saveBtn, 'plus');
-    saveBtn.addEventListener('click', () => this.saveCurrentEnv());
+    saveBtn.addEventListener('click', () => {
+      runAsync(() => this.saveCurrentEnv());
+    });
 
     const snippets = this.plugin.settings.envSnippets.filter((snippet) => this.shouldDisplaySnippet(snippet));
 
@@ -250,12 +255,13 @@ export class EnvSnippetManager {
         attr: { 'aria-label': t('common.insert') },
       });
       setIcon(restoreBtn, 'clipboard-paste');
-      restoreBtn.addEventListener('click', async () => {
-        try {
-          await this.insertSnippet(snippet);
-        } catch {
+      restoreBtn.addEventListener('click', () => {
+        runAsync(
+          () => this.insertSnippet(snippet),
+          () => {
           new Notice(t('notices.failedToInsertSnippet'));
-        }
+          },
+        );
       });
 
       const editBtn = actionsEl.createEl('button', {
@@ -272,14 +278,14 @@ export class EnvSnippetManager {
         attr: { 'aria-label': t('common.delete') },
       });
       setIcon(deleteBtn, 'trash-2');
-      deleteBtn.addEventListener('click', async () => {
-        try {
-          if (confirm(t('notices.deleteEnvironmentSnippetConfirm', { name: snippet.name }))) {
+      deleteBtn.addEventListener('click', () => {
+        runAsync(async () => {
+          if (await confirmDelete(this.plugin.app, t('notices.deleteEnvironmentSnippetConfirm', { name: snippet.name }))) {
             await this.deleteSnippet(snippet);
           }
-        } catch {
+        }, () => {
           new Notice(t('notices.failedToDeleteSnippet'));
-        }
+        });
       });
     }
   }
@@ -290,12 +296,12 @@ export class EnvSnippetManager {
       this.plugin,
       null,
       this.scope,
-      async (snippet) => {
-        this.plugin.settings.envSnippets.push(snippet);
-        await this.plugin.saveSettings();
-        this.render();
-        new Notice(t('notices.environmentSnippetSaved', { name: snippet.name }));
-      }
+        async (snippet) => {
+          this.plugin.settings.envSnippets.push(snippet);
+          await this.plugin.saveSettings();
+          this.render();
+          new Notice(t('notices.environmentSnippetSaved', { name: snippet.name }));
+        }
     );
     modal.open();
   }
@@ -372,7 +378,7 @@ export class EnvSnippetManager {
 
   private syncTextareaValue(scope: EnvironmentScope, value: string): void {
     const selector = `.codexian-settings-env-textarea[data-env-scope="${scope}"]`;
-    const envTextarea = document.querySelector(selector) as HTMLTextAreaElement | null;
+    const envTextarea = activeDocument.querySelector<HTMLTextAreaElement>(selector);
     if (envTextarea) {
       envTextarea.value = value;
     }

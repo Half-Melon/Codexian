@@ -1,5 +1,5 @@
 import type { App } from 'obsidian';
-import { Notice, PluginSettingTab, Setting } from 'obsidian';
+import { Notice, Platform, PluginSettingTab, Setting } from 'obsidian';
 
 import {
   getDefaultKnowledgeWorkflowSettings,
@@ -17,14 +17,35 @@ import { getUserLanguageOptions, resolveLocalePreference, setLocale, t } from '.
 import { getObsidianLocale } from '../../i18n/obsidianLocale';
 import type { TranslationKey, UserLanguagePreference } from '../../i18n/types';
 import type CodexianPlugin from '../../main';
+import { hideElement, runAsync, setElementVisible, showElement } from '../../utils/dom';
 import { formatContextLimit, parseContextLimit, parseEnvironmentVariables } from '../../utils/env';
 import { buildNavMappingText, parseNavMappings } from './keyboardNavigation';
 import { renderEnvironmentSettingsSection } from './ui/EnvironmentSettingsSection';
 
-type SettingsTabId = 'general' | ProviderId;
+type SettingsTabId = string;
+
+interface ObsidianSettingsWindow {
+  open: () => void;
+  openTabById: (id: string) => void;
+  activeTab?: {
+    searchInputEl?: HTMLInputElement;
+    searchComponent?: { inputEl?: HTMLInputElement };
+    updateHotkeyVisibility?: () => void;
+  };
+}
+
+interface ObsidianHotkeyManager {
+  customKeys?: Record<string, Array<{ modifiers: string[]; key: string }>>;
+  defaultKeys?: Record<string, Array<{ modifiers: string[]; key: string }>>;
+}
+
+interface AppWithInternalSettings {
+  setting: ObsidianSettingsWindow;
+  hotkeyManager?: ObsidianHotkeyManager;
+}
 
 function formatHotkey(hotkey: { modifiers: string[]; key: string }): string {
-  const isMac = navigator.platform.includes('Mac');
+  const isMac = Platform.isMacOS;
   const modMap: Record<string, string> = isMac
     ? { Mod: '⌘', Ctrl: '⌃', Alt: '⌥', Shift: '⇧', Meta: '⌘' }
     : { Mod: 'Ctrl', Ctrl: 'Ctrl', Alt: 'Alt', Shift: 'Shift', Meta: 'Win' };
@@ -36,10 +57,10 @@ function formatHotkey(hotkey: { modifiers: string[]; key: string }): string {
 }
 
 function openHotkeySettings(app: App): void {
-  const setting = (app as any).setting;
+  const setting = (app as App & AppWithInternalSettings).setting;
   setting.open();
   setting.openTabById('hotkeys');
-  setTimeout(() => {
+  activeWindow.setTimeout(() => {
     const tab = setting.activeTab;
     if (!tab) {
       return;
@@ -56,12 +77,12 @@ function openHotkeySettings(app: App): void {
 }
 
 function getHotkeyForCommand(app: App, commandId: string): string | null {
-  const hotkeyManager = (app as any).hotkeyManager;
+  const hotkeyManager = (app as App & AppWithInternalSettings).hotkeyManager;
   if (!hotkeyManager) return null;
 
   const customHotkeys = hotkeyManager.customKeys?.[commandId];
   const defaultHotkeys = hotkeyManager.defaultKeys?.[commandId];
-  const hotkeys = customHotkeys?.length > 0 ? customHotkeys : defaultHotkeys;
+  const hotkeys = customHotkeys && customHotkeys.length > 0 ? customHotkeys : defaultHotkeys;
 
   if (!hotkeys || hotkeys.length === 0) return null;
 
@@ -198,19 +219,19 @@ export class CodexianSettingTab extends PluginSettingTab {
     new Setting(container).setName(t('settings.setup')).setHeading();
 
     new Setting(container)
-      .setName(t('settings.knowledgeWorkflow.initialize.name' as TranslationKey))
-      .setDesc(t('settings.knowledgeWorkflow.initialize.desc' as TranslationKey))
+      .setName(t('settings.knowledgeWorkflow.initialize.name'))
+      .setDesc(t('settings.knowledgeWorkflow.initialize.desc'))
       .addButton((button) => {
         button
-          .setButtonText(t('settings.knowledgeWorkflow.initialize.button' as TranslationKey))
+          .setButtonText(t('settings.knowledgeWorkflow.initialize.button'))
           .onClick(async () => {
             await this.plugin.initializeKnowledgeWorkflow();
           });
       });
 
     new Setting(container)
-      .setName(t('settings.knowledgeWorkflow.batchSize.name' as TranslationKey))
-      .setDesc(t('settings.knowledgeWorkflow.batchSize.desc' as TranslationKey))
+      .setName(t('settings.knowledgeWorkflow.batchSize.name'))
+      .setDesc(t('settings.knowledgeWorkflow.batchSize.desc'))
       .addSlider((slider) => {
         slider
           .setLimits(1, 20, 1)
@@ -227,8 +248,8 @@ export class CodexianSettingTab extends PluginSettingTab {
       });
 
     new Setting(container)
-      .setName(t('settings.knowledgeWorkflow.summaryTemplate.name' as TranslationKey))
-      .setDesc(t('settings.knowledgeWorkflow.summaryTemplate.desc' as TranslationKey))
+      .setName(t('settings.knowledgeWorkflow.summaryTemplate.name'))
+      .setDesc(t('settings.knowledgeWorkflow.summaryTemplate.desc'))
       .addTextArea((text) => {
         text
           .setValue(this.getKnowledgeWorkflowSetting('summaryTemplate'))
@@ -239,8 +260,8 @@ export class CodexianSettingTab extends PluginSettingTab {
       });
 
     new Setting(container)
-      .setName(t('settings.knowledgeWorkflow.conceptTemplate.name' as TranslationKey))
-      .setDesc(t('settings.knowledgeWorkflow.conceptTemplate.desc' as TranslationKey))
+      .setName(t('settings.knowledgeWorkflow.conceptTemplate.name'))
+      .setDesc(t('settings.knowledgeWorkflow.conceptTemplate.desc'))
       .addTextArea((text) => {
         text
           .setValue(this.getKnowledgeWorkflowSetting('conceptTemplate'))
@@ -251,8 +272,8 @@ export class CodexianSettingTab extends PluginSettingTab {
       });
 
     new Setting(container)
-      .setName(t('settings.knowledgeWorkflow.archiveRules.name' as TranslationKey))
-      .setDesc(t('settings.knowledgeWorkflow.archiveRules.desc' as TranslationKey))
+      .setName(t('settings.knowledgeWorkflow.archiveRules.name'))
+      .setDesc(t('settings.knowledgeWorkflow.archiveRules.desc'))
       .addTextArea((text) => {
         text
           .setValue(this.getKnowledgeWorkflowSetting('archiveRules'))
@@ -263,8 +284,8 @@ export class CodexianSettingTab extends PluginSettingTab {
       });
 
     new Setting(container)
-      .setName(t('settings.knowledgeWorkflow.archiveLogTemplate.name' as TranslationKey))
-      .setDesc(t('settings.knowledgeWorkflow.archiveLogTemplate.desc' as TranslationKey))
+      .setName(t('settings.knowledgeWorkflow.archiveLogTemplate.name'))
+      .setDesc(t('settings.knowledgeWorkflow.archiveLogTemplate.desc'))
       .addTextArea((text) => {
         text
           .setValue(this.getKnowledgeWorkflowSetting('archiveLogTemplate'))
@@ -301,15 +322,11 @@ export class CodexianSettingTab extends PluginSettingTab {
       .setDesc(t('settings.maxTabs.desc'));
 
     const maxTabsWarningEl = container.createDiv({ cls: 'codexian-max-tabs-warning' });
-    maxTabsWarningEl.style.color = 'var(--text-warning)';
-    maxTabsWarningEl.style.fontSize = '0.85em';
-    maxTabsWarningEl.style.marginTop = '-0.5em';
-    maxTabsWarningEl.style.marginBottom = '0.5em';
-    maxTabsWarningEl.style.display = 'none';
+    hideElement(maxTabsWarningEl);
     maxTabsWarningEl.setText(t('settings.maxTabs.warning'));
 
     const updateMaxTabsWarning = (value: number): void => {
-      maxTabsWarningEl.style.display = value > 5 ? 'block' : 'none';
+      setElementVisible(maxTabsWarningEl, value > 5, 'block');
     };
 
     maxTabsSetting.addSlider((slider) => {
@@ -424,7 +441,9 @@ export class CodexianSettingTab extends PluginSettingTab {
             this.plugin.settings.userName = value;
             await this.plugin.saveSettings();
           });
-        text.inputEl.addEventListener('blur', () => this.restartServiceForPromptChange());
+        text.inputEl.addEventListener('blur', () => {
+          runAsync(() => this.restartServiceForPromptChange());
+        });
       });
 
     new Setting(container)
@@ -440,7 +459,9 @@ export class CodexianSettingTab extends PluginSettingTab {
           });
         text.inputEl.rows = 6;
         text.inputEl.cols = 50;
-        text.inputEl.addEventListener('blur', () => this.restartServiceForPromptChange());
+        text.inputEl.addEventListener('blur', () => {
+          runAsync(() => this.restartServiceForPromptChange());
+        });
       });
 
     new Setting(container)
@@ -448,7 +469,7 @@ export class CodexianSettingTab extends PluginSettingTab {
       .setDesc(t('settings.excludedTags.desc'))
       .addTextArea((text) => {
         text
-          .setPlaceholder('system\nprivate\ndraft')
+          .setPlaceholder('system\nprivate\ndraft'.toLocaleLowerCase())
           .setValue(this.plugin.settings.excludedTags.join('\n'))
           .onChange(async (value) => {
             this.plugin.settings.excludedTags = value
@@ -466,14 +487,16 @@ export class CodexianSettingTab extends PluginSettingTab {
       .setDesc(t('settings.mediaFolder.desc'))
       .addText((text) => {
         text
-          .setPlaceholder('attachments')
+          .setPlaceholder('attachments'.toLocaleLowerCase())
           .setValue(this.plugin.settings.mediaFolder)
           .onChange(async (value) => {
             this.plugin.settings.mediaFolder = value.trim();
             await this.plugin.saveSettings();
           });
         text.inputEl.addClass('codexian-settings-media-input');
-        text.inputEl.addEventListener('blur', () => this.restartServiceForPromptChange());
+        text.inputEl.addEventListener('blur', () => {
+          runAsync(() => this.restartServiceForPromptChange());
+        });
       });
 
     // --- Input ---
@@ -516,12 +539,12 @@ export class CodexianSettingTab extends PluginSettingTab {
             window.clearTimeout(saveTimeout);
           }
           saveTimeout = window.setTimeout(() => {
-            void commitValue(false);
+            runAsync(() => commitValue(false));
           }, 500);
         };
 
         text
-          .setPlaceholder('map w scrollUp\nmap s scrollDown\nmap i focusInput')
+          .setPlaceholder('map w scrollUp\nmap s scrollDown\nmap i focusInput'.toLocaleLowerCase())
           .setValue(pendingValue)
           .onChange((value) => {
             pendingValue = value;
@@ -529,8 +552,8 @@ export class CodexianSettingTab extends PluginSettingTab {
           });
 
         text.inputEl.rows = 3;
-        text.inputEl.addEventListener('blur', async () => {
-          await commitValue(true);
+        text.inputEl.addEventListener('blur', () => {
+          runAsync(() => commitValue(true));
         });
       });
 
@@ -552,8 +575,8 @@ export class CodexianSettingTab extends PluginSettingTab {
       plugin: this.plugin,
       scope: 'shared',
       heading: t('settings.environment'),
-      name: t('codex.settings.environment.shared.name' as TranslationKey),
-      desc: t('codex.settings.environment.shared.desc' as TranslationKey),
+      name: t('codex.settings.environment.shared.name'),
+      desc: t('codex.settings.environment.shared.desc'),
       placeholder: 'PATH=/opt/homebrew/bin:/usr/local/bin\nHTTPS_PROXY=http://proxy.example.com:8080\nSSL_CERT_FILE=/path/to/cert.pem',
       renderCustomContextLimits: (target) => this.renderCustomContextLimits(target),
     });
@@ -658,32 +681,34 @@ export class CodexianSettingTab extends PluginSettingTab {
 
       const validationEl = inputWrapper.createDiv({ cls: 'codexian-context-limit-validation' });
 
-      inputEl.addEventListener('input', async () => {
-        const trimmed = inputEl.value.trim();
+      inputEl.addEventListener('input', () => {
+        runAsync(async () => {
+          const trimmed = inputEl.value.trim();
 
-        if (!this.plugin.settings.customContextLimits) {
-          this.plugin.settings.customContextLimits = {};
-        }
-
-        if (!trimmed) {
-          delete this.plugin.settings.customContextLimits[modelId];
-          validationEl.style.display = 'none';
-          inputEl.classList.remove('codexian-input-error');
-        } else {
-          const parsed = parseContextLimit(trimmed);
-          if (parsed === null) {
-            validationEl.setText(t('settings.customContextLimits.invalid'));
-            validationEl.style.display = 'block';
-            inputEl.classList.add('codexian-input-error');
-            return;
+          if (!this.plugin.settings.customContextLimits) {
+            this.plugin.settings.customContextLimits = {};
           }
 
-          this.plugin.settings.customContextLimits[modelId] = parsed;
-          validationEl.style.display = 'none';
-          inputEl.classList.remove('codexian-input-error');
-        }
+          if (!trimmed) {
+            delete this.plugin.settings.customContextLimits[modelId];
+            hideElement(validationEl);
+            inputEl.classList.remove('codexian-input-error');
+          } else {
+            const parsed = parseContextLimit(trimmed);
+            if (parsed === null) {
+              validationEl.setText(t('settings.customContextLimits.invalid'));
+              showElement(validationEl, 'block');
+              inputEl.classList.add('codexian-input-error');
+              return;
+            }
 
-        await this.plugin.saveSettings();
+            this.plugin.settings.customContextLimits[modelId] = parsed;
+            hideElement(validationEl);
+            inputEl.classList.remove('codexian-input-error');
+          }
+
+          await this.plugin.saveSettings();
+        });
       });
     }
   }

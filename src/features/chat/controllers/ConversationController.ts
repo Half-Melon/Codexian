@@ -4,9 +4,9 @@ import type { TitleGenerationService } from '../../../core/providers/types';
 import type { ChatRuntime } from '../../../core/runtime/ChatRuntime';
 import type { Conversation } from '../../../core/types';
 import { t } from '../../../i18n/i18n';
-import type { TranslationKey } from '../../../i18n/types';
 import type CodexianPlugin from '../../../main';
 import { confirm } from '../../../shared/modals/ConfirmModal';
+import { hideElement, runAsync, showElement } from '../../../utils/dom';
 import type { MessageRenderer } from '../rendering/MessageRenderer';
 import { cleanupThinkingBlock } from '../rendering/ThinkingBlockRenderer';
 import { findRewindContext } from '../rewind';
@@ -524,13 +524,13 @@ export class ConversationController {
     container.empty();
 
     const dropdownHeader = container.createDiv({ cls: 'codexian-history-header' });
-    dropdownHeader.createSpan({ text: t('chat.history.title' as TranslationKey) });
+    dropdownHeader.createSpan({ text: t('chat.history.title') });
 
     const list = container.createDiv({ cls: 'codexian-history-list' });
     const allConversations = plugin.getConversationList();
 
     if (allConversations.length === 0) {
-      list.createDiv({ cls: 'codexian-history-empty', text: t('chat.history.empty' as TranslationKey) });
+      list.createDiv({ cls: 'codexian-history-empty', text: t('chat.history.empty') });
       return;
     }
 
@@ -554,37 +554,39 @@ export class ConversationController {
       content.createDiv({
         cls: 'codexian-history-item-date',
         text: isCurrent
-          ? t('chat.history.currentSession' as TranslationKey)
+          ? t('chat.history.currentSession')
           : this.formatDate(conv.lastResponseAt ?? conv.createdAt),
       });
 
       if (!isCurrent) {
-        content.addEventListener('click', async (e) => {
+        content.addEventListener('click', (e) => {
           e.stopPropagation();
-          if (this.isHistoryNewTabModifierClick(e) && options.onOpenConversationInNewTab) {
-            e.preventDefault();
-            await this.runHistoryAction(
-              () => options.onOpenConversationInNewTab?.(conv.id, true),
-              t('notices.failedToLoadConversation' as TranslationKey),
-            );
-            return;
-          }
+          runAsync(async () => {
+            if (this.isHistoryNewTabModifierClick(e) && options.onOpenConversationInNewTab) {
+              e.preventDefault();
+              await this.runHistoryAction(
+                () => options.onOpenConversationInNewTab?.(conv.id, true),
+                t('notices.failedToLoadConversation'),
+              );
+              return;
+            }
 
-          await this.runHistoryAction(
-            () => options.onSelectConversation(conv.id),
-            t('notices.failedToLoadConversation' as TranslationKey),
-          );
+            await this.runHistoryAction(
+              () => options.onSelectConversation(conv.id),
+              t('notices.failedToLoadConversation'),
+            );
+          });
         });
 
         if (options.onOpenConversationInNewTab) {
-          content.addEventListener('auxclick', async (e) => {
+          content.addEventListener('auxclick', (e) => {
             if (e.button !== 1) return;
             e.preventDefault();
             e.stopPropagation();
-            await this.runHistoryAction(
+            runAsync(() => this.runHistoryAction(
               () => options.onOpenConversationInNewTab?.(conv.id, true),
-              t('notices.failedToLoadConversation' as TranslationKey),
-            );
+              t('notices.failedToLoadConversation'),
+            ));
           });
         }
       }
@@ -599,26 +601,25 @@ export class ConversationController {
 
       // Show regenerate button if title generation failed, or loading indicator if pending
       if (conv.titleGenerationStatus === 'pending') {
-        const loadingEl = actions.createEl('span', { cls: 'codexian-action-btn codexian-action-loading' });
+        const loadingEl = actions.createSpan({ cls: 'codexian-action-btn codexian-action-loading' });
         setIcon(loadingEl, 'loader-2');
-        loadingEl.setAttribute('aria-label', t('chat.history.generatingTitle' as TranslationKey));
+        loadingEl.setAttribute('aria-label', t('chat.history.generatingTitle'));
       } else if (conv.titleGenerationStatus === 'failed') {
         const regenerateBtn = actions.createEl('button', { cls: 'codexian-action-btn' });
         setIcon(regenerateBtn, 'refresh-cw');
-        regenerateBtn.setAttribute('aria-label', t('chat.history.regenerateTitle' as TranslationKey));
-        regenerateBtn.addEventListener('click', async (e) => {
+        regenerateBtn.setAttribute('aria-label', t('chat.history.regenerateTitle'));
+        regenerateBtn.addEventListener('click', (e) => {
           e.stopPropagation();
-          try {
-            await this.regenerateTitle(conv.id);
-          } catch {
-            new Notice(t('notices.failedToRegenerate' as TranslationKey));
-          }
+          runAsync(
+            () => this.regenerateTitle(conv.id),
+            () => new Notice(t('notices.failedToRegenerate')),
+          );
         });
       }
 
       const renameBtn = actions.createEl('button', { cls: 'codexian-action-btn' });
       setIcon(renameBtn, 'pencil');
-      renameBtn.setAttribute('aria-label', t('common.rename' as TranslationKey));
+      renameBtn.setAttribute('aria-label', t('common.rename'));
       renameBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         this.showRenameInput(item, conv.id, conv.title);
@@ -627,12 +628,12 @@ export class ConversationController {
       const deleteBtn = actions.createEl('button', { cls: 'codexian-action-btn codexian-delete-btn' });
       setIcon(deleteBtn, 'trash-2');
       deleteBtn.setAttribute('aria-label', t('common.delete'));
-      deleteBtn.addEventListener('click', async (e) => {
+      deleteBtn.addEventListener('click', (e) => {
         e.stopPropagation();
-        await this.runHistoryAction(
+        runAsync(() => this.runHistoryAction(
           () => this.deleteHistoryConversation(conv.id, options),
-          t('notices.failedToDeleteConversation' as TranslationKey),
-        );
+          t('notices.failedToDeleteConversation'),
+        ));
       });
     }
   }
@@ -666,35 +667,35 @@ export class ConversationController {
     if (!isCurrent) {
       if (openState === 'closed' && options.onOpenConversationInNewTab) {
         menu.addItem((menuItem) => menuItem
-          .setTitle(t('chat.history.openInNewTab' as TranslationKey))
+          .setTitle(t('chat.history.openInNewTab'))
           .onClick(() => {
             void this.runHistoryAction(
               () => options.onOpenConversationInNewTab?.(conversationId, true),
-              t('notices.failedToLoadConversation' as TranslationKey),
+              t('notices.failedToLoadConversation'),
             );
           }));
         menu.addItem((menuItem) => menuItem
-          .setTitle(t('chat.history.openInBackgroundTab' as TranslationKey))
+          .setTitle(t('chat.history.openInBackgroundTab'))
           .onClick(() => {
             void this.runHistoryAction(
               () => options.onOpenConversationInNewTab?.(conversationId, false),
-              t('notices.failedToLoadConversation' as TranslationKey),
+              t('notices.failedToLoadConversation'),
             );
           }));
       } else if (openState === 'open') {
         menu.addItem((menuItem) => menuItem
-          .setTitle(t('chat.history.switchToOpenSession' as TranslationKey))
+          .setTitle(t('chat.history.switchToOpenSession'))
           .onClick(() => {
             void this.runHistoryAction(
               () => options.onSelectConversation(conversationId),
-              t('notices.failedToLoadConversation' as TranslationKey),
+              t('notices.failedToLoadConversation'),
             );
           }));
       }
     }
 
     menu.addItem((menuItem) => menuItem
-      .setTitle(t('common.rename' as TranslationKey))
+      .setTitle(t('common.rename'))
       .onClick(() => {
         this.showRenameInput(item, conversationId, title);
       }));
@@ -703,7 +704,7 @@ export class ConversationController {
       .onClick(() => {
         void this.runHistoryAction(
           () => this.deleteHistoryConversation(conversationId, options),
-          t('notices.failedToDeleteConversation' as TranslationKey),
+          t('notices.failedToDeleteConversation'),
         );
       }));
 
@@ -730,7 +731,7 @@ export class ConversationController {
     const titleEl = item.querySelector('.codexian-history-item-title') as HTMLElement;
     if (!titleEl) return;
 
-    const input = document.createElement('input');
+    const input = activeDocument.createEl('input');
     input.type = 'text';
     input.className = 'codexian-rename-input';
     input.value = currentTitle;
@@ -745,12 +746,14 @@ export class ConversationController {
         await this.deps.plugin.renameConversation(convId, newTitle);
         this.updateHistoryDropdown();
       } catch {
-        new Notice(t('notices.failedToRenameConversation' as TranslationKey));
+        new Notice(t('notices.failedToRenameConversation'));
       }
     };
 
-    input.addEventListener('blur', finishRename);
-    input.addEventListener('keydown', async (e) => {
+    input.addEventListener('blur', () => {
+      runAsync(finishRename);
+    });
+    input.addEventListener('keydown', (e) => {
       // Check !e.isComposing for IME support (Chinese, Japanese, Korean, etc.)
       if (e.key === 'Enter' && !e.isComposing) {
         input.blur();
@@ -827,9 +830,9 @@ export class ConversationController {
     if (!welcomeEl) return;
 
     if (this.deps.state.messages.length === 0) {
-      welcomeEl.style.display = '';
+      showElement(welcomeEl);
     } else {
-      welcomeEl.style.display = 'none';
+      hideElement(welcomeEl);
     }
   }
 

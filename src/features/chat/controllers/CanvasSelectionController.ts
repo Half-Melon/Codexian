@@ -1,9 +1,27 @@
 import type { App, ItemView } from 'obsidian';
 
 import type { CanvasSelectionContext } from '../../../utils/canvas';
+import { hideElement, showElement } from '../../../utils/dom';
 import { updateContextRowHasContent } from './contextRowVisibility';
 
 const CANVAS_POLL_INTERVAL = 250;
+
+interface WorkspaceLeafLike {
+  view?: unknown;
+}
+
+interface WorkspaceWithActiveLeaf {
+  getMostRecentLeaf?: () => WorkspaceLeafLike | null;
+}
+
+interface CanvasViewLike {
+  canvas?: {
+    selection?: Set<{ id: string }>;
+  };
+  file?: {
+    path?: string;
+  };
+}
 
 export class CanvasSelectionController {
   private app: App;
@@ -12,7 +30,7 @@ export class CanvasSelectionController {
   private contextRowEl: HTMLElement;
   private onVisibilityChange: (() => void) | null;
   private storedSelection: CanvasSelectionContext | null = null;
-  private pollInterval: ReturnType<typeof setInterval> | null = null;
+  private pollInterval: number | null = null;
 
   constructor(
     app: App,
@@ -30,12 +48,12 @@ export class CanvasSelectionController {
 
   start(): void {
     if (this.pollInterval) return;
-    this.pollInterval = setInterval(() => this.poll(), CANVAS_POLL_INTERVAL);
+    this.pollInterval = activeWindow.setInterval(() => this.poll(), CANVAS_POLL_INTERVAL);
   }
 
   stop(): void {
     if (this.pollInterval) {
-      clearInterval(this.pollInterval);
+      activeWindow.clearInterval(this.pollInterval);
       this.pollInterval = null;
     }
     this.clear();
@@ -45,11 +63,11 @@ export class CanvasSelectionController {
     const canvasView = this.getCanvasView();
     if (!canvasView) return;
 
-    const canvas = (canvasView as any).canvas;
+    const { canvas, file } = canvasView as ItemView & CanvasViewLike;
     if (!canvas?.selection) return;
 
     const selection: Set<{ id: string }> = canvas.selection;
-    const canvasPath = (canvasView as any).file?.path;
+    const canvasPath = file?.path;
     if (!canvasPath) return;
 
     const nodeIds = [...selection].map(node => node.id).filter(Boolean);
@@ -64,7 +82,7 @@ export class CanvasSelectionController {
         this.storedSelection = { canvasPath, nodeIds };
         this.updateIndicator();
       }
-    } else if (document.activeElement !== this.inputEl) {
+    } else if (activeDocument.activeElement !== this.inputEl) {
       if (this.storedSelection) {
         this.storedSelection = null;
         this.updateIndicator();
@@ -73,15 +91,16 @@ export class CanvasSelectionController {
   }
 
   private getCanvasView(): ItemView | null {
-    const activeLeaf = (this.app.workspace as any).activeLeaf ?? this.app.workspace.getMostRecentLeaf?.();
+    const workspace = this.app.workspace as typeof this.app.workspace & WorkspaceWithActiveLeaf;
+    const activeLeaf = workspace.getMostRecentLeaf?.();
     const activeView = activeLeaf?.view as ItemView | undefined;
-    if (activeView?.getViewType?.() === 'canvas' && (activeView as any).file) {
+    if (activeView?.getViewType?.() === 'canvas' && (activeView as ItemView & CanvasViewLike).file) {
       return activeView;
     }
 
     const leaves = this.app.workspace.getLeavesOfType('canvas');
     if (leaves.length === 0) return null;
-    const leaf = leaves.find(l => (l.view as any).file);
+    const leaf = leaves.find(l => (l.view as ItemView & CanvasViewLike).file);
     return leaf ? (leaf.view as ItemView) : null;
   }
 
@@ -93,9 +112,9 @@ export class CanvasSelectionController {
       this.indicatorEl.textContent = nodeIds.length === 1
         ? `node "${nodeIds[0]}" selected`
         : `${nodeIds.length} nodes selected`;
-      this.indicatorEl.style.display = 'block';
+      showElement(this.indicatorEl, 'block');
     } else {
-      this.indicatorEl.style.display = 'none';
+      hideElement(this.indicatorEl);
     }
     this.updateContextRowVisibility();
   }

@@ -9,7 +9,6 @@ import { setIcon } from 'obsidian';
 
 import type { ConversationMeta } from '../../core/types';
 import { t } from '../../i18n/i18n';
-import type { TranslationKey } from '../../i18n/types';
 
 export interface ResumeSessionDropdownCallbacks {
   onSelect: (conversationId: string) => void;
@@ -132,10 +131,10 @@ export class ResumeSessionDropdown {
     this.dropdownEl.empty();
 
     const header = this.dropdownEl.createDiv({ cls: 'codexian-resume-header' });
-    header.createSpan({ text: t('chat.resume.title' as TranslationKey) });
+    header.createSpan({ text: t('chat.resume.title') });
 
     if (this.conversations.length === 0) {
-      this.dropdownEl.createDiv({ cls: 'codexian-resume-empty', text: t('chat.resume.empty' as TranslationKey) });
+      this.dropdownEl.createDiv({ cls: 'codexian-resume-empty', text: t('chat.resume.empty') });
       return;
     }
 
@@ -158,7 +157,7 @@ export class ResumeSessionDropdown {
       content.createDiv({
         cls: 'codexian-resume-item-date',
         text: isCurrent
-          ? t('chat.history.currentSession' as TranslationKey)
+          ? t('chat.history.currentSession')
           : this.formatDate(conv.lastResponseAt ?? conv.createdAt),
       });
 

@@ -10,16 +10,40 @@ jest.mock('obsidian', () => ({
 }));
 
 type Listener = (event: any) => void;
+type DisplayStyle = Record<string, string | undefined>;
 
 class MockClassList {
   private classes = new Set<string>();
 
+  constructor(private readonly style: DisplayStyle) {}
+
+  private syncDisplayClass(item: string, visible: boolean): void {
+    if (item === 'codexian-hidden') {
+      this.style.display = visible ? 'none' : '';
+      return;
+    }
+    if (!item.startsWith('codexian-display-')) return;
+
+    const display = item.slice('codexian-display-'.length);
+    if (visible) {
+      this.style.display = display;
+    } else if (this.style.display === display) {
+      this.style.display = '';
+    }
+  }
+
   add(...items: string[]): void {
-    items.forEach((item) => this.classes.add(item));
+    items.forEach((item) => {
+      this.classes.add(item);
+      this.syncDisplayClass(item, true);
+    });
   }
 
   remove(...items: string[]): void {
-    items.forEach((item) => this.classes.delete(item));
+    items.forEach((item) => {
+      this.classes.delete(item);
+      this.syncDisplayClass(item, false);
+    });
   }
 
   contains(item: string): boolean {
@@ -34,8 +58,10 @@ class MockClassList {
     if (force === undefined) {
       if (this.classes.has(item)) {
         this.classes.delete(item);
+        this.syncDisplayClass(item, false);
       } else {
         this.classes.add(item);
+        this.syncDisplayClass(item, true);
       }
       return;
     }
@@ -44,6 +70,7 @@ class MockClassList {
     } else {
       this.classes.delete(item);
     }
+    this.syncDisplayClass(item, force);
   }
 
   clear(): void {
@@ -57,8 +84,8 @@ class MockClassList {
 
 class MockElement {
   tagName: string;
-  classList = new MockClassList();
   style: Record<string, string> = {};
+  classList = new MockClassList(this.style);
   children: MockElement[] = [];
   attributes: Record<string, string> = {};
   dataset: Record<string, string> = {};

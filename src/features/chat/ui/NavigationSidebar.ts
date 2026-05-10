@@ -85,7 +85,7 @@ export class NavigationSidebar {
    * Scrolls to previous or next user message, skipping assistant messages.
    */
   private scrollToMessage(direction: 'prev' | 'next'): void {
-    const messages = Array.from(this.messagesEl.querySelectorAll('.codexian-message-user')) as HTMLElement[];
+    const messages = Array.from(this.messagesEl.querySelectorAll<HTMLElement>('.codexian-message-user'));
 
     if (messages.length === 0) return;
 

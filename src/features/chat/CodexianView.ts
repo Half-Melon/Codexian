@@ -7,9 +7,15 @@ import { ProviderSettingsCoordinator } from '../../core/providers/ProviderSettin
 import { DEFAULT_CHAT_PROVIDER_ID, type ProviderId } from '../../core/providers/types';
 import { VIEW_TYPE_CODEXIAN } from '../../core/types';
 import { t } from '../../i18n/i18n';
-import type { TranslationKey } from '../../i18n/types';
 import type CodexianPlugin from '../../main';
 import { createProviderIconSvg } from '../../shared/icons';
+import {
+  createActiveDocumentFragment,
+  hideElement,
+  runAsync,
+  setElementVisible,
+  showElement,
+} from '../../utils/dom';
 import type { HistoryConversationOpenState } from './controllers/ConversationController';
 import { getTabProviderId, onProviderAvailabilityChanged, updatePlanModeUI } from './tabs/Tab';
 import { TabBar } from './tabs/TabBar';
@@ -46,7 +52,7 @@ export class CodexianView extends ItemView {
   private pendingTabBarUpdate: number | null = null;
 
   // Debouncing for tab state persistence
-  private pendingPersist: ReturnType<typeof setTimeout> | null = null;
+  private pendingPersist: number | null = null;
 
   constructor(leaf: WorkspaceLeaf, plugin: CodexianPlugin) {
     super(leaf);
@@ -60,7 +66,7 @@ export class CodexianView extends ItemView {
       value: async () => {
         // Ensure containerEl exists before any patched load code tries to use it
         if (!this.containerEl) {
-          (this as any).containerEl = createDiv({ cls: 'view-content' });
+          (this as unknown as { containerEl: HTMLElement }).containerEl = createDiv({ cls: 'view-content' });
         }
         // Wrap in try-catch to prevent Hover Editor errors from breaking our view
         try {
@@ -92,15 +98,15 @@ export class CodexianView extends ItemView {
       onProviderAvailabilityChanged(tab, this.plugin);
       const providerId = getTabProviderId(tab, this.plugin);
       const providerSettings = ProviderSettingsCoordinator.getProviderSettingsSnapshot(
-        this.plugin.settings as unknown as Record<string, unknown>,
+        this.plugin.settings,
         providerId,
       );
-      const model = providerSettings.model as string;
+      const model = providerSettings.model;
       const uiConfig = ProviderRegistry.getChatUIConfig(providerId);
       const capabilities = ProviderRegistry.getCapabilities(providerId);
       const contextWindow = uiConfig.getContextWindowSize(
         model,
-        providerSettings.customContextLimits as Record<string, number> | undefined,
+        providerSettings.customContextLimits,
       );
 
       if (tab.state.usage) {
@@ -247,7 +253,7 @@ export class CodexianView extends ItemView {
 
     // Header actions container (for header mode - initially hidden)
     this.headerActionsEl = header.createDiv({ cls: 'codexian-header-actions codexian-header-actions-slot' });
-    this.headerActionsEl.style.display = 'none';
+    hideElement(this.headerActionsEl);
   }
 
   /**
@@ -256,37 +262,45 @@ export class CodexianView extends ItemView {
    */
   private buildNavRowContent(): HTMLElement {
     // Create a fragment to hold nav row content
-    const fragment = document.createDocumentFragment();
+    const fragment = createActiveDocumentFragment();
 
     // Tab badges (left side in nav row, or in title slot for header mode)
-    this.tabBarContainerEl = document.createElement('div');
+    this.tabBarContainerEl = activeDocument.createDiv();
     this.tabBarContainerEl.className = 'codexian-tab-bar-container';
     this.tabBar = new TabBar(this.tabBarContainerEl, {
-      onTabClick: (tabId) => this.handleTabClick(tabId),
-      onTabClose: (tabId) => this.handleTabClose(tabId),
-      onNewTab: () => this.createNewTab(),
+      onTabClick: (tabId) => {
+        this.handleTabClick(tabId);
+      },
+      onTabClose: (tabId) => {
+        runAsync(() => this.handleTabClose(tabId));
+      },
+      onNewTab: () => {
+        runAsync(() => this.createNewTab());
+      },
     });
     fragment.appendChild(this.tabBarContainerEl);
 
     // Header actions (right side)
-    this.headerActionsContent = document.createElement('div');
+    this.headerActionsContent = activeDocument.createDiv();
     this.headerActionsContent.className = 'codexian-header-actions';
 
     // New tab button (plus icon)
     const newTabBtn = this.headerActionsContent.createDiv({ cls: 'codexian-header-btn codexian-new-tab-btn' });
     setIcon(newTabBtn, 'square-plus');
     newTabBtn.setAttribute('aria-label', 'New tab');
-    newTabBtn.addEventListener('click', async () => {
-      await this.createNewTab();
+    newTabBtn.addEventListener('click', () => {
+      runAsync(() => this.createNewTab());
     });
 
     // New conversation button (square-pen icon - new conversation in current tab)
     const newBtn = this.headerActionsContent.createDiv({ cls: 'codexian-header-btn' });
     setIcon(newBtn, 'square-pen');
     newBtn.setAttribute('aria-label', 'New conversation');
-    newBtn.addEventListener('click', async () => {
-      await this.tabManager?.createNewConversation();
-      this.updateHistoryDropdown();
+    newBtn.addEventListener('click', () => {
+      runAsync(async () => {
+        await this.tabManager?.createNewConversation();
+        this.updateHistoryDropdown();
+      });
     });
 
     // History dropdown
@@ -305,8 +319,8 @@ export class CodexianView extends ItemView {
     fragment.appendChild(this.headerActionsContent);
 
     // Create a wrapper div to hold the fragment (for input mode nav row)
-    const wrapper = document.createElement('div');
-    wrapper.style.display = 'contents';
+    const wrapper = activeDocument.createDiv();
+    showElement(wrapper, 'contents');
     wrapper.appendChild(fragment);
     return wrapper;
   }
@@ -328,7 +342,7 @@ export class CodexianView extends ItemView {
       }
       if (this.headerActionsEl) {
         this.headerActionsEl.appendChild(this.headerActionsContent);
-        this.headerActionsEl.style.display = 'flex';
+        showElement(this.headerActionsEl, 'flex');
       }
     } else {
       // Input mode: Both go to active tab's navRowEl via the wrapper
@@ -341,7 +355,7 @@ export class CodexianView extends ItemView {
       }
       // Hide header actions slot when in input mode
       if (this.headerActionsEl) {
-        this.headerActionsEl.style.display = 'none';
+        hideElement(this.headerActionsEl);
       }
     }
   }
@@ -370,7 +384,9 @@ export class CodexianView extends ItemView {
   // ============================================
 
   private handleTabClick(tabId: TabId): void {
-    this.tabManager?.switchToTab(tabId);
+    runAsync(async () => {
+      await this.tabManager?.switchToTab(tabId);
+    });
   }
 
   private async handleTabClose(tabId: TabId): Promise<void> {
@@ -385,7 +401,7 @@ export class CodexianView extends ItemView {
     const tab = await this.tabManager?.createTab();
     if (!tab) {
       const maxTabs = this.plugin.settings.maxTabs ?? 3;
-      new Notice(t('notices.maximumTabsAllowed' as TranslationKey, { count: maxTabs }));
+      new Notice(t('notices.maximumTabsAllowed', { count: maxTabs }));
       return;
     }
     this.updateTabBarVisibility();
@@ -417,16 +433,16 @@ export class CodexianView extends ItemView {
     const isHeaderMode = this.plugin.settings.tabBarPosition === 'header';
 
     // Hide tab badges when only 1 tab, show when 2+
-    this.tabBarContainerEl.style.display = showTabBar ? 'flex' : 'none';
+    setElementVisible(this.tabBarContainerEl, showTabBar, 'flex');
 
     // In header mode, badges replace logo/title in the same location
     // In input mode, keep logo/title visible (badges are in nav row)
     const hideBranding = showTabBar && isHeaderMode;
     if (this.logoEl) {
-      this.logoEl.style.display = hideBranding ? 'none' : '';
+      setElementVisible(this.logoEl, !hideBranding, 'inline');
     }
     if (this.titleTextEl) {
-      this.titleTextEl.style.display = hideBranding ? 'none' : '';
+      setElementVisible(this.titleTextEl, !hideBranding, 'block');
     }
   }
 
@@ -533,7 +549,7 @@ export class CodexianView extends ItemView {
 
   private wireEventHandlers(): void {
     // Document-level click to close dropdowns
-    this.registerDomEvent(document, 'click', () => {
+    this.registerDomEvent(activeDocument, 'click', () => {
       this.historyDropdown?.removeClass('visible');
     });
 
@@ -546,7 +562,7 @@ export class CodexianView extends ItemView {
         const providerId = getTabProviderId(activeTab, this.plugin);
         if (!ProviderRegistry.getCapabilities(providerId).supportsPlanMode) return;
         const current = ProviderSettingsCoordinator.getProviderSettingsSnapshot(
-          this.plugin.settings as unknown as Record<string, unknown>,
+          this.plugin.settings,
           providerId,
         ).permissionMode as string;
         if (current === 'plan') {
@@ -596,7 +612,7 @@ export class CodexianView extends ItemView {
     );
 
     // Click outside to close mention dropdown
-    this.registerDomEvent(document, 'click', (e) => {
+    this.registerDomEvent(activeDocument, 'click', (e) => {
       const activeTab = this.tabManager?.getActiveTab();
       if (activeTab) {
         const fcm = activeTab.ui.fileContextManager;
@@ -628,9 +644,9 @@ export class CodexianView extends ItemView {
   private persistTabState(): void {
     // Debounce persistence to avoid rapid writes (300ms delay)
     if (this.pendingPersist !== null) {
-      clearTimeout(this.pendingPersist);
+      activeWindow.clearTimeout(this.pendingPersist);
     }
-    this.pendingPersist = setTimeout(() => {
+    this.pendingPersist = activeWindow.setTimeout(() => {
       this.pendingPersist = null;
       if (!this.tabManager) return;
       const state = this.tabManager.getPersistedState();
@@ -644,7 +660,7 @@ export class CodexianView extends ItemView {
   private async persistTabStateImmediate(): Promise<void> {
     // Cancel any pending debounced persist
     if (this.pendingPersist !== null) {
-      clearTimeout(this.pendingPersist);
+      activeWindow.clearTimeout(this.pendingPersist);
       this.pendingPersist = null;
     }
     if (!this.tabManager) return;

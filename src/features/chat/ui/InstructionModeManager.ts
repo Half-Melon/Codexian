@@ -1,3 +1,5 @@
+import { runAsync } from '../../../utils/dom';
+
 export interface InstructionModeCallbacks {
   onSubmit: (rawInstruction: string) => Promise<void>;
   getInputWrapper: () => HTMLElement | null;
@@ -92,7 +94,7 @@ export class InstructionModeManager {
       }
 
       e.preventDefault();
-      this.submit();
+      runAsync(() => this.submit());
       return true;
     }
 

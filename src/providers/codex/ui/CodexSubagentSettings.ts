@@ -2,8 +2,8 @@ import type { App } from 'obsidian';
 import { Modal, Notice, setIcon, Setting } from 'obsidian';
 
 import { t } from '../../../i18n/i18n';
-import type { TranslationKey } from '../../../i18n/types';
 import { confirmDelete } from '../../../shared/modals/ConfirmModal';
+import { runAsync } from '../../../utils/dom';
 import type { CodexSubagentStorage } from '../storage/CodexSubagentStorage';
 import { DEFAULT_CODEX_PRIMARY_MODEL } from '../types/models';
 import type { CodexSubagentDefinition } from '../types/subagent';
@@ -28,12 +28,12 @@ const CODEX_AGENT_NAME_PATTERN = /^[a-z0-9_-]+$/;
 const CODEX_NICKNAME_PATTERN = /^[A-Za-z0-9 _-]+$/;
 
 export function validateCodexSubagentName(name: string): string | null {
-  if (!name) return t('codex.subagents.validation.nameRequired' as TranslationKey);
+  if (!name) return t('codex.subagents.validation.nameRequired');
   if (name.length > MAX_NAME_LENGTH) {
-    return t('codex.subagents.validation.nameTooLong' as TranslationKey, { count: MAX_NAME_LENGTH });
+    return t('codex.subagents.validation.nameTooLong', { count: MAX_NAME_LENGTH });
   }
   if (!CODEX_AGENT_NAME_PATTERN.test(name)) {
-    return t('codex.subagents.validation.namePattern' as TranslationKey);
+    return t('codex.subagents.validation.namePattern');
   }
   return null;
 }
@@ -45,12 +45,12 @@ export function validateCodexNicknameCandidates(candidates: string[]): string | 
   const seen = new Set<string>();
   for (const candidate of normalized) {
     if (!CODEX_NICKNAME_PATTERN.test(candidate)) {
-      return t('codex.subagents.validation.nicknamesPattern' as TranslationKey);
+      return t('codex.subagents.validation.nicknamesPattern');
     }
 
     const dedupeKey = candidate.toLowerCase();
     if (seen.has(dedupeKey)) {
-      return t('codex.subagents.validation.nicknamesUnique' as TranslationKey);
+      return t('codex.subagents.validation.nicknamesUnique');
     }
     seen.add(dedupeKey);
   }
@@ -101,34 +101,34 @@ class CodexSubagentModal extends Modal {
 
   onOpen() {
     this.setTitle(this.existing
-      ? t('codex.subagents.modal.titleEdit' as TranslationKey)
-      : t('codex.subagents.modal.titleAdd' as TranslationKey));
+      ? t('codex.subagents.modal.titleEdit')
+      : t('codex.subagents.modal.titleAdd'));
     this.modalEl.addClass('codexian-sp-modal');
 
     const { contentEl } = this;
 
     new Setting(contentEl)
-      .setName(t('codex.subagents.modal.name' as TranslationKey))
-      .setDesc(t('codex.subagents.modal.nameDesc' as TranslationKey))
+      .setName(t('codex.subagents.modal.name'))
+      .setDesc(t('codex.subagents.modal.nameDesc'))
       .addText(text => {
         this._nameInput = text.inputEl;
         text.setValue(this.existing?.name ?? '')
-          .setPlaceholder('code_reviewer');
+          .setPlaceholder('code_reviewer'.toLocaleLowerCase());
       });
 
     new Setting(contentEl)
-      .setName(t('codex.subagents.modal.description' as TranslationKey))
-      .setDesc(t('codex.subagents.modal.descriptionDesc' as TranslationKey))
+      .setName(t('codex.subagents.modal.description'))
+      .setDesc(t('codex.subagents.modal.descriptionDesc'))
       .addText(text => {
         this._descInput = text.inputEl;
         text.setValue(this.existing?.description ?? '')
-          .setPlaceholder(t('codex.subagents.modal.descriptionPlaceholder' as TranslationKey));
+          .setPlaceholder(t('codex.subagents.modal.descriptionPlaceholder'));
       });
 
     // Advanced options
     const details = contentEl.createEl('details', { cls: 'codexian-sp-advanced-section' });
     details.createEl('summary', {
-      text: t('codex.subagents.modal.advancedOptions' as TranslationKey),
+      text: t('codex.subagents.modal.advancedOptions'),
       cls: 'codexian-sp-advanced-summary',
     });
     if (
@@ -141,8 +141,8 @@ class CodexSubagentModal extends Modal {
     }
 
     new Setting(details)
-      .setName(t('codex.subagents.modal.model' as TranslationKey))
-      .setDesc(t('codex.subagents.modal.modelDesc' as TranslationKey))
+      .setName(t('codex.subagents.modal.model'))
+      .setDesc(t('codex.subagents.modal.modelDesc'))
       .addText(text => {
         this._modelInput = text.inputEl;
         text.setValue(this.existing?.model ?? '')
@@ -150,8 +150,8 @@ class CodexSubagentModal extends Modal {
       });
 
     new Setting(details)
-      .setName(t('codex.subagents.modal.reasoningEffort' as TranslationKey))
-      .setDesc(t('codex.subagents.modal.reasoningEffortDesc' as TranslationKey))
+      .setName(t('codex.subagents.modal.reasoningEffort'))
+      .setDesc(t('codex.subagents.modal.reasoningEffortDesc'))
       .addDropdown(dropdown => {
         for (const opt of REASONING_EFFORT_OPTIONS) {
           dropdown.addOption(opt.value, opt.label);
@@ -161,8 +161,8 @@ class CodexSubagentModal extends Modal {
       });
 
     new Setting(details)
-      .setName(t('codex.subagents.modal.sandboxMode' as TranslationKey))
-      .setDesc(t('codex.subagents.modal.sandboxModeDesc' as TranslationKey))
+      .setName(t('codex.subagents.modal.sandboxMode'))
+      .setDesc(t('codex.subagents.modal.sandboxModeDesc'))
       .addDropdown(dropdown => {
         for (const opt of SANDBOX_MODE_OPTIONS) {
           dropdown.addOption(opt.value, opt.label);
@@ -172,8 +172,8 @@ class CodexSubagentModal extends Modal {
       });
 
     new Setting(details)
-      .setName(t('codex.subagents.modal.nicknames' as TranslationKey))
-      .setDesc(t('codex.subagents.modal.nicknamesDesc' as TranslationKey))
+      .setName(t('codex.subagents.modal.nicknames'))
+      .setDesc(t('codex.subagents.modal.nicknamesDesc'))
       .addText(text => {
         this._nicknamesInput = text.inputEl;
         text.setValue(this.existing?.nicknameCandidates?.join(', ') ?? '');
@@ -181,14 +181,14 @@ class CodexSubagentModal extends Modal {
 
     // Developer instructions
     new Setting(contentEl)
-      .setName(t('codex.subagents.modal.instructions' as TranslationKey))
-      .setDesc(t('codex.subagents.modal.instructionsDesc' as TranslationKey));
+      .setName(t('codex.subagents.modal.instructions'))
+      .setDesc(t('codex.subagents.modal.instructionsDesc'));
 
     const instructionsArea = contentEl.createEl('textarea', {
       cls: 'codexian-sp-content-area',
       attr: {
         rows: '10',
-        placeholder: t('codex.subagents.modal.instructionsPlaceholder' as TranslationKey),
+        placeholder: t('codex.subagents.modal.instructionsPlaceholder'),
       },
     });
     instructionsArea.value = this.existing?.developerInstructions ?? '';
@@ -205,13 +205,13 @@ class CodexSubagentModal extends Modal {
 
       const description = this._descInput.value.trim();
       if (!description) {
-        new Notice(t('codex.subagents.descriptionRequired' as TranslationKey));
+        new Notice(t('codex.subagents.descriptionRequired'));
         return;
       }
 
       const developerInstructions = this._instructionsArea.value;
       if (!developerInstructions.trim()) {
-        new Notice(t('codex.subagents.instructionsRequired' as TranslationKey));
+        new Notice(t('codex.subagents.instructionsRequired'));
         return;
       }
 
@@ -230,7 +230,7 @@ class CodexSubagentModal extends Modal {
              a.persistenceKey !== this.existing?.persistenceKey,
       );
       if (duplicate) {
-        new Notice(t('codex.subagents.duplicateName' as TranslationKey, { name }));
+        new Notice(t('codex.subagents.duplicateName', { name }));
         return;
       }
 
@@ -250,7 +250,7 @@ class CodexSubagentModal extends Modal {
         await this.onSave(agent);
       } catch (err) {
         const message = err instanceof Error ? err.message : t('common.unknownError');
-        new Notice(t('codex.subagents.saveFailed' as TranslationKey, { message }));
+        new Notice(t('codex.subagents.saveFailed', { message }));
         return;
       }
       this.close();
@@ -269,7 +269,9 @@ class CodexSubagentModal extends Modal {
       text: t('common.save'),
       cls: 'codexian-save-btn',
     });
-    saveBtn.addEventListener('click', doSave);
+    saveBtn.addEventListener('click', () => {
+      runAsync(doSave);
+    });
   }
 
   onClose() {
@@ -289,7 +291,7 @@ export class CodexSubagentSettings {
     this.storage = storage;
     this.app = app;
     this.onChanged = onChanged;
-    this.render();
+    runAsync(() => this.render());
   }
 
   async render(): Promise<void> {
@@ -302,7 +304,7 @@ export class CodexSubagentSettings {
     }
 
     const headerEl = this.containerEl.createDiv({ cls: 'codexian-sp-header' });
-    headerEl.createSpan({ text: t('codex.subagents.header' as TranslationKey), cls: 'codexian-sp-label' });
+    headerEl.createSpan({ text: t('codex.subagents.header'), cls: 'codexian-sp-label' });
 
     const actionsEl = headerEl.createDiv({ cls: 'codexian-sp-header-actions' });
 
@@ -322,7 +324,7 @@ export class CodexSubagentSettings {
 
     if (this.agents.length === 0) {
       const emptyEl = this.containerEl.createDiv({ cls: 'codexian-sp-empty-state' });
-      emptyEl.setText(t('codex.subagents.empty' as TranslationKey));
+      emptyEl.setText(t('codex.subagents.empty'));
       return;
     }
 
@@ -363,21 +365,21 @@ export class CodexSubagentSettings {
       attr: { 'aria-label': t('common.delete') },
     });
     setIcon(deleteBtn, 'trash-2');
-    deleteBtn.addEventListener('click', async () => {
-      if (!this.app) return;
-      const confirmed = await confirmDelete(
-        this.app,
-        t('codex.subagents.deleteConfirm' as TranslationKey, { name: agent.name }),
-      );
-      if (!confirmed) return;
-      try {
+    deleteBtn.addEventListener('click', () => {
+      runAsync(async () => {
+        if (!this.app) return;
+        const confirmed = await confirmDelete(
+          this.app,
+          t('codex.subagents.deleteConfirm', { name: agent.name }),
+        );
+        if (!confirmed) return;
         await this.storage.delete(agent);
         await this.render();
         this.onChanged?.();
-        new Notice(t('codex.subagents.deleted' as TranslationKey, { name: agent.name }));
-      } catch {
-        new Notice(t('codex.subagents.deleteFailed' as TranslationKey));
-      }
+        new Notice(t('codex.subagents.deleted', { name: agent.name }));
+      }, () => {
+        new Notice(t('codex.subagents.deleteFailed'));
+      });
     });
   }
 
@@ -394,8 +396,8 @@ export class CodexSubagentSettings {
         this.onChanged?.();
         new Notice(
           existing
-            ? t('codex.subagents.updated' as TranslationKey, { name: agent.name })
-            : t('codex.subagents.created' as TranslationKey, { name: agent.name }),
+            ? t('codex.subagents.updated', { name: agent.name })
+            : t('codex.subagents.created', { name: agent.name }),
         );
       },
     );

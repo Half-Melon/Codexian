@@ -21,9 +21,9 @@ import type { ChatRuntime } from '../../../core/runtime/ChatRuntime';
 import type { AutoTurnResult } from '../../../core/runtime/types';
 import type { ChatMessage, Conversation } from '../../../core/types';
 import { t } from '../../../i18n/i18n';
-import type { TranslationKey } from '../../../i18n/types';
 import type CodexianPlugin from '../../../main';
 import { SlashCommandDropdown } from '../../../shared/components/SlashCommandDropdown';
+import { hideElement, runAsync, showElement } from '../../../utils/dom';
 import { getEnhancedPath } from '../../../utils/env';
 import { getVaultPath } from '../../../utils/path';
 import { BrowserSelectionController } from '../controllers/BrowserSelectionController';
@@ -48,8 +48,8 @@ import { NavigationSidebar } from '../ui/NavigationSidebar';
 import { StatusPanel } from '../ui/StatusPanel';
 import { recalculateUsageForModel } from '../utils/usageInfo';
 import { getTabProviderId } from './providerResolution';
-import type { TabData, TabDOMElements, TabId, TabProviderContext } from './types';
-import { generateTabId, TEXTAREA_MAX_HEIGHT_PERCENT, TEXTAREA_MIN_MAX_HEIGHT } from './types';
+import type { TabData, TabDOMElements, TabId, TabLifecycleState, TabProviderContext } from './types';
+import { generateTabId } from './types';
 
 type TabProviderSettings = Record<string, unknown> & {
   model: string;
@@ -143,9 +143,9 @@ function getTabSettingsSnapshot(
   plugin: CodexianPlugin,
 ): TabProviderSettings {
   return ProviderSettingsCoordinator.getProviderSettingsSnapshot(
-    plugin.settings as unknown as Record<string, unknown>,
+    plugin.settings,
     getTabProviderId(tab, plugin),
-  ) as TabProviderSettings;
+  );
 }
 
 function getTabPermissionMode(
@@ -218,7 +218,7 @@ async function updateTabProviderSettings(
   const snapshot = getTabSettingsSnapshot(tab, plugin);
   update(snapshot);
   ProviderSettingsCoordinator.commitProviderSettingsSnapshot(
-    plugin.settings as unknown as Record<string, unknown>,
+    plugin.settings,
     providerId,
     snapshot,
   );
@@ -344,8 +344,7 @@ export function createTab(options: TabCreateOptions): TabData {
   const id = tabId ?? generateTabId();
 
   const contentEl = containerEl.createDiv({ cls: 'codexian-tab-content' });
-  contentEl.style.display = 'none';
-
+  hideElement(contentEl);
   const state = new ChatState({
     onStreamingStateChanged: onStreamingChanged,
     onAttentionChanged: onAttentionChanged,
@@ -366,7 +365,7 @@ export function createTab(options: TabCreateOptions): TabData {
     : (restoredDraftModel || resolveBlankTabModel(plugin, options.defaultProviderId));
   const initialProviderId = conversation?.providerId
     ?? (draftModel
-      ? getEnabledProviderForModel(draftModel, plugin.settings as unknown as Record<string, unknown>)
+      ? getEnabledProviderForModel(draftModel, plugin.settings)
       : DEFAULT_CHAT_PROVIDER_ID);
 
   const tab: TabData = {
@@ -419,33 +418,11 @@ export function createTab(options: TabCreateOptions): TabData {
  * Auto-resizes a textarea based on its content.
  *
  * Logic:
- * - At minimum wrapper height: let flexbox allocate space (textarea fills available)
- * - When content exceeds flex allocation: set min-height to force wrapper growth
- * - When content shrinks: remove min-height override to let wrapper shrink
- * - Max height is capped at 55% of view height (minimum 150px)
+ * Toggles the growth class when content exceeds the flex-allocated height.
  */
 function autoResizeTextarea(textarea: HTMLTextAreaElement): void {
-  // Clear inline min-height to let flexbox compute natural allocation
-  textarea.style.minHeight = '';
-
-  // Calculate max height: 55% of view height, minimum 150px
-  const viewHeight = textarea.closest('.codexian-container')?.clientHeight ?? window.innerHeight;
-  const maxHeight = Math.max(TEXTAREA_MIN_MAX_HEIGHT, viewHeight * TEXTAREA_MAX_HEIGHT_PERCENT);
-
-  // Get flex-allocated height (what flexbox gives the textarea)
   const flexAllocatedHeight = textarea.offsetHeight;
-
-  // Get content height (what the content actually needs), capped at max
-  const contentHeight = Math.min(textarea.scrollHeight, maxHeight);
-
-  // Only set min-height if content exceeds flex allocation
-  // This forces the wrapper to grow while letting it shrink when content reduces
-  if (contentHeight > flexAllocatedHeight) {
-    textarea.style.minHeight = `${contentHeight}px`;
-  }
-
-  // Always set max-height to enforce the cap
-  textarea.style.maxHeight = `${maxHeight}px`;
+  textarea.toggleClass('codexian-input-needs-grow', textarea.scrollHeight > flexAllocatedHeight);
 }
 
 /**
@@ -464,7 +441,7 @@ function buildTabDOM(contentEl: HTMLElement): TabDOMElements {
   const inputEl = inputWrapper.createEl('textarea', {
     cls: 'codexian-input',
     attr: {
-      placeholder: t('chat.placeholder' as TranslationKey),
+      placeholder: t('chat.placeholder'),
       rows: '3',
       dir: 'auto',
     },
@@ -550,7 +527,7 @@ export async function initializeTabService(
     }
 
     // Re-check after async operations — tab may have been closed during init
-    if ((tab as TabData).lifecycleState === 'closing') {
+    if ((tab.lifecycleState as TabLifecycleState) === 'closing') {
       unsubscribeReadyState?.();
       service?.cleanup();
       return;
@@ -658,7 +635,7 @@ function initializeInstructionAndTodo(tab: TabData, plugin: CodexianPlugin): voi
   );
 
   // Bang bash mode (! command execution)
-  if (isBangBashEnabled(plugin.settings as unknown as Record<string, unknown>)) {
+  if (isBangBashEnabled(plugin.settings)) {
     const vaultPath = getVaultPath(plugin.app);
     if (vaultPath) {
       const enhancedPath = getEnhancedPath();
@@ -711,7 +688,7 @@ function initializeInputToolbar(
   // Blank-tab UI config wrapper that returns mixed model options
   const blankTabUIConfigProxy = (): ProviderChatUIConfig => {
     const draftProvider = tab.draftModel
-      ? getEnabledProviderForModel(tab.draftModel, plugin.settings as unknown as Record<string, unknown>)
+      ? getEnabledProviderForModel(tab.draftModel, plugin.settings)
       : DEFAULT_CHAT_PROVIDER_ID;
     const baseConfig = ProviderRegistry.getChatUIConfig(draftProvider);
     return {
@@ -738,7 +715,7 @@ function initializeInputToolbar(
         tab.draftModel = model;
         const newProvider = getEnabledProviderForModel(
           model,
-          plugin.settings as unknown as Record<string, unknown>,
+          plugin.settings,
         );
         const didProviderChange = newProvider !== previousProvider;
         if (tab.service) {
@@ -757,7 +734,7 @@ function initializeInputToolbar(
           uiConfig.applyModelDefaults(model, settings);
         });
         if (didProviderChange) {
-          await onProviderChanged?.(newProvider);
+          onProviderChanged?.(newProvider);
         }
         tab.ui.thinkingBudgetSelector?.updateDisplay();
         tab.ui.serviceTierToggle?.updateDisplay();
@@ -772,9 +749,9 @@ function initializeInputToolbar(
 
       // For bound tabs, reject cross-provider model changes
       const boundProvider = tab.providerId;
-      const modelProvider = getProviderForModel(model, plugin.settings as unknown as Record<string, unknown>);
+      const modelProvider = getProviderForModel(model, plugin.settings);
       if (modelProvider !== boundProvider) {
-        new Notice(t('notices.boundSessionProviderSwitch' as TranslationKey));
+        new Notice(t('notices.boundSessionProviderSwitch'));
         tab.ui.modelSelector?.updateDisplay();
         return;
       }
@@ -794,7 +771,7 @@ function initializeInputToolbar(
       if (currentUsage) {
         const newContextWindow = uiConfig.getContextWindowSize(
           model,
-          providerSettings.customContextLimits as Record<string, number> | undefined,
+          providerSettings.customContextLimits,
         );
         tab.state.usage = recalculateUsageForModel(currentUsage, model, newContextWindow);
       }
@@ -860,9 +837,11 @@ function initializeInputToolbar(
   );
 
   // Wire persistence changes
-  tab.ui.externalContextSelector.setOnPersistenceChange(async (paths) => {
-    plugin.settings.persistentExternalContextPaths = paths;
-    await plugin.saveSettings();
+  tab.ui.externalContextSelector.setOnPersistenceChange((paths) => {
+    runAsync(async () => {
+      plugin.settings.persistentExternalContextPaths = paths;
+      await plugin.saveSettings();
+    });
   });
 
   refreshTabProviderUI(tab, plugin);
@@ -873,7 +852,7 @@ function initializeInputToolbar(
 
 export interface InitializeTabUIOptions {
   getProviderCatalogConfig?: () => ProviderCatalogInfo;
-  onProviderChanged?: (providerId: ProviderId) => void | Promise<void>;
+  onProviderChanged?: (providerId: ProviderId) => void;
 }
 
 /**
@@ -892,14 +871,11 @@ export function initializeTabUI(
 
   // Selection indicator - add to contextRowEl
   dom.selectionIndicatorEl = dom.contextRowEl.createDiv({ cls: 'codexian-selection-indicator' });
-  dom.selectionIndicatorEl.style.display = 'none';
-
+  hideElement(dom.selectionIndicatorEl);
   dom.browserIndicatorEl = dom.contextRowEl.createDiv({ cls: 'codexian-browser-selection-indicator' });
-  dom.browserIndicatorEl.style.display = 'none';
-
+  hideElement(dom.browserIndicatorEl);
   dom.canvasIndicatorEl = dom.contextRowEl.createDiv({ cls: 'codexian-canvas-indicator' });
-  dom.canvasIndicatorEl.style.display = 'none';
-
+  hideElement(dom.canvasIndicatorEl);
   const catalogInfo = options.getProviderCatalogConfig?.() ?? null;
   initializeSlashCommands(
     tab,
@@ -947,7 +923,7 @@ export interface ForkContext {
 }
 
 function deepCloneMessages(messages: ChatMessage[]): ChatMessage[] {
-  const sc = (globalThis as unknown as { structuredClone?: <T>(value: T) => T }).structuredClone;
+  const sc = (activeWindow as unknown as { structuredClone?: <T>(value: T) => T }).structuredClone;
   if (typeof sc === 'function') {
     return sc(messages);
   }
@@ -1008,7 +984,7 @@ async function handleForkRequest(
   const { state } = tab;
 
   if (!getTabCapabilities(tab, plugin).supportsFork) {
-    new Notice(t('notices.forkUnsupported' as TranslationKey));
+    new Notice(t('notices.forkUnsupported'));
     return;
   }
 
@@ -1058,7 +1034,7 @@ async function handleForkAll(
   const { state } = tab;
 
   if (!getTabCapabilities(tab, plugin).supportsFork) {
-    new Notice(t('notices.forkUnsupported' as TranslationKey));
+    new Notice(t('notices.forkUnsupported'));
     return;
   }
 
@@ -1275,7 +1251,7 @@ export function initializeTabControllers(
         if (tab.lifecycleState === 'blank' && tab.draftModel) {
           const derivedProvider = getEnabledProviderForModel(
             tab.draftModel,
-            plugin.settings as unknown as Record<string, unknown>,
+            plugin.settings,
           );
           tab.providerId = derivedProvider;
         }
@@ -1412,14 +1388,14 @@ export function wireTabInputEvents(tab: TabData, plugin: CodexianPlugin): void {
   // Scroll listener for auto-scroll control (tracks position always, not just during streaming)
   const SCROLL_THRESHOLD = 20; // pixels from bottom to consider "at bottom"
   const RE_ENABLE_DELAY = 150; // ms to wait before re-enabling auto-scroll
-  let reEnableTimeout: ReturnType<typeof setTimeout> | null = null;
+  let reEnableTimeout: number | null = null;
 
   const isAutoScrollAllowed = (): boolean => plugin.settings.enableAutoScroll ?? true;
 
   const scrollHandler = () => {
     if (!isAutoScrollAllowed()) {
       if (reEnableTimeout) {
-        clearTimeout(reEnableTimeout);
+        activeWindow.clearTimeout(reEnableTimeout);
         reEnableTimeout = null;
       }
       state.autoScrollEnabled = false;
@@ -1432,14 +1408,14 @@ export function wireTabInputEvents(tab: TabData, plugin: CodexianPlugin): void {
     if (!isAtBottom) {
       // Immediately disable when user scrolls up
       if (reEnableTimeout) {
-        clearTimeout(reEnableTimeout);
+        activeWindow.clearTimeout(reEnableTimeout);
         reEnableTimeout = null;
       }
       state.autoScrollEnabled = false;
     } else if (!state.autoScrollEnabled) {
       // Debounce re-enabling to avoid bounce during scroll animation
       if (!reEnableTimeout) {
-        reEnableTimeout = setTimeout(() => {
+        reEnableTimeout = activeWindow.setTimeout(() => {
           reEnableTimeout = null;
           // Re-verify position before enabling (content may have changed)
           const { scrollTop, scrollHeight, clientHeight } = dom.messagesEl;
@@ -1453,7 +1429,7 @@ export function wireTabInputEvents(tab: TabData, plugin: CodexianPlugin): void {
   dom.messagesEl.addEventListener('scroll', scrollHandler, { passive: true });
   dom.eventCleanups.push(() => {
     dom.messagesEl.removeEventListener('scroll', scrollHandler);
-    if (reEnableTimeout) clearTimeout(reEnableTimeout);
+    if (reEnableTimeout) activeWindow.clearTimeout(reEnableTimeout);
   });
 }
 
@@ -1461,7 +1437,7 @@ export function wireTabInputEvents(tab: TabData, plugin: CodexianPlugin): void {
  * Activates a tab (shows it and starts services).
  */
 export function activateTab(tab: TabData): void {
-  tab.dom.contentEl.style.display = 'flex';
+  showElement(tab.dom.contentEl, 'flex');
   tab.controllers.selectionController?.start();
   tab.controllers.browserSelectionController?.start();
   tab.controllers.canvasSelectionController?.start();
@@ -1473,7 +1449,7 @@ export function activateTab(tab: TabData): void {
  * Deactivates a tab (hides it and stops services).
  */
 export function deactivateTab(tab: TabData): void {
-  tab.dom.contentEl.style.display = 'none';
+  hideElement(tab.dom.contentEl);
   tab.controllers.selectionController?.stop();
   tab.controllers.browserSelectionController?.stop();
   tab.controllers.canvasSelectionController?.stop();
@@ -1656,7 +1632,7 @@ export function updatePlanModeUI(tab: TabData, plugin: CodexianPlugin, mode: str
     snapshot.permissionMode = mode;
   }
   ProviderSettingsCoordinator.commitProviderSettingsSnapshot(
-    plugin.settings as unknown as Record<string, unknown>,
+    plugin.settings,
     providerId,
     snapshot,
   );

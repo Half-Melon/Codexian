@@ -9,7 +9,6 @@ import { ProviderRegistry } from '../../../core/providers/ProviderRegistry';
 import { ProviderWorkspaceRegistry } from '../../../core/providers/ProviderWorkspaceRegistry';
 import { DEFAULT_CHAT_PROVIDER_ID, type InlineEditMode, type InlineEditService, type ProviderId } from '../../../core/providers/types';
 import { t } from '../../../i18n/i18n';
-import type { TranslationKey } from '../../../i18n/types';
 import type CodexianPlugin from '../../../main';
 import { hideSelectionHighlight, showSelectionHighlight } from '../../../shared/components/SelectionHighlight';
 import { SlashCommandDropdown } from '../../../shared/components/SlashCommandDropdown';
@@ -23,10 +22,11 @@ import {
   normalizeMentionPath,
   resolveExternalMentionAtIndex,
 } from '../../../utils/contextMentionResolver';
+import { hideElement, runAsync, showElement } from '../../../utils/dom';
 import { type CursorContext, getEditorView } from '../../../utils/editor';
 import { buildExternalContextDisplayEntries } from '../../../utils/externalContext';
 import { externalContextScanner } from '../../../utils/externalContextScanner';
-import { escapeHtml, normalizeInsertionText } from '../../../utils/inlineEdit';
+import { normalizeInsertionText } from '../../../utils/inlineEdit';
 import { getVaultPath, normalizePathForVault as normalizePathForVaultUtil } from '../../../utils/path';
 
 export type InlineEditContext =
@@ -43,12 +43,12 @@ const showInlineEdit = StateEffect.define<{
 const showDiff = StateEffect.define<{
   from: number;
   to: number;
-  diffHtml: string;
+  diffOps: DiffOp[];
   widget: InlineEditController;
 }>();
 const showInsertion = StateEffect.define<{
   pos: number;
-  diffHtml: string;
+  diffOps: DiffOp[];
   widget: InlineEditController;
 }>();
 const hideInlineEdit = StateEffect.define<null>();
@@ -56,27 +56,27 @@ const hideInlineEdit = StateEffect.define<null>();
 let activeController: InlineEditController | null = null;
 
 class DiffWidget extends WidgetType {
-  constructor(private diffHtml: string, private controller: InlineEditController) {
+  constructor(private diffOps: DiffOp[], private controller: InlineEditController) {
     super();
   }
   toDOM(): HTMLElement {
-    const span = document.createElement('span');
+    const span = activeDocument.createSpan();
     span.className = 'codexian-inline-diff-replace';
-    span.innerHTML = this.diffHtml;
+    renderDiffOps(span, this.diffOps);
 
-    const btns = document.createElement('span');
+    const btns = activeDocument.createSpan();
     btns.className = 'codexian-inline-diff-buttons';
 
-    const rejectBtn = document.createElement('button');
+    const rejectBtn = activeDocument.createEl('button');
     rejectBtn.className = 'codexian-inline-diff-btn reject';
     rejectBtn.textContent = '✕';
-    rejectBtn.title = 'Reject (Esc)';
+    rejectBtn.title = 'Reject (esc)';
     rejectBtn.onclick = () => this.controller.reject();
 
-    const acceptBtn = document.createElement('button');
+    const acceptBtn = activeDocument.createEl('button');
     acceptBtn.className = 'codexian-inline-diff-btn accept';
     acceptBtn.textContent = '✓';
-    acceptBtn.title = 'Accept (Enter)';
+    acceptBtn.title = 'Accept (enter)';
     acceptBtn.onclick = () => this.controller.accept();
 
     btns.appendChild(rejectBtn);
@@ -86,7 +86,7 @@ class DiffWidget extends WidgetType {
     return span;
   }
   eq(other: DiffWidget): boolean {
-    return this.diffHtml === other.diffHtml;
+    return diffOpsToKey(this.diffOps) === diffOpsToKey(other.diffOps);
   }
   ignoreEvent(): boolean {
     return true;
@@ -126,13 +126,13 @@ const inlineEditField = StateField.define<DecorationSet>({
       } else if (e.is(showDiff)) {
         const builder = new RangeSetBuilder<Decoration>();
         builder.add(e.value.from, e.value.to, Decoration.replace({
-          widget: new DiffWidget(e.value.diffHtml, e.value.widget),
+          widget: new DiffWidget(e.value.diffOps, e.value.widget),
         }));
         deco = builder.finish();
       } else if (e.is(showInsertion)) {
         const builder = new RangeSetBuilder<Decoration>();
         builder.add(e.value.pos, e.value.pos, Decoration.widget({
-          widget: new DiffWidget(e.value.diffHtml, e.value.widget),
+          widget: new DiffWidget(e.value.diffOps, e.value.widget),
           side: 1, // After the position
         }));
         deco = builder.finish();
@@ -191,15 +191,24 @@ function computeDiff(oldText: string, newText: string): DiffOp[] {
   return ops;
 }
 
-function diffToHtml(ops: DiffOp[]): string {
-  return ops.map(op => {
-    const escaped = escapeHtml(op.text);
+function renderDiffOps(container: HTMLElement, ops: DiffOp[]): void {
+  for (const op of ops) {
     switch (op.type) {
-      case 'delete': return `<span class="codexian-diff-del">${escaped}</span>`;
-      case 'insert': return `<span class="codexian-diff-ins">${escaped}</span>`;
-      default: return escaped;
+      case 'delete':
+        container.createSpan({ cls: 'codexian-diff-del', text: op.text });
+        break;
+      case 'insert':
+        container.createSpan({ cls: 'codexian-diff-ins', text: op.text });
+        break;
+      default:
+        container.appendText(op.text);
+        break;
     }
-  }).join('');
+  }
+}
+
+function diffOpsToKey(ops: DiffOp[]): string {
+  return ops.map(op => `${op.type}:${op.text}`).join('\u0000');
 }
 
 export type InlineEditDecision = 'accept' | 'edit' | 'reject';
@@ -235,7 +244,7 @@ export class InlineEditModal {
     }
 
     if (!editorView) {
-      new Notice(t('notices.inlineEditUnavailableEditor' as TranslationKey));
+      new Notice(t('notices.inlineEditUnavailableEditor'));
       return { decision: 'reject' };
     }
 
@@ -309,7 +318,7 @@ class InlineEditController {
     this.resolvedProviderId = providerId;
     this.mentionDataProvider = new VaultMentionDataProvider(this.app, {
       onFileLoadError: () => {
-        new Notice(t('notices.vaultFilesLoadFailed' as TranslationKey));
+        new Notice(t('notices.vaultFilesLoadFailed'));
       },
     });
     this.mentionDataProvider.initializeInBackground();
@@ -364,7 +373,7 @@ class InlineEditController {
         this.reject();
       }
     };
-    document.addEventListener('keydown', this.escHandler);
+    activeDocument.addEventListener('keydown', this.escHandler);
   }
 
   private updateHighlight() {
@@ -414,36 +423,36 @@ class InlineEditController {
   }
 
   createInputDOM(): HTMLElement {
-    const container = document.createElement('div');
+    const container = activeDocument.createDiv();
     container.className = 'codexian-inline-input-container';
     this.containerEl = container;
 
-    this.agentReplyEl = document.createElement('div');
+    this.agentReplyEl = activeDocument.createDiv();
     this.agentReplyEl.className = 'codexian-inline-agent-reply';
-    this.agentReplyEl.style.display = 'none';
+    hideElement(this.agentReplyEl);
     container.appendChild(this.agentReplyEl);
 
-    const inputWrap = document.createElement('div');
+    const inputWrap = activeDocument.createDiv();
     inputWrap.className = 'codexian-inline-input-wrap';
     container.appendChild(inputWrap);
 
-    this.inputEl = document.createElement('input');
+    this.inputEl = activeDocument.createEl('input');
     this.inputEl.type = 'text';
     this.inputEl.className = 'codexian-inline-input';
     this.inputEl.placeholder = this.mode === 'cursor'
-      ? t('inlineEdit.insertPlaceholder' as TranslationKey)
-      : t('inlineEdit.editPlaceholder' as TranslationKey);
+      ? t('inlineEdit.insertPlaceholder')
+      : t('inlineEdit.editPlaceholder');
     this.inputEl.spellcheck = false;
     inputWrap.appendChild(this.inputEl);
 
-    this.spinnerEl = document.createElement('div');
+    this.spinnerEl = activeDocument.createDiv();
     this.spinnerEl.className = 'codexian-inline-spinner';
-    this.spinnerEl.style.display = 'none';
+    hideElement(this.spinnerEl);
     inputWrap.appendChild(this.spinnerEl);
 
     const inlineCatalog = ProviderWorkspaceRegistry.getCommandCatalog(this.resolvedProviderId);
     this.slashCommandDropdown = new SlashCommandDropdown(
-      document.body,
+      activeDocument.body,
       this.inputEl,
       {
         onSelect: () => {},
@@ -460,7 +469,7 @@ class InlineEditController {
     );
 
     this.mentionDropdown = new MentionDropdownController(
-      document.body,
+      activeDocument.body,
       this.inputEl,
       {
         // Inline-edit resolves @mentions at send time from input text.
@@ -476,7 +485,7 @@ class InlineEditController {
     this.inputEl.addEventListener('keydown', (e) => this.handleKeydown(e));
     this.inputEl.addEventListener('input', () => this.mentionDropdown?.handleInputChange());
 
-    setTimeout(() => this.inputEl?.focus(), 50);
+    activeWindow.setTimeout(() => this.inputEl?.focus(), 50);
     return container;
   }
 
@@ -490,8 +499,7 @@ class InlineEditController {
     this.removeSelectionListeners();
 
     this.inputEl.disabled = true;
-    this.spinnerEl.style.display = 'block';
-
+    showElement(this.spinnerEl, 'block');
     const contextFiles = this.resolveContextFilesFromMessage(userMessage);
 
     let result;
@@ -520,8 +528,7 @@ class InlineEditController {
       }
     }
 
-    this.spinnerEl.style.display = 'none';
-
+    hideElement(this.spinnerEl);
     if (result.success) {
       if (result.editedText !== undefined) {
         this.editedText = result.editedText;
@@ -534,19 +541,19 @@ class InlineEditController {
         this.isConversing = true;
         this.inputEl.disabled = false;
         this.inputEl.value = '';
-        this.inputEl.placeholder = t('inlineEdit.replyPlaceholder' as TranslationKey);
+        this.inputEl.placeholder = t('inlineEdit.replyPlaceholder');
         this.inputEl.focus();
       } else {
-        this.handleError(t('inlineEdit.noResponse' as TranslationKey));
+        this.handleError(t('inlineEdit.noResponse'));
       }
     } else {
-      this.handleError(result.error || t('inlineEdit.errorTryAgain' as TranslationKey));
+      this.handleError(result.error || t('inlineEdit.errorTryAgain'));
     }
   }
 
   private showAgentReply(message: string) {
     if (!this.agentReplyEl || !this.containerEl) return;
-    this.agentReplyEl.style.display = 'block';
+    showElement(this.agentReplyEl, 'block');
     this.agentReplyEl.textContent = message;
     this.containerEl.classList.add('has-agent-reply');
   }
@@ -566,14 +573,11 @@ class InlineEditController {
 
     hideSelectionHighlight(this.editorView);
 
-    const diffOps = computeDiff(this.selectedText, this.editedText);
-    const diffHtml = diffToHtml(diffOps);
-
     this.editorView.dispatch({
       effects: showDiff.of({
         from: this.selFrom,
         to: this.selTo,
-        diffHtml,
+        diffOps: computeDiff(this.selectedText, this.editedText),
         widget: this,
       }),
     });
@@ -589,13 +593,10 @@ class InlineEditController {
     const trimmedText = normalizeInsertionText(this.insertedText);
     this.insertedText = trimmedText;
 
-    const escaped = escapeHtml(trimmedText);
-    const diffHtml = `<span class="codexian-diff-ins">${escaped}</span>`;
-
     this.editorView.dispatch({
       effects: showInsertion.of({
         pos: this.selFrom,
-        diffHtml,
+        diffOps: [{ type: 'insert', text: trimmedText }],
         widget: this,
       }),
     });
@@ -605,7 +606,7 @@ class InlineEditController {
 
   private installAcceptRejectHandler() {
     if (this.escHandler) {
-      document.removeEventListener('keydown', this.escHandler);
+      activeDocument.removeEventListener('keydown', this.escHandler);
     }
     this.escHandler = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && !e.isComposing) {
@@ -614,7 +615,7 @@ class InlineEditController {
         this.accept();
       }
     };
-    document.addEventListener('keydown', this.escHandler);
+    activeDocument.addEventListener('keydown', this.escHandler);
   }
 
   accept() {
@@ -656,7 +657,7 @@ class InlineEditController {
     this.isConversing = false;
     this.removeSelectionListeners();
     if (this.escHandler) {
-      document.removeEventListener('keydown', this.escHandler);
+      activeDocument.removeEventListener('keydown', this.escHandler);
     }
     this.slashCommandDropdown?.destroy();
     this.slashCommandDropdown = null;
@@ -693,7 +694,7 @@ class InlineEditController {
 
     if (e.key === 'Enter' && !e.isComposing) {
       e.preventDefault();
-      this.generate();
+      runAsync(() => this.generate());
     }
   }
 
@@ -702,7 +703,7 @@ class InlineEditController {
       const vaultPath = getVaultPath(this.app);
       return normalizePathForVaultUtil(rawPath, vaultPath);
     } catch {
-      new Notice(t('notices.attachFileInvalidPath' as TranslationKey));
+      new Notice(t('notices.attachFileInvalidPath'));
       return null;
     }
   }

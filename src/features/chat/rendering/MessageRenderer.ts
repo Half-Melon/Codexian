@@ -1,5 +1,5 @@
 import type { App, Component } from 'obsidian';
-import { MarkdownRenderer, Notice } from 'obsidian';
+import { MarkdownRenderer, Notice, setIcon } from 'obsidian';
 
 import { DEFAULT_CHAT_PROVIDER_ID, type ProviderCapabilities } from '../../../core/providers/types';
 import {
@@ -9,6 +9,7 @@ import type { ChatMessage, ImageAttachment, ToolCallInfo } from '../../../core/t
 import { t } from '../../../i18n/i18n';
 import type CodexianPlugin from '../../../main';
 import { formatDurationMmSs } from '../../../utils/date';
+import { runAsync } from '../../../utils/dom';
 import { processFileLinks, registerFileLinkHandler } from '../../../utils/fileLink';
 import { replaceImageEmbedsWithHtml } from '../../../utils/imageEmbed';
 import { escapeMathDelimitersForStreaming } from '../../../utils/markdownMath';
@@ -38,10 +39,6 @@ export class MessageRenderer {
   private getCapabilities: () => ProviderCapabilities;
   private forkCallback?: (messageId: string) => Promise<void>;
   private liveMessageEls = new Map<string, HTMLElement>();
-
-  private static readonly REWIND_ICON = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>`;
-
-  private static readonly FORK_ICON = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><circle cx="18" cy="6" r="3"/><path d="M18 9v2c0 .6-.4 1-1 1H7c-.6 0-1-.4-1-1V9"/><path d="M12 12v3"/></svg>`;
 
   constructor(
     plugin: CodexianPlugin,
@@ -140,12 +137,12 @@ export class MessageRenderer {
     }
 
     const msgEl = this.liveMessageEls.get(msg.id)
-      ?? this.messagesEl.querySelector(`[data-message-id="${msg.id}"]`) as HTMLElement | null;
+      ?? this.messagesEl.querySelector(`[data-message-id="${msg.id}"]`);
     if (!msgEl) {
       return;
     }
 
-    const contentEl = msgEl.querySelector('.codexian-message-content') as HTMLElement | null;
+    const contentEl = msgEl.querySelector<HTMLElement>('.codexian-message-content');
     if (!contentEl) {
       return;
     }
@@ -158,7 +155,7 @@ export class MessageRenderer {
       void this.renderContent(textEl, textToShow);
     }
 
-    const toolbar = msgEl.querySelector('.codexian-user-msg-actions') as HTMLElement | null;
+    const toolbar = msgEl.querySelector<HTMLElement>('.codexian-user-msg-actions');
     if (toolbar) {
       toolbar.querySelectorAll('.codexian-user-msg-copy-btn').forEach((el) => el.remove());
     }
@@ -170,7 +167,7 @@ export class MessageRenderer {
 
   removeMessage(messageId: string): void {
     const msgEl = this.liveMessageEls.get(messageId)
-      ?? this.messagesEl.querySelector(`[data-message-id="${messageId}"]`) as HTMLElement | null;
+      ?? this.messagesEl.querySelector(`[data-message-id="${messageId}"]`);
     if (!msgEl) {
       return;
     }
@@ -290,7 +287,17 @@ export class MessageRenderer {
 
   private appendInterruptIndicator(contentEl: HTMLElement): void {
     const textEl = contentEl.createDiv({ cls: 'codexian-text-block' });
-    textEl.innerHTML = `<span class="codexian-interrupted">${t('chat.thinking.interrupted')}</span> <span class="codexian-interrupted-hint">· ${t('chat.thinking.interruptedHint')}</span>`;
+    textEl.createSpan({
+      cls: 'codexian-interrupted',
+      text: t('chat.thinking.interrupted'),
+    });
+    textEl.createSpan({
+      text: ' ',
+    });
+    textEl.createSpan({
+      cls: 'codexian-interrupted-hint',
+      text: `· ${t('chat.thinking.interruptedHint')}`,
+    });
   }
 
   /**
@@ -440,7 +447,7 @@ export class MessageRenderer {
   showFullImage(image: ImageAttachment): void {
     const dataUri = `data:${image.mediaType};base64,${image.data}`;
 
-    const overlay = document.body.createDiv({ cls: 'codexian-image-modal-overlay' });
+    const overlay = activeDocument.body.createDiv({ cls: 'codexian-image-modal-overlay' });
     const modal = overlay.createDiv({ cls: 'codexian-image-modal' });
 
     modal.createEl('img', {
@@ -460,7 +467,7 @@ export class MessageRenderer {
     };
 
     const close = () => {
-      document.removeEventListener('keydown', handleEsc);
+      activeDocument.removeEventListener('keydown', handleEsc);
       overlay.remove();
     };
 
@@ -468,7 +475,7 @@ export class MessageRenderer {
     overlay.addEventListener('click', (e) => {
       if (e.target === overlay) close();
     });
-    document.addEventListener('keydown', handleEsc);
+    activeDocument.addEventListener('keydown', handleEsc);
   }
 
   /**
@@ -503,7 +510,8 @@ export class MessageRenderer {
         this.app,
         this.plugin.settings.mediaFolder
       );
-      await MarkdownRenderer.renderMarkdown(
+      await MarkdownRenderer.render(
+        this.app,
         processedMarkdown,
         el,
         '',
@@ -516,7 +524,7 @@ export class MessageRenderer {
         if (pre.parentElement?.classList.contains('codexian-code-wrapper')) return;
 
         // Create wrapper
-        const wrapper = createEl('div', { cls: 'codexian-code-wrapper' });
+        const wrapper = createDiv({ cls: 'codexian-code-wrapper' });
         pre.parentElement?.insertBefore(wrapper, pre);
         wrapper.appendChild(pre);
 
@@ -526,19 +534,21 @@ export class MessageRenderer {
           const match = code.className.match(/language-(\w+)/);
           if (match) {
             wrapper.classList.add('has-language');
-            const label = createEl('span', {
+            const label = createSpan({
               cls: 'codexian-code-lang-label',
               text: match[1],
             });
             wrapper.appendChild(label);
-            label.addEventListener('click', async () => {
-              try {
-                await navigator.clipboard.writeText(code.textContent || '');
-                label.setText(t('common.copied'));
-                setTimeout(() => label.setText(match[1]), 1500);
-              } catch {
-                // Clipboard API may fail in non-secure contexts
-              }
+            label.addEventListener('click', () => {
+              runAsync(async () => {
+                try {
+                  await navigator.clipboard.writeText(code.textContent || '');
+                  label.setText(t('common.copied'));
+                  activeWindow.setTimeout(() => label.setText(match[1]), 1500);
+                } catch {
+                  // Clipboard API may fail in non-secure contexts
+                }
+              });
             });
           }
         }
@@ -566,8 +576,10 @@ export class MessageRenderer {
   // Copy Button
   // ============================================
 
-  /** Clipboard icon SVG for copy button. */
-  private static readonly COPY_ICON = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>`;
+  private renderIconButton(el: HTMLElement, icon: string): void {
+    el.empty();
+    setIcon(el, icon);
+  }
 
   /**
    * Adds a copy button to a text block.
@@ -577,35 +589,36 @@ export class MessageRenderer {
    */
   addTextCopyButton(textEl: HTMLElement, markdown: string): void {
     const copyBtn = textEl.createSpan({ cls: 'codexian-text-copy-btn' });
-    copyBtn.innerHTML = MessageRenderer.COPY_ICON;
+    this.renderIconButton(copyBtn, 'copy');
 
-    let feedbackTimeout: ReturnType<typeof setTimeout> | null = null;
+    let feedbackTimeout: number | null = null;
 
-    copyBtn.addEventListener('click', async (e) => {
+    copyBtn.addEventListener('click', (e) => {
       e.stopPropagation();
+      runAsync(async () => {
+        try {
+          await navigator.clipboard.writeText(markdown);
+        } catch {
+          // Clipboard API may fail in non-secure contexts
+          return;
+        }
 
-      try {
-        await navigator.clipboard.writeText(markdown);
-      } catch {
-        // Clipboard API may fail in non-secure contexts
-        return;
-      }
+        // Clear any pending timeout from rapid clicks
+        if (feedbackTimeout) {
+          activeWindow.clearTimeout(feedbackTimeout);
+        }
 
-      // Clear any pending timeout from rapid clicks
-      if (feedbackTimeout) {
-        clearTimeout(feedbackTimeout);
-      }
+        // Show "copied!" feedback
+        copyBtn.empty();
+        copyBtn.setText(t('common.copied'));
+        copyBtn.classList.add('copied');
 
-      // Show "copied!" feedback
-      copyBtn.innerHTML = '';
-      copyBtn.setText(t('common.copied'));
-      copyBtn.classList.add('copied');
-
-      feedbackTimeout = setTimeout(() => {
-        copyBtn.innerHTML = MessageRenderer.COPY_ICON;
-        copyBtn.classList.remove('copied');
-        feedbackTimeout = null;
-      }, 1500);
+        feedbackTimeout = activeWindow.setTimeout(() => {
+          this.renderIconButton(copyBtn, 'copy');
+          copyBtn.classList.remove('copied');
+          feedbackTimeout = null;
+        }, 1500);
+      });
     });
   }
 
@@ -633,7 +646,7 @@ export class MessageRenderer {
   }
 
   private getOrCreateActionsToolbar(msgEl: HTMLElement): HTMLElement {
-    const existing = msgEl.querySelector('.codexian-user-msg-actions') as HTMLElement | null;
+    const existing = msgEl.querySelector<HTMLElement>('.codexian-user-msg-actions');
     if (existing) return existing;
     return msgEl.createDiv({ cls: 'codexian-user-msg-actions' });
   }
@@ -641,27 +654,29 @@ export class MessageRenderer {
   private addUserCopyButton(msgEl: HTMLElement, content: string): void {
     const toolbar = this.getOrCreateActionsToolbar(msgEl);
     const copyBtn = toolbar.createSpan({ cls: 'codexian-user-msg-copy-btn' });
-    copyBtn.innerHTML = MessageRenderer.COPY_ICON;
+    this.renderIconButton(copyBtn, 'copy');
     copyBtn.setAttribute('aria-label', t('common.copy'));
 
-    let feedbackTimeout: ReturnType<typeof setTimeout> | null = null;
+    let feedbackTimeout: number | null = null;
 
-    copyBtn.addEventListener('click', async (e) => {
+    copyBtn.addEventListener('click', (e) => {
       e.stopPropagation();
-      try {
-        await navigator.clipboard.writeText(content);
-      } catch {
-        return;
-      }
-      if (feedbackTimeout) clearTimeout(feedbackTimeout);
-      copyBtn.innerHTML = '';
-      copyBtn.setText(t('common.copied'));
-      copyBtn.classList.add('copied');
-      feedbackTimeout = setTimeout(() => {
-        copyBtn.innerHTML = MessageRenderer.COPY_ICON;
-        copyBtn.classList.remove('copied');
-        feedbackTimeout = null;
-      }, 1500);
+      runAsync(async () => {
+        try {
+          await navigator.clipboard.writeText(content);
+        } catch {
+          return;
+        }
+        if (feedbackTimeout) activeWindow.clearTimeout(feedbackTimeout);
+        copyBtn.empty();
+        copyBtn.setText(t('common.copied'));
+        copyBtn.classList.add('copied');
+        feedbackTimeout = activeWindow.setTimeout(() => {
+          this.renderIconButton(copyBtn, 'copy');
+          copyBtn.classList.remove('copied');
+          feedbackTimeout = null;
+        }, 1500);
+      });
     });
   }
 
@@ -670,15 +685,15 @@ export class MessageRenderer {
     const toolbar = this.getOrCreateActionsToolbar(msgEl);
     const btn = toolbar.createSpan({ cls: 'codexian-message-rewind-btn' });
     if (toolbar.firstChild !== btn) toolbar.insertBefore(btn, toolbar.firstChild);
-    btn.innerHTML = MessageRenderer.REWIND_ICON;
+    this.renderIconButton(btn, 'rotate-ccw');
     btn.setAttribute('aria-label', t('chat.rewind.ariaLabel'));
-    btn.addEventListener('click', async (e) => {
+    btn.addEventListener('click', (e) => {
       e.stopPropagation();
-      try {
+      runAsync(async () => {
         await this.rewindCallback?.(messageId);
-      } catch (err) {
+      }, (err) => {
         new Notice(t('chat.rewind.failed', { error: err instanceof Error ? err.message : t('common.unknownError') }));
-      }
+      });
     });
   }
 
@@ -687,15 +702,15 @@ export class MessageRenderer {
     const toolbar = this.getOrCreateActionsToolbar(msgEl);
     const btn = toolbar.createSpan({ cls: 'codexian-message-fork-btn' });
     if (toolbar.firstChild !== btn) toolbar.insertBefore(btn, toolbar.firstChild);
-    btn.innerHTML = MessageRenderer.FORK_ICON;
+    this.renderIconButton(btn, 'git-fork');
     btn.setAttribute('aria-label', t('chat.fork.ariaLabel'));
-    btn.addEventListener('click', async (e) => {
+    btn.addEventListener('click', (e) => {
       e.stopPropagation();
-      try {
+      runAsync(async () => {
         await this.forkCallback?.(messageId);
-      } catch (err) {
+      }, (err) => {
         new Notice(t('chat.fork.failed', { error: err instanceof Error ? err.message : t('common.unknownError') }));
-      }
+      });
     });
   }
 

@@ -208,6 +208,7 @@ interface MockInputEl {
   value: string;
   style: Record<string, string>;
   addClass: jest.Mock;
+  removeClass: jest.Mock;
   addEventListener: jest.Mock;
 }
 
@@ -219,6 +220,7 @@ function createInputEl(): MockInputEl & { _listeners: Map<string, Array<() => vo
     value: '',
     style: {},
     addClass: jest.fn(),
+    removeClass: jest.fn(),
     addEventListener: jest.fn((event: string, handler: () => void) => {
       const handlers = listeners.get(event) ?? [];
       handlers.push(handler);

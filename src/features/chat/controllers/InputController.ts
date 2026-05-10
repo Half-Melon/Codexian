@@ -29,6 +29,7 @@ import { InstructionModal } from '../../../shared/modals/InstructionConfirmModal
 import type { BrowserSelectionContext } from '../../../utils/browser';
 import type { CanvasSelectionContext } from '../../../utils/canvas';
 import { formatDurationMmSs } from '../../../utils/date';
+import { hideElement, runAsync, showElement, toError } from '../../../utils/dom';
 import type { EditorSelectionContext } from '../../../utils/editor';
 import { appendMarkdownSnippet } from '../../../utils/markdown';
 import { getCompletionFlavorWords } from '../constants';
@@ -259,7 +260,7 @@ export class InputController {
     // Hide welcome message when sending first message
     const welcomeEl = this.deps.getWelcomeEl();
     if (welcomeEl) {
-      welcomeEl.style.display = 'none';
+      hideElement(welcomeEl);
     }
 
     fileContextManager?.startSession();
@@ -318,7 +319,7 @@ export class InputController {
     this.awaitingProviderAssistantStart = true;
 
     streamController.showThinkingIndicator(
-      isCompact ? t('chat.thinking.compacting' as TranslationKey) : undefined,
+      isCompact ? t('chat.thinking.compacting') : undefined,
       isCompact ? 'codexian-thinking--compact' : undefined,
     );
     state.responseStartTime = performance.now();
@@ -332,7 +333,7 @@ export class InputController {
     if (this.deps.ensureServiceInitialized) {
       const ready = await this.deps.ensureServiceInitialized();
       if (!ready) {
-        new Notice(t('notices.agentInitFailed' as TranslationKey));
+        new Notice(t('notices.agentInitFailed'));
         streamController.hideThinkingIndicator();
         state.isStreaming = false;
         this.activeStreamingAssistantMessage = null;
@@ -343,7 +344,7 @@ export class InputController {
 
     const agentService = this.getAgentService();
     if (!agentService) {
-      new Notice(t('notices.agentUnavailable' as TranslationKey));
+      new Notice(t('notices.agentUnavailable'));
       this.activeStreamingAssistantMessage = null;
       this.resetProviderMessageBoundaryState();
       return;
@@ -414,7 +415,7 @@ export class InputController {
         const didCancelThisTurn = wasInterrupted || state.cancelRequested;
         if (didCancelThisTurn && !state.pendingNewSessionPlan) {
           await streamController.appendText(
-            `\n\n<span class="codexian-interrupted">${t('chat.thinking.interrupted' as TranslationKey)}</span> <span class="codexian-interrupted-hint">· ${t('chat.thinking.interruptedHint' as TranslationKey)}</span>`,
+            `\n\n<span class="codexian-interrupted">${t('chat.thinking.interrupted')}</span> <span class="codexian-interrupted-hint">· ${t('chat.thinking.interruptedHint')}</span>`,
           );
         }
         streamController.hideThinkingIndicator();
@@ -438,7 +439,7 @@ export class InputController {
             if (state.currentContentEl) {
               const footerEl = state.currentContentEl.createDiv({ cls: 'codexian-response-footer' });
               footerEl.createSpan({
-                text: t('chat.thinking.completedFor' as TranslationKey, {
+                text: t('chat.thinking.completedFor', {
                   flavor: flavorWord,
                   duration: formatDurationMmSs(durationSeconds),
                 }),
@@ -486,7 +487,7 @@ export class InputController {
             planApprovalInvalidated = true;
           } else if (decision?.type === 'implement') {
             this.deps.restorePrePlanPermissionModeIfNeeded?.();
-            planAutoSendContent = t('chat.plan.implementApprovedPlan' as TranslationKey);
+            planAutoSendContent = t('chat.plan.implementApprovedPlan');
           } else if (decision?.type === 'revise') {
             // Keep plan mode active, populate input with feedback text
             this.deps.getInputEl().value = decision.text;
@@ -557,7 +558,7 @@ export class InputController {
       indicatorEl.createSpan({
         cls: 'codexian-queue-indicator-text',
         text: `⌙ ${t(
-          (isPendingSteerOnly ? 'chat.queue.steeringPrefix' : 'chat.queue.queuedPrefix') as TranslationKey,
+          (isPendingSteerOnly ? 'chat.queue.steeringPrefix' : 'chat.queue.queuedPrefix'),
           { message: queuedMessageDisplay },
         )}`,
       });
@@ -566,8 +567,8 @@ export class InputController {
         const steerButton = indicatorEl.createEl('button', {
           cls: 'codexian-queue-indicator-action',
           text: this.steerInFlight
-            ? t('chat.queue.steeringButton' as TranslationKey)
-            : t('chat.queue.steerNow' as TranslationKey),
+            ? t('chat.queue.steeringButton')
+            : t('chat.queue.steerNow'),
         });
         steerButton.setAttribute('type', 'button');
         if (this.steerInFlight) {
@@ -580,11 +581,11 @@ export class InputController {
         }
       }
 
-      indicatorEl.style.display = 'flex';
+      showElement(indicatorEl, 'flex');
       return;
     }
 
-    indicatorEl.style.display = 'none';
+    hideElement(indicatorEl);
   }
 
   clearQueuedMessage(): void {
@@ -630,7 +631,7 @@ export class InputController {
       this.deps.getImageContextManager()?.setImages(images);
     }
 
-    setTimeout(
+    activeWindow.setTimeout(
       () => this.sendMessage({
         editorContextOverride: editorContext,
         browserContextOverride: browserContext ?? null,
@@ -705,7 +706,7 @@ export class InputController {
     const hasImages = (message.images?.length ?? 0) > 0;
 
     if (hasImages) {
-      const imageLabel = `[${t('chat.queue.images' as TranslationKey)}]`;
+      const imageLabel = `[${t('chat.queue.images')}]`;
       return preview ? `${preview} ${imageLabel}` : imageLabel;
     }
 
@@ -836,7 +837,7 @@ export class InputController {
       });
     } catch {
       this.restoreQueuedMessageAfterSteerFailure(queuedMessage);
-      new Notice(t('notices.steerFailed' as TranslationKey));
+      new Notice(t('notices.steerFailed'));
     }
   }
 
@@ -865,7 +866,7 @@ export class InputController {
   private activateStreamingAssistantMessage(message: ChatMessage): void {
     const { state, renderer } = this.deps;
     const msgEl = renderer.addMessage(message);
-    const contentEl = msgEl.querySelector('.codexian-message-content') as HTMLElement | null;
+    const contentEl = msgEl.querySelector<HTMLElement>('.codexian-message-content');
 
     if (!contentEl) {
       return;
@@ -1133,13 +1134,15 @@ export class InputController {
         plugin.app,
         rawInstruction,
         {
-          onAccept: async (finalInstruction) => {
-            const currentPrompt = plugin.settings.systemPrompt;
-            plugin.settings.systemPrompt = appendMarkdownSnippet(currentPrompt, finalInstruction);
-            await plugin.saveSettings();
+          onAccept: (finalInstruction) => {
+            runAsync(async () => {
+              const currentPrompt = plugin.settings.systemPrompt;
+              plugin.settings.systemPrompt = appendMarkdownSnippet(currentPrompt, finalInstruction);
+              await plugin.saveSettings();
 
-            new Notice(t('notices.instructionAdded' as TranslationKey));
-            instructionModeManager?.clear();
+              new Notice(t('notices.instructionAdded'));
+              instructionModeManager?.clear();
+            });
           },
           onReject: () => {
             wasCancelled = true;
@@ -1158,7 +1161,7 @@ export class InputController {
               if (result.error === 'Cancelled') {
                 return;
               }
-              const fallback = t('notices.failedToProcessResponse' as TranslationKey);
+              const fallback = t('notices.failedToProcessResponse');
               new Notice(result.error || fallback);
               modal?.showError(result.error || fallback);
               return;
@@ -1190,7 +1193,7 @@ export class InputController {
           instructionModeManager?.clear();
           return;
         }
-        const fallback = t('notices.failedToRefineInstruction' as TranslationKey);
+        const fallback = t('notices.failedToRefineInstruction');
         new Notice(result.error || fallback);
         modal.showError(result.error || fallback);
         instructionModeManager?.clear();
@@ -1202,14 +1205,14 @@ export class InputController {
       } else if (result.refinedInstruction) {
         modal.showConfirmation(result.refinedInstruction);
       } else {
-        const fallback = t('notices.noInstruction' as TranslationKey);
+        const fallback = t('notices.noInstruction');
         new Notice(fallback);
         modal.showError(fallback);
         instructionModeManager?.clear();
       }
     } catch (error) {
-      const errorMsg = error instanceof Error ? error.message : t('common.unknownError' as TranslationKey);
-      new Notice(t('notices.errorPrefix' as TranslationKey, { message: errorMsg }));
+      const errorMsg = error instanceof Error ? error.message : t('common.unknownError');
+      new Notice(t('notices.errorPrefix', { message: errorMsg }));
       modal?.showError(errorMsg);
       instructionModeManager?.clear();
     }
@@ -1249,7 +1252,7 @@ export class InputController {
     }
     if (approvalOptions?.agentID) {
       headerEl.createDiv({
-        text: t('chat.ask.agentLabel' as TranslationKey, { agent: approvalOptions.agentID }),
+        text: t('chat.ask.agentLabel', { agent: approvalOptions.agentID }),
         cls: 'codexian-ask-approval-agent',
       });
     }
@@ -1271,7 +1274,7 @@ export class InputController {
     });
     const input = {
       questions: [{
-        question: t('chat.ask.approvalQuestion' as TranslationKey),
+        question: t('chat.ask.approvalQuestion'),
         options: questionOptions,
         isOther: false,
         isSecret: false,
@@ -1284,14 +1287,14 @@ export class InputController {
       input,
       (inline) => { this.pendingApprovalInline = inline; },
       undefined,
-      { title: t('chat.ask.approvalTitle' as TranslationKey), headerEl, showCustomInput: false, immediateSelect: true },
+      { title: t('chat.ask.approvalTitle'), headerEl, showCustomInput: false, immediateSelect: true },
     );
 
     if (!result) return 'cancel';
     const selected = Object.values(result)[0];
     const selectedValue = Array.isArray(selected) ? selected[0] : selected;
     if (typeof selectedValue !== 'string') {
-      new Notice(t('chat.ask.unexpectedApprovalSelection' as TranslationKey, { selection: String(selectedValue) }));
+      new Notice(t('chat.ask.unexpectedApprovalSelection', { selection: String(selectedValue) }));
       return 'cancel';
     }
 
@@ -1354,7 +1357,7 @@ export class InputController {
       } catch (err) {
         setPending(null);
         this.restoreInputContainer(inputContainerEl);
-        reject(err);
+        reject(toError(err));
       }
     });
   }
@@ -1401,7 +1404,7 @@ export class InputController {
       } catch (err) {
         this.pendingExitPlanModeInline = null;
         this.restoreInputContainer(inputContainerEl);
-        reject(err);
+        reject(toError(err));
       }
     });
   }
@@ -1455,7 +1458,7 @@ export class InputController {
         this.pendingPlanApproval = null;
         this.pendingPlanApprovalInvalidated = false;
         this.restoreInputContainer(inputContainerEl);
-        reject(err);
+        reject(toError(err));
       }
     });
   }
@@ -1474,21 +1477,21 @@ export class InputController {
 
   private hideInputContainer(inputContainerEl: HTMLElement): void {
     this.inputContainerHideDepth++;
-    inputContainerEl.style.display = 'none';
+    hideElement(inputContainerEl);
   }
 
   private restoreInputContainer(inputContainerEl: HTMLElement): void {
     if (this.inputContainerHideDepth <= 0) return;
     this.inputContainerHideDepth--;
     if (this.inputContainerHideDepth === 0) {
-      inputContainerEl.style.display = '';
+      showElement(inputContainerEl);
     }
   }
 
   private resetInputContainerVisibility(): void {
     if (this.inputContainerHideDepth > 0) {
       this.inputContainerHideDepth = 0;
-      this.deps.getInputContainerEl().style.display = '';
+      showElement(this.deps.getInputContainerEl());
     }
   }
 
@@ -1501,7 +1504,7 @@ export class InputController {
     const capabilities = this.getActiveCapabilities();
 
     if (!isBuiltInCommandSupported(command, capabilities)) {
-      new Notice(t('notices.unsupportedCommand' as TranslationKey, { command: command.name }));
+      new Notice(t('notices.unsupportedCommand', { command: command.name }));
       return;
     }
 
@@ -1512,12 +1515,12 @@ export class InputController {
       case 'add-dir': {
         const externalContextSelector = this.deps.getExternalContextSelector();
         if (!externalContextSelector) {
-          new Notice(t('notices.externalContextUnavailable' as TranslationKey));
+          new Notice(t('notices.externalContextUnavailable'));
           return;
         }
         const result = externalContextSelector.addExternalContext(args);
         if (result.success) {
-          new Notice(t('notices.externalContextAdded' as TranslationKey, { path: result.normalizedPath }));
+          new Notice(t('notices.externalContextAdded', { path: result.normalizedPath }));
         } else {
           new Notice(result.error);
         }
@@ -1528,11 +1531,11 @@ export class InputController {
         break;
       case 'fork': {
         if (!this.getActiveCapabilities().supportsFork) {
-          new Notice(t('notices.forkUnsupported' as TranslationKey));
+          new Notice(t('notices.forkUnsupported'));
           return;
         }
         if (!this.deps.onForkAll) {
-          new Notice(t('notices.forkUnavailable' as TranslationKey));
+          new Notice(t('notices.forkUnavailable'));
           return;
         }
         await this.deps.onForkAll();
@@ -1540,7 +1543,7 @@ export class InputController {
       }
       default:
         // Unknown command - notify user
-        new Notice(t('notices.unknownCommand' as TranslationKey, { command: command.action }));
+        new Notice(t('notices.unknownCommand', { command: command.action }));
     }
   }
 
@@ -1572,7 +1575,7 @@ export class InputController {
 
     const conversations = plugin.getConversationList();
     if (conversations.length === 0) {
-      new Notice(t('notices.noConversationsToResume' as TranslationKey));
+      new Notice(t('notices.noConversationsToResume'));
       return;
     }
 
@@ -1589,7 +1592,7 @@ export class InputController {
           this.destroyResumeDropdown();
           openConversation(id).catch((err: unknown) => {
             const msg = err instanceof Error ? err.message : String(err);
-            new Notice(t('notices.failedToOpenConversation' as TranslationKey, { message: msg }));
+            new Notice(t('notices.failedToOpenConversation', { message: msg }));
           });
         },
         onDismiss: () => {

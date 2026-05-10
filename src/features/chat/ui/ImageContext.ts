@@ -3,7 +3,7 @@ import * as path from 'path';
 
 import type { ImageAttachment, ImageMediaType } from '../../../core/types';
 import { t } from '../../../i18n/i18n';
-import type { TranslationKey } from '../../../i18n/types';
+import { hideElement, runAsync, showElement } from '../../../utils/dom';
 
 const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
 
@@ -88,18 +88,18 @@ export class ImageContextManager {
 
     this.dropOverlay = inputWrapper.createDiv({ cls: 'codexian-drop-overlay' });
     const dropContent = this.dropOverlay.createDiv({ cls: 'codexian-drop-content' });
-    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    const svg = activeDocument.createSvg('svg');
     svg.setAttribute('viewBox', '0 0 24 24');
     svg.setAttribute('width', '32');
     svg.setAttribute('height', '32');
     svg.setAttribute('fill', 'none');
     svg.setAttribute('stroke', 'currentColor');
     svg.setAttribute('stroke-width', '2');
-    const pathEl = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    const pathEl = activeDocument.createSvg('path');
     pathEl.setAttribute('d', 'M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4');
-    const polyline = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+    const polyline = activeDocument.createSvg('polyline');
     polyline.setAttribute('points', '17 8 12 3 7 8');
-    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    const line = activeDocument.createSvg('line');
     line.setAttribute('x1', '12');
     line.setAttribute('y1', '3');
     line.setAttribute('x2', '12');
@@ -108,14 +108,16 @@ export class ImageContextManager {
     svg.appendChild(polyline);
     svg.appendChild(line);
     dropContent.appendChild(svg);
-    dropContent.createSpan({ text: t('chat.image.dropHere' as TranslationKey) });
+    dropContent.createSpan({ text: t('chat.image.dropHere') });
 
     const dropZone = inputWrapper;
 
-    dropZone.addEventListener('dragenter', (e) => this.handleDragEnter(e as DragEvent));
-    dropZone.addEventListener('dragover', (e) => this.handleDragOver(e as DragEvent));
-    dropZone.addEventListener('dragleave', (e) => this.handleDragLeave(e as DragEvent));
-    dropZone.addEventListener('drop', (e) => this.handleDrop(e as DragEvent));
+    dropZone.addEventListener('dragenter', (e) => this.handleDragEnter(e));
+    dropZone.addEventListener('dragover', (e) => this.handleDragOver(e));
+    dropZone.addEventListener('dragleave', (e) => this.handleDragLeave(e));
+    dropZone.addEventListener('drop', (e) => {
+      runAsync(() => this.handleDrop(e));
+    });
   }
 
   private handleDragEnter(e: DragEvent) {
@@ -170,21 +172,23 @@ export class ImageContextManager {
   }
 
   private setupPasteHandler() {
-    this.inputEl.addEventListener('paste', async (e) => {
+    this.inputEl.addEventListener('paste', (e) => {
       const items = e.clipboardData?.items;
       if (!items) return;
 
-      for (let i = 0; i < items.length; i++) {
-        const item = items[i];
-        if (item.type.startsWith('image/')) {
-          e.preventDefault();
-          const file = item.getAsFile();
-          if (file) {
-            await this.addImageFromFile(file, 'paste');
+      runAsync(async () => {
+        for (let i = 0; i < items.length; i++) {
+          const item = items[i];
+          if (item.type.startsWith('image/')) {
+            e.preventDefault();
+            const file = item.getAsFile();
+            if (file) {
+              await this.addImageFromFile(file, 'paste');
+            }
+            return;
           }
-          return;
         }
-      }
+      });
     });
   }
 
@@ -199,12 +203,12 @@ export class ImageContextManager {
 
   private async addImageFromFile(file: File, source: 'paste' | 'drop'): Promise<boolean> {
     if (!this.enabled) {
-      new Notice(t('notices.imageUnsupported' as TranslationKey));
+      new Notice(t('notices.imageUnsupported'));
       return false;
     }
 
     if (file.size > MAX_IMAGE_SIZE) {
-      this.notifyImageError(t('chat.image.sizeLimit' as TranslationKey, {
+      this.notifyImageError(t('chat.image.sizeLimit', {
         size: this.formatSize(MAX_IMAGE_SIZE),
       }));
       return false;
@@ -212,7 +216,7 @@ export class ImageContextManager {
 
     const mediaType = this.getMediaType(file.name) || (file.type as ImageMediaType);
     if (!mediaType) {
-      this.notifyImageError(t('chat.image.unsupportedType' as TranslationKey));
+      this.notifyImageError(t('chat.image.unsupportedType'));
       return false;
     }
 
@@ -233,7 +237,7 @@ export class ImageContextManager {
       this.callbacks.onImagesChanged();
       return true;
     } catch (error) {
-      this.notifyImageError(t('chat.image.attachFailed' as TranslationKey), error);
+      this.notifyImageError(t('chat.image.attachFailed'), error);
       return false;
     }
   }
@@ -252,12 +256,11 @@ export class ImageContextManager {
     this.imagePreviewEl.empty();
 
     if (this.attachedImages.size === 0) {
-      this.imagePreviewEl.style.display = 'none';
+      hideElement(this.imagePreviewEl);
       return;
     }
 
-    this.imagePreviewEl.style.display = 'flex';
-
+    showElement(this.imagePreviewEl, 'flex');
     for (const [id, image] of this.attachedImages) {
       this.renderImagePreview(id, image);
     }
@@ -284,7 +287,7 @@ export class ImageContextManager {
 
     const removeEl = previewEl.createSpan({ cls: 'codexian-image-remove' });
     removeEl.setText('\u00D7');
-    removeEl.setAttribute('aria-label', t('chat.image.remove' as TranslationKey));
+    removeEl.setAttribute('aria-label', t('chat.image.remove'));
 
     removeEl.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -299,7 +302,7 @@ export class ImageContextManager {
   }
 
   private showFullImage(image: ImageAttachment) {
-    const overlay = document.body.createDiv({ cls: 'codexian-image-modal-overlay' });
+    const overlay = activeDocument.body.createDiv({ cls: 'codexian-image-modal-overlay' });
     const modal = overlay.createDiv({ cls: 'codexian-image-modal' });
 
     modal.createEl('img', {
@@ -319,7 +322,7 @@ export class ImageContextManager {
     };
 
     const close = () => {
-      document.removeEventListener('keydown', handleEsc);
+      activeDocument.removeEventListener('keydown', handleEsc);
       overlay.remove();
     };
 
@@ -327,7 +330,7 @@ export class ImageContextManager {
     overlay.addEventListener('click', (e) => {
       if (e.target === overlay) close();
     });
-    document.addEventListener('keydown', handleEsc);
+    activeDocument.addEventListener('keydown', handleEsc);
   }
 
   private generateId(): string {
@@ -352,9 +355,9 @@ export class ImageContextManager {
     let userMessage = message;
     if (error instanceof Error) {
       if (error.message.includes('ENOENT') || error.message.includes('no such file')) {
-        userMessage = `${message} (${t('chat.image.fileNotFound' as TranslationKey)})`;
+        userMessage = `${message} (${t('chat.image.fileNotFound')})`;
       } else if (error.message.includes('EACCES') || error.message.includes('permission denied')) {
-        userMessage = `${message} (${t('chat.image.permissionDenied' as TranslationKey)})`;
+        userMessage = `${message} (${t('chat.image.permissionDenied')})`;
       }
     }
     new Notice(userMessage);

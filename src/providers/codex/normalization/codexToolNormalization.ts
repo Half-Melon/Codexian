@@ -5,6 +5,8 @@
  * to ensure tool identity parity between live and restored conversations.
  */
 
+import { stringifySafe } from '../../../utils/dom';
+
 // ---------------------------------------------------------------------------
 // Tool name normalization
 // ---------------------------------------------------------------------------
@@ -64,7 +66,7 @@ export function normalizeCodexToolInput(
     case 'view_image':
       return {
         ...input,
-        file_path: (input.path ?? input.file_path ?? '') as string,
+        file_path: (input.path ?? input.file_path ?? ''),
       };
 
     case 'web_search':
@@ -86,12 +88,12 @@ function normalizeUpdatePlanTodos(input: Record<string, unknown>): Array<Record<
   return plan.map((entry: unknown) => {
     if (!entry || typeof entry !== 'object') return { id: '', title: '', status: 'pending' };
     const item = entry as Record<string, unknown>;
-    const text = String(item.step ?? item.title ?? item.content ?? '');
+    const text = stringifySafe(item.step ?? item.title ?? item.content);
     return {
-      id: String(item.id ?? ''),
+      id: stringifySafe(item.id),
       content: text,
       activeForm: text,
-      status: String(item.status ?? 'pending'),
+      status: stringifySafe(item.status, 'pending'),
     };
   });
 }
@@ -129,8 +131,8 @@ function normalizeQuestions(input: Record<string, unknown>): Array<Record<string
       : [];
 
     return {
-      question: String(item.question ?? `Question ${index + 1}`),
-      ...(item.id ? { id: String(item.id) } : {}),
+      question: stringifySafe(item.question, `Question ${index + 1}`),
+      ...(item.id ? { id: stringifySafe(item.id) } : {}),
       header: typeof item.header === 'string' && item.header.trim()
         ? String(item.header)
         : `Q${index + 1}`,
@@ -144,11 +146,11 @@ function normalizeCommandValue(value: unknown): string {
   if (typeof value === 'string') return value;
   if (Array.isArray(value)) {
     return value
-      .map(entry => (typeof entry === 'string' ? entry : String(entry)))
+      .map(entry => stringifySafe(entry))
       .join(' ')
       .trim();
   }
-  return value == null ? '' : String(value);
+  return stringifySafe(value);
 }
 
 function normalizeWebSearchInput(input: Record<string, unknown>): Record<string, unknown> {

@@ -56,6 +56,18 @@ export function createMockEl(tag = 'div'): any {
   const style: Record<string, string> = {};
   let textContent = '';
 
+  const syncDisplayClass = (cls: string, visible: boolean) => {
+    if (cls === 'codexian-hidden' && visible) {
+      style.display = 'none';
+    } else if (cls === 'codexian-hidden') {
+      style.display = '';
+    } else if (visible && cls.startsWith('codexian-display-')) {
+      style.display = cls.slice('codexian-display-'.length);
+    } else if (!visible && cls.startsWith('codexian-display-') && style.display === cls.slice('codexian-display-'.length)) {
+      style.display = '';
+    }
+  };
+
   const element: MockElement = {
     tagName: tag.toUpperCase(),
     children,
@@ -83,26 +95,48 @@ export function createMockEl(tag = 'div'): any {
     },
 
     classList: {
-      add: (cls: string) => classes.add(cls),
-      remove: (cls: string) => classes.delete(cls),
+      add: (cls: string) => {
+        classes.add(cls);
+        syncDisplayClass(cls, true);
+      },
+      remove: (cls: string) => {
+        classes.delete(cls);
+        syncDisplayClass(cls, false);
+      },
       contains: (cls: string) => classes.has(cls),
       toggle: (cls: string, force?: boolean) => {
         if (force === undefined) {
-          if (classes.has(cls)) { classes.delete(cls); return false; }
+          if (classes.has(cls)) {
+            classes.delete(cls);
+            syncDisplayClass(cls, false);
+            return false;
+          }
           classes.add(cls);
+          syncDisplayClass(cls, true);
           return true;
         }
-        if (force) { classes.add(cls); } else { classes.delete(cls); }
+        if (force) {
+          classes.add(cls);
+        } else {
+          classes.delete(cls);
+        }
+        syncDisplayClass(cls, force);
         return force;
       },
     },
 
     addClass(cls: string) {
-      cls.split(/\s+/).filter(Boolean).forEach(c => classes.add(c));
+      cls.split(/\s+/).filter(Boolean).forEach(c => {
+        classes.add(c);
+        syncDisplayClass(c, true);
+      });
       return element;
     },
     removeClass(cls: string) {
-      cls.split(/\s+/).filter(Boolean).forEach(c => classes.delete(c));
+      cls.split(/\s+/).filter(Boolean).forEach(c => {
+        classes.delete(c);
+        syncDisplayClass(c, false);
+      });
       return element;
     },
     hasClass: (cls: string) => classes.has(cls),

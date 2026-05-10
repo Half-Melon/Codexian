@@ -132,7 +132,7 @@ export class CodexianSettingsStorage {
     const locale = normalizeLanguagePreference(stored.locale);
     const normalizedWorkflow = normalizeKnowledgeWorkflowSettingsForLocale(
       typeof stored.knowledgeWorkflow === 'object' && stored.knowledgeWorkflow !== null
-        ? stored.knowledgeWorkflow as Record<string, unknown>
+        ? stored.knowledgeWorkflow
         : undefined,
       locale,
     );
@@ -153,7 +153,7 @@ export class CodexianSettingsStorage {
     } as StoredCodexianSettings;
 
     updateCodexProviderSettings(
-      merged as unknown as Record<string, unknown>,
+      merged,
       getCodexProviderSettings(normalizedSettings),
     );
 
@@ -207,7 +207,7 @@ export class CodexianSettingsStorage {
   async setLastEnvHash(hash: string): Promise<void> {
     const current = await this.load();
     updateCodexProviderSettings(
-      current as unknown as Record<string, unknown>,
+      current,
       { environmentHash: hash },
     );
     await this.save(current);

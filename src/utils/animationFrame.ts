@@ -1,27 +1,27 @@
 export interface ScheduledAnimationFrame {
   kind: 'raf' | 'timeout';
-  id: number | ReturnType<typeof setTimeout>;
+  id: number;
 }
 
 export function scheduleAnimationFrame(callback: () => void): ScheduledAnimationFrame {
-  if (typeof globalThis.requestAnimationFrame === 'function') {
+  if (typeof activeWindow.requestAnimationFrame === 'function') {
     return {
       kind: 'raf',
-      id: globalThis.requestAnimationFrame(() => callback()),
+      id: activeWindow.requestAnimationFrame(() => callback()),
     };
   }
 
   return {
     kind: 'timeout',
-    id: globalThis.setTimeout(callback, 16),
+    id: activeWindow.setTimeout(callback, 16),
   };
 }
 
 export function cancelScheduledAnimationFrame(frame: ScheduledAnimationFrame): void {
-  if (frame.kind === 'raf' && typeof globalThis.cancelAnimationFrame === 'function') {
-    globalThis.cancelAnimationFrame(frame.id as number);
+  if (frame.kind === 'raf' && typeof activeWindow.cancelAnimationFrame === 'function') {
+    activeWindow.cancelAnimationFrame(frame.id);
     return;
   }
 
-  globalThis.clearTimeout(frame.id as ReturnType<typeof setTimeout>);
+  activeWindow.clearTimeout(frame.id);
 }

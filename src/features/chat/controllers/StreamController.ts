@@ -22,7 +22,6 @@ import { extractToolResultContent } from '../../../core/tools/toolResultContent'
 import type { ChatMessage, StreamChunk, ToolCallInfo } from '../../../core/types';
 import type { SDKToolUseResult } from '../../../core/types/diff';
 import { getLocale, t } from '../../../i18n/i18n';
-import type { TranslationKey } from '../../../i18n/types';
 import type CodexianPlugin from '../../../main';
 import {
   cancelScheduledAnimationFrame,
@@ -257,13 +256,13 @@ export class StreamController {
         // If already rendered, update the header name + summary
         const toolEl = state.toolCallElements.get(chunk.id);
         if (toolEl) {
-          const nameEl = toolEl.querySelector('.codexian-tool-name') as HTMLElement | null
-            ?? toolEl.querySelector('.codexian-write-edit-name') as HTMLElement | null;
+          const nameEl = toolEl.querySelector('.codexian-tool-name')
+            ?? toolEl.querySelector('.codexian-write-edit-name');
           if (nameEl) {
             nameEl.setText(getToolName(existingToolCall.name, existingToolCall.input));
           }
-          const summaryEl = toolEl.querySelector('.codexian-tool-summary') as HTMLElement | null
-            ?? toolEl.querySelector('.codexian-write-edit-summary') as HTMLElement | null;
+          const summaryEl = toolEl.querySelector('.codexian-tool-summary')
+            ?? toolEl.querySelector('.codexian-write-edit-summary');
           if (summaryEl) {
             summaryEl.setText(getToolSummary(existingToolCall.name, existingToolCall.input));
           }
@@ -318,7 +317,7 @@ export class StreamController {
     }
 
     const settings = ProviderSettingsCoordinator.getProviderSettingsSnapshot(
-      this.deps.plugin.settings as unknown as Record<string, unknown>,
+      this.deps.plugin.settings,
       providerId,
     );
     return typeof settings.model === 'string' ? settings.model : undefined;
@@ -913,7 +912,7 @@ export class StreamController {
 
     // Clear any existing timeout
     if (state.thinkingIndicatorTimeout) {
-      clearTimeout(state.thinkingIndicatorTimeout);
+      activeWindow.clearTimeout(state.thinkingIndicatorTimeout);
       state.thinkingIndicatorTimeout = null;
     }
 
@@ -930,7 +929,7 @@ export class StreamController {
     }
 
     // Schedule showing the indicator after a delay
-    state.thinkingIndicatorTimeout = setTimeout(() => {
+    state.thinkingIndicatorTimeout = activeWindow.setTimeout(() => {
       state.thinkingIndicatorTimeout = null;
       // Double-check we still have a content element, no indicator exists, and no thinking block
       if (!state.currentContentEl || state.thinkingEl || state.currentThinkingState) return;
@@ -950,13 +949,13 @@ export class StreamController {
         // Check if element is still connected to DOM (prevents orphaned interval updates)
         if (!timerSpan.isConnected) {
           if (state.flavorTimerInterval) {
-            clearInterval(state.flavorTimerInterval);
+            activeWindow.clearInterval(state.flavorTimerInterval);
             state.flavorTimerInterval = null;
           }
           return;
         }
         const elapsedSeconds = Math.floor((performance.now() - state.responseStartTime) / 1000);
-        timerSpan.setText(t('chat.thinking.indicatorHint' as TranslationKey, {
+        timerSpan.setText(t('chat.thinking.indicatorHint', {
           duration: formatDurationMmSs(elapsedSeconds),
         }));
       };
@@ -964,9 +963,9 @@ export class StreamController {
 
       // Start interval to update timer every second
       if (state.flavorTimerInterval) {
-        clearInterval(state.flavorTimerInterval);
+        activeWindow.clearInterval(state.flavorTimerInterval);
       }
-      state.flavorTimerInterval = setInterval(updateTimer, 1000);
+      state.flavorTimerInterval = activeWindow.setInterval(updateTimer, 1000);
 
     }, StreamController.THINKING_INDICATOR_DELAY);
   }
@@ -977,7 +976,7 @@ export class StreamController {
 
     // Cancel any pending show timeout
     if (state.thinkingIndicatorTimeout) {
-      clearTimeout(state.thinkingIndicatorTimeout);
+      activeWindow.clearTimeout(state.thinkingIndicatorTimeout);
       state.thinkingIndicatorTimeout = null;
     }
 
@@ -1001,7 +1000,7 @@ export class StreamController {
     const el = state.currentContentEl.createDiv({ cls: 'codexian-compact-boundary' });
     el.createSpan({
       cls: 'codexian-compact-boundary-label',
-      text: t('chat.conversationCompacted' as TranslationKey),
+      text: t('chat.conversationCompacted'),
     });
   }
 
@@ -1020,7 +1019,7 @@ export class StreamController {
     const relativePath = normalizePathForVault(rawPath, vaultPath);
     if (!relativePath || relativePath.startsWith('/')) return;
 
-    setTimeout(() => {
+    activeWindow.setTimeout(() => {
       const { vault } = this.deps.plugin.app;
       const file = vault.getAbstractFileByPath(relativePath);
       if (file instanceof TFile) {

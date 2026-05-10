@@ -2,6 +2,7 @@ import type { App } from 'obsidian';
 import { MarkdownView } from 'obsidian';
 
 import { hideSelectionHighlight, showSelectionHighlight } from '../../../shared/components/SelectionHighlight';
+import { hideElement, showElement } from '../../../utils/dom';
 import { type EditorSelectionContext, getEditorView } from '../../../utils/editor';
 import type { StoredSelection } from '../state/types';
 import { updateContextRowHasContent } from './contextRowVisibility';
@@ -19,7 +20,7 @@ export class SelectionController {
   private onVisibilityChange: (() => void) | null;
   private storedSelection: StoredSelection | null = null;
   private inputHandoffGraceUntil: number | null = null;
-  private pollInterval: ReturnType<typeof setInterval> | null = null;
+  private pollInterval: number | null = null;
   private readonly focusScopePointerDownHandler = () => {
     if (!this.storedSelection) return;
     this.inputHandoffGraceUntil = Date.now() + INPUT_HANDOFF_GRACE_MS;
@@ -47,12 +48,12 @@ export class SelectionController {
     if (this.focusScopeEl !== this.inputEl) {
       this.focusScopeEl.addEventListener('pointerdown', this.focusScopePointerDownHandler);
     }
-    this.pollInterval = setInterval(() => this.poll(), SELECTION_POLL_INTERVAL);
+    this.pollInterval = activeWindow.setInterval(() => this.poll(), SELECTION_POLL_INTERVAL);
   }
 
   stop(): void {
     if (this.pollInterval) {
-      clearInterval(this.pollInterval);
+      activeWindow.clearInterval(this.pollInterval);
       this.pollInterval = null;
     }
     this.inputEl.removeEventListener('pointerdown', this.focusScopePointerDownHandler);
@@ -135,7 +136,7 @@ export class SelectionController {
       return;
     }
 
-    const selection = document.getSelection();
+    const selection = activeDocument.getSelection();
     const selectedText = selection?.toString() ?? '';
 
     if (selectedText.trim()) {
@@ -208,7 +209,7 @@ export class SelectionController {
   }
 
   private isFocusWithinChatSidebar(): boolean {
-    const activeElement = document.activeElement as Node | null;
+    const activeElement = activeDocument.activeElement as Node | null;
     return activeElement !== null
       && (activeElement === this.focusScopeEl || this.focusScopeEl.contains(activeElement));
   }
@@ -218,7 +219,7 @@ export class SelectionController {
       return false;
     }
 
-    const activeElement = document.activeElement as Node | null;
+    const activeElement = activeDocument.activeElement as Node | null;
     if (activeElement === null || !sel.editorView.dom.contains(activeElement)) {
       return false;
     }
@@ -232,7 +233,7 @@ export class SelectionController {
       return false;
     }
 
-    return this.selectionMatchesRanges(document.getSelection(), ranges);
+    return this.selectionMatchesRanges(activeDocument.getSelection(), ranges);
   }
 
   private clearWhenMarkdownContextIsUnavailable(): void {
@@ -320,9 +321,9 @@ export class SelectionController {
     if (this.storedSelection) {
       const lineText = this.storedSelection.lineCount === 1 ? 'line' : 'lines';
       this.indicatorEl.textContent = `${this.storedSelection.lineCount} ${lineText} selected`;
-      this.indicatorEl.style.display = 'block';
+      showElement(this.indicatorEl, 'block');
     } else {
-      this.indicatorEl.style.display = 'none';
+      hideElement(this.indicatorEl);
     }
     this.updateContextRowVisibility();
   }

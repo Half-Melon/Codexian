@@ -2,7 +2,7 @@
   "id": "codexian",
   "name": "Codexian",
   "version": "1.0.0",
-  "minAppVersion": "1.4.5",
+  "minAppVersion": "1.7.2",
   "description": "Use Codex for vault-aware chat, inline editing, file mentions, commands, and structured knowledge-base workflows.",
   "author": "HalfMelon",
   "authorUrl": "https://github.com/Half-Melon",

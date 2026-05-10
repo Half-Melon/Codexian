@@ -38,7 +38,7 @@ export class MentionDropdownController {
   private activeAgentFilter = false;
   private agentService: AgentMentionProvider | null = null;
   private fixed: boolean;
-  private debounceTimer: ReturnType<typeof setTimeout> | null = null;
+  private debounceTimer: number | null = null;
 
   constructor(
     containerEl: HTMLElement,
@@ -71,7 +71,7 @@ export class MentionDropdownController {
     const externalContexts = this.callbacks.getExternalContexts() || [];
     if (externalContexts.length === 0) return;
 
-    setTimeout(() => {
+    activeWindow.setTimeout(() => {
       try {
         externalContextScanner.scanPaths(externalContexts);
       } catch {
@@ -95,17 +95,17 @@ export class MentionDropdownController {
 
   destroy(): void {
     if (this.debounceTimer !== null) {
-      clearTimeout(this.debounceTimer);
+      activeWindow.clearTimeout(this.debounceTimer);
     }
     this.dropdown.destroy();
   }
 
   handleInputChange(): void {
     if (this.debounceTimer !== null) {
-      clearTimeout(this.debounceTimer);
+      activeWindow.clearTimeout(this.debounceTimer);
     }
 
-    this.debounceTimer = setTimeout(() => {
+    this.debounceTimer = activeWindow.setTimeout(() => {
       const text = this.inputEl.value;
       const cursorPos = this.inputEl.selectionStart || 0;
       const textBeforeCursor = text.substring(0, cursorPos);
@@ -465,12 +465,9 @@ export class MentionDropdownController {
     if (!dropdownEl) return;
 
     const inputRect = this.inputEl.getBoundingClientRect();
-    dropdownEl.style.position = 'fixed';
-    dropdownEl.style.bottom = `${window.innerHeight - inputRect.top + 4}px`;
+    dropdownEl.style.bottom = `${activeWindow.innerHeight - inputRect.top + 4}px`;
     dropdownEl.style.left = `${inputRect.left}px`;
-    dropdownEl.style.right = 'auto';
     dropdownEl.style.width = `${Math.max(inputRect.width, 280)}px`;
-    dropdownEl.style.zIndex = '10001';
   }
 
   private insertReplacement(beforeAt: string, replacement: string, afterCursor: string): void {

@@ -48,6 +48,7 @@ import { KnowledgeWorkflowInitializer } from './features/workflows/KnowledgeWork
 import { KnowledgeWorkflowStatusService } from './features/workflows/KnowledgeWorkflowStatus';
 import { getLocale, resolveLocalePreference, setLocale, t } from './i18n/i18n';
 import { getObsidianLocale } from './i18n/obsidianLocale';
+import { runAsync } from './utils/dom';
 import { buildCursorContext } from './utils/editor';
 import { getVaultPath } from './utils/path';
 
@@ -74,7 +75,7 @@ export default class CodexianPlugin extends Plugin {
     );
 
     this.addRibbonIcon('bot', t('ribbon.openCodexian'), () => {
-      this.activateView();
+      runAsync(() => this.activateView());
     });
     registerKnowledgeWorkflowRibbonIcons(this);
 
@@ -82,7 +83,7 @@ export default class CodexianPlugin extends Plugin {
       id: 'open-view',
       name: t('commands.openView.name'),
       callback: () => {
-        this.activateView();
+        runAsync(() => this.activateView());
       },
     });
 
@@ -141,7 +142,7 @@ export default class CodexianPlugin extends Plugin {
         if (!this.canCreateNewTab()) return false;
 
         if (!checking) {
-          void this.openNewTab();
+          runAsync(() => this.openNewTab());
         }
         return true;
       },
@@ -163,7 +164,7 @@ export default class CodexianPlugin extends Plugin {
         if (activeTab.state.isStreaming) return false;
 
         if (!checking) {
-          tabManager.createNewConversation();
+          runAsync(() => tabManager.createNewConversation());
         }
         return true;
       },
@@ -182,7 +183,9 @@ export default class CodexianPlugin extends Plugin {
         if (!checking) {
           const activeTabId = tabManager.getActiveTabId();
           if (activeTabId) {
-            tabManager.closeTab(activeTabId);
+            runAsync(async () => {
+              await tabManager.closeTab(activeTabId);
+            });
           }
         }
         return true;
@@ -194,15 +197,17 @@ export default class CodexianPlugin extends Plugin {
     this.addSettingTab(new CodexianSettingTab(this.app, this));
   }
 
-  async onunload() {
+  onunload(): void {
     // Ensures state is saved even if Obsidian quits without calling onClose()
-    for (const view of this.getAllViews()) {
-      const tabManager = view.getTabManager();
-      if (tabManager) {
-        const state = tabManager.getPersistedState();
-        await this.persistTabManagerState(state);
+    runAsync(async () => {
+      for (const view of this.getAllViews()) {
+        const tabManager = view.getTabManager();
+        if (tabManager) {
+          const state = tabManager.getPersistedState();
+          await this.persistTabManagerState(state);
+        }
       }
-    }
+    });
   }
 
   async activateView() {
@@ -221,7 +226,7 @@ export default class CodexianPlugin extends Plugin {
     }
 
     if (leaf) {
-      workspace.revealLeaf(leaf);
+      void workspace.revealLeaf(leaf);
     }
   }
 
@@ -372,7 +377,7 @@ export default class CodexianPlugin extends Plugin {
     this.settings = {
       ...DEFAULT_CODEXIAN_SETTINGS,
       ...codexian,
-    } as CodexianSettings;
+    };
     const resolvedLocale = resolveLocalePreference(this.settings.locale, getObsidianLocale(this.app));
     const normalizedWorkflow = normalizeKnowledgeWorkflowSettingsForLocale(
       this.settings.knowledgeWorkflow,
@@ -397,7 +402,7 @@ export default class CodexianPlugin extends Plugin {
       }
     }
     const didNormalizeProviderSelection = ProviderSettingsCoordinator.normalizeProviderSelection(
-      this.settings as unknown as Record<string, unknown>,
+      this.settings,
     );
     const didNormalizeModelVariants = this.normalizeModelVariantSettings();
 
@@ -431,7 +436,7 @@ export default class CodexianPlugin extends Plugin {
     const { changed, invalidatedConversations } = this.reconcileModelWithEnvironment();
 
     ProviderSettingsCoordinator.projectActiveProviderState(
-      this.settings as unknown as Record<string, unknown>,
+      this.settings,
     );
 
     if (changed || didNormalizeModelVariants || didNormalizeProviderSelection || normalizedWorkflow.changed) {
@@ -466,16 +471,16 @@ export default class CodexianPlugin extends Plugin {
 
   normalizeModelVariantSettings(): boolean {
     return ProviderSettingsCoordinator.normalizeAllModelVariants(
-      this.settings as unknown as Record<string, unknown>,
+      this.settings,
     );
   }
 
   async saveSettings() {
     ProviderSettingsCoordinator.normalizeProviderSelection(
-      this.settings as unknown as Record<string, unknown>,
+      this.settings,
     );
     ProviderSettingsCoordinator.persistProjectedProviderState(
-      this.settings as unknown as Record<string, unknown>,
+      this.settings,
     );
 
     await this.storage.saveCodexianSettings(this.settings);
@@ -598,18 +603,18 @@ export default class CodexianPlugin extends Plugin {
   /** Returns the runtime environment variables (fixed at plugin load). */
   getActiveEnvironmentVariables(
     providerId: ProviderId = ProviderRegistry.resolveSettingsProviderId(
-      this.settings as unknown as Record<string, unknown>,
+      this.settings,
     ),
   ): string {
     return getRuntimeEnvironmentText(
-      this.settings as unknown as Record<string, unknown>,
+      this.settings,
       providerId,
     );
   }
 
   getEnvironmentVariablesForScope(scope: EnvironmentScope): string {
     return getScopedEnvironmentVariables(
-      this.settings as unknown as Record<string, unknown>,
+      this.settings,
       scope,
     );
   }
@@ -620,7 +625,7 @@ export default class CodexianPlugin extends Plugin {
       return null;
     }
 
-    return cliResolver.resolveFromSettings(this.settings as unknown as Record<string, unknown>);
+    return cliResolver.resolveFromSettings(this.settings);
   }
 
   private reconcileModelWithEnvironment(providerIds: ProviderId[] = ProviderRegistry.getRegisteredProviderIds()): {
@@ -628,7 +633,7 @@ export default class CodexianPlugin extends Plugin {
     invalidatedConversations: Conversation[];
   } {
     return ProviderSettingsCoordinator.reconcileProviders(
-      this.settings as unknown as Record<string, unknown>,
+      this.settings,
       this.conversations,
       providerIds,
     );
@@ -646,7 +651,7 @@ export default class CodexianPlugin extends Plugin {
         continue;
       }
 
-      const providerId = scope.slice('provider:'.length) as ProviderId;
+      const providerId = scope.slice('provider:'.length);
       if (registeredProviderIds.has(providerId)) {
         affectedProviderIds.add(providerId);
       }

@@ -6,7 +6,6 @@ import type {
   ProviderUIOption,
 } from '../../../core/providers/types';
 import { t } from '../../../i18n/i18n';
-import type { TranslationKey } from '../../../i18n/types';
 import { OPENAI_PROVIDER_ICON } from '../../../shared/icons';
 import { getCodexModelOptions } from '../modelOptions';
 import { applyCodexModelDefaults } from '../settings';
@@ -25,30 +24,30 @@ function looksLikeCodexModel(model: string): boolean {
 
 function getEffortLevels(): ProviderReasoningOption[] {
   return [
-    { value: 'low', label: t('codex.settings.effort.low' as TranslationKey) },
-    { value: 'medium', label: t('codex.settings.effort.medium' as TranslationKey) },
-    { value: 'high', label: t('codex.settings.effort.high' as TranslationKey) },
-    { value: 'xhigh', label: t('codex.settings.effort.xhigh' as TranslationKey) },
+    { value: 'low', label: t('codex.settings.effort.low') },
+    { value: 'medium', label: t('codex.settings.effort.medium') },
+    { value: 'high', label: t('codex.settings.effort.high') },
+    { value: 'xhigh', label: t('codex.settings.effort.xhigh') },
   ];
 }
 
 function getCodexPermissionModeToggle(): ProviderPermissionModeToggleConfig {
   return {
     inactiveValue: 'normal',
-    inactiveLabel: t('codex.settings.permissionMode.safe' as TranslationKey),
+    inactiveLabel: t('codex.settings.permissionMode.safe'),
     activeValue: 'yolo',
-    activeLabel: t('codex.settings.permissionMode.yolo' as TranslationKey),
+    activeLabel: t('codex.settings.permissionMode.yolo'),
     planValue: 'plan',
-    planLabel: t('codex.settings.permissionMode.plan' as TranslationKey),
+    planLabel: t('codex.settings.permissionMode.plan'),
   };
 }
 
 function getCodexServiceTierToggle(): ProviderServiceTierToggleConfig {
   return {
     inactiveValue: 'default',
-    inactiveLabel: t('codex.settings.serviceTier.standard' as TranslationKey),
+    inactiveLabel: t('codex.settings.serviceTier.standard'),
     activeValue: 'fast',
-    activeLabel: t('codex.settings.serviceTier.fast' as TranslationKey),
+    activeLabel: t('codex.settings.serviceTier.fast'),
     description: FAST_TIER_CODEX_DESCRIPTION,
   };
 }

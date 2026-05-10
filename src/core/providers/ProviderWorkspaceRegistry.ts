@@ -38,7 +38,7 @@ export class ProviderWorkspaceRegistry {
   }
 
   static async initializeAll(plugin: CodexianPlugin): Promise<void> {
-    const providerIds = Object.keys(this.registrations) as ProviderId[];
+    const providerIds = Object.keys(this.registrations);
     const storage = plugin.storage;
     const vaultAdapter = storage.getAdapter();
     const homeAdapter = new HomeFileAdapter();

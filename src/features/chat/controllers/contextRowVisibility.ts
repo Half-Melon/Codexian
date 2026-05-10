@@ -1,15 +1,17 @@
-export function updateContextRowHasContent(contextRowEl: HTMLElement): void {
-  const editorIndicator = contextRowEl.querySelector('.codexian-selection-indicator') as HTMLElement | null;
-  const browserIndicator = contextRowEl.querySelector('.codexian-browser-selection-indicator') as HTMLElement | null;
-  const canvasIndicator = contextRowEl.querySelector('.codexian-canvas-indicator') as HTMLElement | null;
-  const fileIndicator = contextRowEl.querySelector('.codexian-file-indicator') as HTMLElement | null;
-  const imagePreview = contextRowEl.querySelector('.codexian-image-preview') as HTMLElement | null;
+import { isElementVisible } from '../../../utils/dom';
 
-  const hasEditorSelection = editorIndicator?.style.display === 'block';
-  const hasBrowserSelection = browserIndicator !== null && browserIndicator.style.display === 'block';
-  const hasCanvasSelection = canvasIndicator?.style.display === 'block';
-  const hasFileChips = fileIndicator?.style.display === 'flex';
-  const hasImageChips = imagePreview?.style.display === 'flex';
+export function updateContextRowHasContent(contextRowEl: HTMLElement): void {
+  const editorIndicator = contextRowEl.querySelector('.codexian-selection-indicator');
+  const browserIndicator = contextRowEl.querySelector('.codexian-browser-selection-indicator');
+  const canvasIndicator = contextRowEl.querySelector('.codexian-canvas-indicator');
+  const fileIndicator = contextRowEl.querySelector('.codexian-file-indicator');
+  const imagePreview = contextRowEl.querySelector('.codexian-image-preview');
+
+  const hasEditorSelection = isElementVisible(editorIndicator);
+  const hasBrowserSelection = isElementVisible(browserIndicator);
+  const hasCanvasSelection = isElementVisible(canvasIndicator);
+  const hasFileChips = isElementVisible(fileIndicator);
+  const hasImageChips = isElementVisible(imagePreview);
 
   contextRowEl.classList.toggle(
     'has-content',

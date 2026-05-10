@@ -1,3 +1,20 @@
+import type { EventEmitter } from 'events';
+import { createRequire } from 'module';
+
+const nodeRequire = createRequire(__filename);
+const eventsModule = nodeRequire('events') as EventsModule;
+
+type SetMaxListeners = (n: number, ...eventTargets: EventTargetLike[]) => void;
+
+type PatchableSetMaxListeners = SetMaxListeners & {
+  __electronPatched?: boolean;
+};
+
+type EventTargetLike = EventTarget | EventEmitter;
+type EventsModule = {
+  setMaxListeners: PatchableSetMaxListeners;
+};
+
 function isAbortSignalLike(target: unknown): boolean {
   if (!target || typeof target !== 'object') return false;
   const t = target as Record<string, unknown>;
@@ -19,16 +36,15 @@ function isAbortSignalLike(target: unknown): boolean {
  * See: #143, #239, #284, #339, #342, #370, #374, #387
  */
 export function patchSetMaxListenersForElectron(): void {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const events = require('events');
+  const setMaxListeners = eventsModule.setMaxListeners;
 
-  if (events.setMaxListeners.__electronPatched) return;
+  if (setMaxListeners.__electronPatched) return;
 
-  const original = events.setMaxListeners;
+  const original = eventsModule.setMaxListeners;
 
   const patched = function patchedSetMaxListeners(this: unknown, ...args: unknown[]) {
     try {
-      return original.apply(this, args);
+      return original(args[0] as number, ...(args.slice(1) as EventTargetLike[]));
     } catch (error) {
       // Only swallow the Electron cross-realm AbortSignal error.
       // Duck-type check avoids depending on Node.js internal error message text.
@@ -39,7 +55,7 @@ export function patchSetMaxListenersForElectron(): void {
       throw error;
     }
   };
-  patched.__electronPatched = true;
+  (patched as PatchableSetMaxListeners).__electronPatched = true;
 
-  events.setMaxListeners = patched;
+  eventsModule.setMaxListeners = patched as PatchableSetMaxListeners;
 }

@@ -12,6 +12,7 @@ const baseConfig = {
     '^@test/(.*)$': '<rootDir>/tests/$1',
     '^obsidian$': '<rootDir>/tests/__mocks__/obsidian.ts',
   },
+  setupFilesAfterEnv: ['<rootDir>/tests/setup.ts'],
 };
 
 module.exports = {

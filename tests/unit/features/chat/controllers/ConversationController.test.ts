@@ -914,7 +914,8 @@ describe('ConversationController', () => {
       const clickHandlers = content?._eventListeners?.get('click');
       expect(clickHandlers).toBeDefined();
 
-      await clickHandlers![0]({ stopPropagation: jest.fn() });
+      clickHandlers![0]({ stopPropagation: jest.fn() });
+      await new Promise<void>((resolve) => setImmediate(resolve));
 
       expect(deps.plugin.switchConversation).toHaveBeenCalledWith('conv-2');
     });

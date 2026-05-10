@@ -23,6 +23,31 @@ const USER_LANGUAGE_OPTIONS: Array<{ value: UserLanguagePreference; label: strin
   { value: 'zh-CN', label: '简体中文' },
 ];
 
+function getNestedTranslation(dict: Record<string, unknown>, key: TranslationKey): unknown {
+  const keys = key.split('.');
+  let value: unknown = dict;
+
+  for (const k of keys) {
+    if (value && typeof value === 'object' && k in value) {
+      value = (value as Record<string, unknown>)[k];
+    } else {
+      return undefined;
+    }
+  }
+
+  return value;
+}
+
+function interpolateTranslation(
+  value: string,
+  params?: Record<string, string | number>,
+): string {
+  if (!params) return value;
+  return value.replace(/\{(\w+)\}/g, (_, param) => {
+    return params[param]?.toString() ?? `{${param}}`;
+  });
+}
+
 export function isUserLanguagePreference(value: unknown): value is UserLanguagePreference {
   return value === 'auto' || value === 'en' || value === 'zh-CN';
 }
@@ -52,58 +77,27 @@ export function getUserLanguageOptions(): Array<{ value: UserLanguagePreference;
  */
 export function t(key: TranslationKey, params?: Record<string, string | number>): string {
   const dict = translations[currentLocale];
-
-  const keys = key.split('.');
-  let value: any = dict;
-
-  for (const k of keys) {
-    if (value && typeof value === 'object' && k in value) {
-      value = value[k];
-    } else {
-      if (currentLocale !== DEFAULT_LOCALE) {
-        return tFallback(key, params);
-      }
-      return key;
-    }
-  }
+  const value = getNestedTranslation(dict, key);
 
   if (typeof value !== 'string') {
+    if (currentLocale !== DEFAULT_LOCALE) {
+      return tFallback(key, params);
+    }
     return key;
   }
 
-  if (params) {
-    return value.replace(/\{(\w+)\}/g, (_, param) => {
-      return params[param]?.toString() ?? `{${param}}`;
-    });
-  }
-
-  return value;
+  return interpolateTranslation(value, params);
 }
 
 function tFallback(key: TranslationKey, params?: Record<string, string | number>): string {
   const dict = translations[DEFAULT_LOCALE];
-  const keys = key.split('.');
-  let value: any = dict;
-
-  for (const k of keys) {
-    if (value && typeof value === 'object' && k in value) {
-      value = value[k];
-    } else {
-      return key;
-    }
-  }
+  const value = getNestedTranslation(dict, key);
 
   if (typeof value !== 'string') {
     return key;
   }
 
-  if (params) {
-    return value.replace(/\{(\w+)\}/g, (_, param) => {
-      return params[param]?.toString() ?? `{${param}}`;
-    });
-  }
-
-  return value;
+  return interpolateTranslation(value, params);
 }
 
 /**

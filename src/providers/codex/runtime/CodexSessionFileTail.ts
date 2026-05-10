@@ -373,7 +373,7 @@ export function mapEventMsgEvent(
 
 export function mapResponseItemEvent(
   event: Record<string, unknown>,
-  sessionId: string,
+  _sessionId: string,
   lineIndex: number,
   state: SessionTailState,
 ): StreamChunk[] {
@@ -561,7 +561,7 @@ function buildUsageInfo(
 // ---------------------------------------------------------------------------
 
 function sleep(ms: number): Promise<void> {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise(resolve => activeWindow.setTimeout(resolve, ms));
 }
 
 export class CodexFileTailEngine {

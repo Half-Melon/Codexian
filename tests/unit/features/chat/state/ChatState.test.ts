@@ -2,6 +2,10 @@ import { ChatState, createInitialState } from '@/features/chat/state/ChatState';
 import type { ChatStateCallbacks } from '@/features/chat/state/types';
 
 describe('ChatState', () => {
+  let nextTimerId = 1;
+
+  const createTimerId = (): number => nextTimerId++;
+
   describe('createInitialState', () => {
     it('returns correct default values', () => {
       const state = createInitialState();
@@ -193,10 +197,9 @@ describe('ChatState', () => {
 
     it('stores thinkingIndicatorTimeout', () => {
       const chatState = new ChatState();
-      const timeout = setTimeout(() => {}, 100);
+      const timeout = createTimerId();
       chatState.thinkingIndicatorTimeout = timeout;
       expect(chatState.thinkingIndicatorTimeout).toBe(timeout);
-      clearTimeout(timeout);
     });
   });
 
@@ -328,18 +331,17 @@ describe('ChatState', () => {
 
     it('stores flavorTimerInterval', () => {
       const chatState = new ChatState();
-      const interval = setInterval(() => {}, 1000);
+      const interval = createTimerId();
       chatState.flavorTimerInterval = interval;
       expect(chatState.flavorTimerInterval).toBe(interval);
-      clearInterval(interval);
     });
   });
 
   describe('clearFlavorTimerInterval', () => {
     it('clears active interval', () => {
       const chatState = new ChatState();
-      const clearSpy = jest.spyOn(global, 'clearInterval');
-      const interval = setInterval(() => {}, 1000);
+      const clearSpy = jest.spyOn(activeWindow, 'clearInterval');
+      const interval = createTimerId();
       chatState.flavorTimerInterval = interval;
 
       chatState.clearFlavorTimerInterval();
@@ -351,7 +353,7 @@ describe('ChatState', () => {
 
     it('is a no-op when no interval is active', () => {
       const chatState = new ChatState();
-      const clearSpy = jest.spyOn(global, 'clearInterval');
+      const clearSpy = jest.spyOn(activeWindow, 'clearInterval');
 
       chatState.clearFlavorTimerInterval();
 
@@ -369,9 +371,9 @@ describe('ChatState', () => {
       chatState.currentThinkingState = {} as any;
       chatState.isStreaming = true;
       chatState.cancelRequested = true;
-      const timeout = setTimeout(() => {}, 1000);
+      const timeout = createTimerId();
       chatState.thinkingIndicatorTimeout = timeout;
-      const interval = setInterval(() => {}, 1000);
+      const interval = createTimerId();
       chatState.flavorTimerInterval = interval;
       chatState.responseStartTime = 12345;
 

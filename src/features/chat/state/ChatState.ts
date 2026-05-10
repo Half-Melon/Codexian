@@ -224,11 +224,11 @@ export class ChatState {
     this.state.queueIndicatorEl = value;
   }
 
-  get thinkingIndicatorTimeout(): ReturnType<typeof setTimeout> | null {
+  get thinkingIndicatorTimeout(): number | null {
     return this.state.thinkingIndicatorTimeout;
   }
 
-  set thinkingIndicatorTimeout(value: ReturnType<typeof setTimeout> | null) {
+  set thinkingIndicatorTimeout(value: number | null) {
     this.state.thinkingIndicatorTimeout = value;
   }
 
@@ -325,11 +325,11 @@ export class ChatState {
     this.state.responseStartTime = value;
   }
 
-  get flavorTimerInterval(): ReturnType<typeof setInterval> | null {
+  get flavorTimerInterval(): number | null {
     return this.state.flavorTimerInterval;
   }
 
-  set flavorTimerInterval(value: ReturnType<typeof setInterval> | null) {
+  set flavorTimerInterval(value: number | null) {
     this.state.flavorTimerInterval = value;
   }
 
@@ -363,7 +363,7 @@ export class ChatState {
 
   clearFlavorTimerInterval(): void {
     if (this.state.flavorTimerInterval) {
-      clearInterval(this.state.flavorTimerInterval);
+      activeWindow.clearInterval(this.state.flavorTimerInterval);
       this.state.flavorTimerInterval = null;
     }
   }
@@ -377,7 +377,7 @@ export class ChatState {
     this.state.cancelRequested = false;
     // Clear thinking indicator timeout
     if (this.state.thinkingIndicatorTimeout) {
-      clearTimeout(this.state.thinkingIndicatorTimeout);
+      activeWindow.clearTimeout(this.state.thinkingIndicatorTimeout);
       this.state.thinkingIndicatorTimeout = null;
     }
     // Clear response timer

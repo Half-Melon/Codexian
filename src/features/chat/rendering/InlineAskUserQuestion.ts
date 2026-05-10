@@ -1,5 +1,6 @@
 import type { AskUserQuestionItem, AskUserQuestionOption } from '../../../core/types/tools';
 import { t } from '../../../i18n/i18n';
+import { stringifySafe } from '../../../utils/dom';
 
 export interface InlineAskQuestionConfig {
   title?: string;
@@ -160,7 +161,7 @@ export class InlineAskUserQuestion {
     if (typeof obj.value === 'string') return obj.value;
     if (typeof obj.text === 'string') return obj.text;
     if (typeof obj.name === 'string') return obj.name;
-    return String(obj);
+    return stringifySafe(obj);
   }
 
   private extractValue(obj: Record<string, unknown>, fallback: string): string {
@@ -447,13 +448,13 @@ export class InlineAskUserQuestion {
       item.toggleClass('is-selected', isSelected);
 
       if (isMulti) {
-        const checkSpan = item.querySelector('.codexian-ask-check') as HTMLElement | null;
+        const checkSpan = item.querySelector('.codexian-ask-check');
         if (checkSpan) {
           checkSpan.textContent = isSelected ? '[\u2713] ' : '[ ] ';
           checkSpan.toggleClass('is-checked', isSelected);
         }
       } else {
-        const labelRow = item.querySelector('.codexian-ask-label-row') as HTMLElement | null;
+        const labelRow = item.querySelector('.codexian-ask-label-row');
         const existingMark = item.querySelector('.codexian-ask-check-mark');
         if (isSelected && !existingMark && labelRow) {
           labelRow.createSpan({ text: ' \u2713', cls: 'codexian-ask-check-mark' });
@@ -486,7 +487,7 @@ export class InlineAskUserQuestion {
 
         if (item.hasClass('codexian-ask-custom-item')) {
           const input = item.querySelector('.codexian-ask-custom-text') as HTMLInputElement;
-          if (input && document.activeElement === input) {
+          if (input && activeDocument.activeElement === input) {
             input.blur();
             this.isInputFocused = false;
           }
@@ -557,7 +558,7 @@ export class InlineAskUserQuestion {
         e.preventDefault();
         e.stopPropagation();
         this.isInputFocused = false;
-        (document.activeElement as HTMLElement)?.blur();
+        (activeDocument.activeElement as HTMLElement)?.blur();
         this.rootEl.focus();
         return;
       }
@@ -565,7 +566,7 @@ export class InlineAskUserQuestion {
         e.preventDefault();
         e.stopPropagation();
         this.isInputFocused = false;
-        (document.activeElement as HTMLElement)?.blur();
+        (activeDocument.activeElement as HTMLElement)?.blur();
         if (e.key === 'Tab' && e.shiftKey) {
           this.switchTab(this.activeTabIndex - 1);
         } else {

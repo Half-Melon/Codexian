@@ -1,7 +1,7 @@
 import { Notice } from 'obsidian';
 
 import { t } from '../../../i18n/i18n';
-import type { TranslationKey } from '../../../i18n/types';
+import { runAsync } from '../../../utils/dom';
 
 export interface BangBashModeCallbacks {
   onSubmit: (command: string) => Promise<void>;
@@ -70,7 +70,7 @@ export class BangBashModeManager {
     if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) {
       e.preventDefault();
       if (this.state.rawCommand.trim()) {
-        this.submit();
+        runAsync(() => this.submit());
       }
       return true;
     }
@@ -104,7 +104,7 @@ export class BangBashModeManager {
       this.clear();
       await this.callbacks.onSubmit(rawCommand);
     } catch (e) {
-      new Notice(t('notices.commandFailed' as TranslationKey, {
+      new Notice(t('notices.commandFailed', {
         message: e instanceof Error ? e.message : String(e),
       }));
     } finally {

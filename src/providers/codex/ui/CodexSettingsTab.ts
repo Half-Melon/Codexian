@@ -5,7 +5,7 @@ import { ProviderSettingsCoordinator } from '../../../core/providers/ProviderSet
 import type { ProviderSettingsTabRenderer } from '../../../core/providers/types';
 import { renderEnvironmentSettingsSection } from '../../../features/settings/ui/EnvironmentSettingsSection';
 import { t } from '../../../i18n/i18n';
-import type { TranslationKey } from '../../../i18n/types';
+import { hideElement, runAsync, setElementVisible, showElement } from '../../../utils/dom';
 import { getHostnameKey } from '../../../utils/env';
 import { expandHomePath } from '../../../utils/path';
 import { getCodexWorkspaceServices } from '../app/CodexWorkspaceServices';
@@ -45,8 +45,8 @@ export const codexSettingsTabRenderer: ProviderSettingsTabRenderer = {
     new Setting(container).setName(t('settings.setup')).setHeading();
 
     new Setting(container)
-      .setName(t('codex.settings.enableProvider.name' as TranslationKey))
-      .setDesc(t('codex.settings.enableProvider.desc' as TranslationKey))
+      .setName(t('codex.settings.enableProvider.name'))
+      .setDesc(t('codex.settings.enableProvider.desc'))
       .addToggle((toggle) =>
         toggle
           .setValue(codexSettings.enabled)
@@ -59,12 +59,12 @@ export const codexSettingsTabRenderer: ProviderSettingsTabRenderer = {
 
     if (isWindowsHost) {
       new Setting(container)
-        .setName(t('codex.settings.installationMethod.name' as TranslationKey))
-        .setDesc(t('codex.settings.installationMethod.desc' as TranslationKey))
+        .setName(t('codex.settings.installationMethod.name'))
+        .setDesc(t('codex.settings.installationMethod.desc'))
         .addDropdown((dropdown) => {
           dropdown
-            .addOption('native-windows', t('codex.settings.installationMethod.nativeWindows' as TranslationKey))
-            .addOption('wsl', t('codex.settings.installationMethod.wsl' as TranslationKey))
+            .addOption('native-windows', t('codex.settings.installationMethod.nativeWindows'))
+            .addOption('wsl', t('codex.settings.installationMethod.wsl'))
             .setValue(installationMethod)
             .onChange(async (value) => {
               installationMethod = value === 'wsl' ? 'wsl' : 'native-windows';
@@ -78,20 +78,20 @@ export const codexSettingsTabRenderer: ProviderSettingsTabRenderer = {
     const getCliPathCopy = (): { desc: string; placeholder: string } => {
       if (!isWindowsHost) {
         return {
-          desc: t('codex.settings.cliPath.desc' as TranslationKey),
+          desc: t('codex.settings.cliPath.desc'),
           placeholder: '/usr/local/bin/codex',
         };
       }
 
       if (installationMethod === 'wsl') {
         return {
-          desc: t('codex.settings.cliPath.descWsl' as TranslationKey),
+          desc: t('codex.settings.cliPath.descWsl'),
           placeholder: 'codex',
         };
       }
 
       return {
-        desc: t('codex.settings.cliPath.descWindows' as TranslationKey),
+        desc: t('codex.settings.cliPath.descWindows'),
         placeholder: 'C:\\Users\\you\\AppData\\Roaming\\npm\\codex.exe',
       };
     };
@@ -99,23 +99,18 @@ export const codexSettingsTabRenderer: ProviderSettingsTabRenderer = {
     const shouldValidateCliPathAsFile = (): boolean => !isWindowsHost || installationMethod !== 'wsl';
 
     const cliPathSetting = new Setting(container)
-      .setName(t('codex.settings.cliPath.name' as TranslationKey, { host: hostnameKey }))
+      .setName(t('codex.settings.cliPath.name', { host: hostnameKey }))
       .setDesc(getCliPathCopy().desc);
 
     const validationEl = container.createDiv({ cls: 'codexian-cli-path-validation' });
-    validationEl.style.color = 'var(--text-error)';
-    validationEl.style.fontSize = '0.85em';
-    validationEl.style.marginTop = '-0.5em';
-    validationEl.style.marginBottom = '0.5em';
-    validationEl.style.display = 'none';
-
+    hideElement(validationEl);
     const validatePath = (value: string): string | null => {
       const trimmed = value.trim();
       if (!trimmed) return null;
 
       if (!shouldValidateCliPathAsFile()) {
         if (isWindowsStyleCliReference(trimmed)) {
-          return t('codex.settings.cliPath.validation.wslWindowsPath' as TranslationKey);
+          return t('codex.settings.cliPath.validation.wslWindowsPath');
         }
         return null;
       }
@@ -136,16 +131,16 @@ export const codexSettingsTabRenderer: ProviderSettingsTabRenderer = {
       const error = validatePath(value);
       if (error) {
         validationEl.setText(error);
-        validationEl.style.display = 'block';
+        showElement(validationEl, 'block');
         if (inputEl) {
-          inputEl.style.borderColor = 'var(--text-error)';
+          inputEl.addClass('codexian-settings-input-error');
         }
         return false;
       }
 
-      validationEl.style.display = 'none';
+      hideElement(validationEl);
       if (inputEl) {
-        inputEl.style.borderColor = '';
+        inputEl.removeClass('codexian-settings-input-error');
       }
       return true;
     };
@@ -163,7 +158,7 @@ export const codexSettingsTabRenderer: ProviderSettingsTabRenderer = {
         updateCliPathValidation(cliPathInputEl.value, cliPathInputEl);
       }
       if (wslDistroSettingEl) {
-        wslDistroSettingEl.style.display = installationMethod === 'wsl' ? '' : 'none';
+        setElementVisible(wslDistroSettingEl, installationMethod === 'wsl', 'block');
       }
       if (wslDistroInputEl) {
         wslDistroInputEl.disabled = installationMethod !== 'wsl';
@@ -202,7 +197,6 @@ export const codexSettingsTabRenderer: ProviderSettingsTabRenderer = {
           await persistCliPath(value);
         });
       text.inputEl.addClass('codexian-settings-cli-path-input');
-      text.inputEl.style.width = '100%';
       cliPathInputEl = text.inputEl;
 
       updateCliPathValidation(currentValue, text.inputEl);
@@ -210,8 +204,8 @@ export const codexSettingsTabRenderer: ProviderSettingsTabRenderer = {
 
     if (isWindowsHost) {
       const wslDistroSetting = new Setting(container)
-        .setName(t('codex.settings.wslDistro.name' as TranslationKey))
-        .setDesc(t('codex.settings.wslDistro.desc' as TranslationKey));
+        .setName(t('codex.settings.wslDistro.name'))
+        .setDesc(t('codex.settings.wslDistro.desc'));
 
       wslDistroSettingEl = wslDistroSetting.settingEl;
       wslDistroSetting.addText((text) => {
@@ -224,7 +218,6 @@ export const codexSettingsTabRenderer: ProviderSettingsTabRenderer = {
           });
 
         text.inputEl.addClass('codexian-settings-cli-path-input');
-        text.inputEl.style.width = '100%';
         text.inputEl.disabled = installationMethod !== 'wsl';
         wslDistroInputEl = text.inputEl;
       });
@@ -241,8 +234,8 @@ export const codexSettingsTabRenderer: ProviderSettingsTabRenderer = {
       .setDesc(t('settings.codexSafeMode.desc'))
       .addDropdown((dropdown) => {
         dropdown
-          .addOption('workspace-write', 'workspace-write')
-          .addOption('read-only', 'read-only')
+          .addOption('workspace-write', 'workspace-write'.toLocaleLowerCase())
+          .addOption('read-only', 'read-only'.toLocaleLowerCase())
           .setValue(codexSettings.safeMode)
           .onChange(async (value) => {
             updateCodexProviderSettings(
@@ -258,15 +251,15 @@ export const codexSettingsTabRenderer: ProviderSettingsTabRenderer = {
     new Setting(container).setName(t('settings.models')).setHeading();
 
     const SUMMARY_OPTIONS: { value: string; label: string }[] = [
-      { value: 'auto', label: t('codex.settings.reasoningSummary.auto' as TranslationKey) },
-      { value: 'concise', label: t('codex.settings.reasoningSummary.concise' as TranslationKey) },
-      { value: 'detailed', label: t('codex.settings.reasoningSummary.detailed' as TranslationKey) },
-      { value: 'none', label: t('codex.settings.reasoningSummary.none' as TranslationKey) },
+      { value: 'auto', label: t('codex.settings.reasoningSummary.auto') },
+      { value: 'concise', label: t('codex.settings.reasoningSummary.concise') },
+      { value: 'detailed', label: t('codex.settings.reasoningSummary.detailed') },
+      { value: 'none', label: t('codex.settings.reasoningSummary.none') },
     ];
 
     new Setting(container)
-      .setName(t('codex.settings.customModels.name' as TranslationKey))
-      .setDesc(t('codex.settings.customModels.desc' as TranslationKey))
+      .setName(t('codex.settings.customModels.name'))
+      .setDesc(t('codex.settings.customModels.desc'))
       .addTextArea((text) => {
         let pendingCustomModels = codexSettings.customModels;
         let savedCustomModels = codexSettings.customModels;
@@ -355,8 +348,8 @@ export const codexSettingsTabRenderer: ProviderSettingsTabRenderer = {
       });
 
     new Setting(container)
-      .setName(t('codex.settings.reasoningSummary.name' as TranslationKey))
-      .setDesc(t('codex.settings.reasoningSummary.desc' as TranslationKey))
+      .setName(t('codex.settings.reasoningSummary.name'))
+      .setDesc(t('codex.settings.reasoningSummary.desc'))
       .addDropdown((dropdown) => {
         for (const opt of SUMMARY_OPTIONS) {
           dropdown.addOption(opt.value, opt.label);
@@ -375,12 +368,12 @@ export const codexSettingsTabRenderer: ProviderSettingsTabRenderer = {
 
     const codexCatalog = codexWorkspace.commandCatalog;
     if (codexCatalog) {
-      new Setting(container).setName(t('codex.settings.skills.heading' as TranslationKey)).setHeading();
+      new Setting(container).setName(t('codex.settings.skills.heading')).setHeading();
 
       const skillsDesc = container.createDiv({ cls: 'codexian-sp-settings-desc' });
       skillsDesc.createEl('p', {
         cls: 'setting-item-description',
-        text: t('codex.settings.skills.desc' as TranslationKey),
+        text: t('codex.settings.skills.desc'),
       });
 
       const skillsContainer = container.createDiv({ cls: 'codexian-slash-commands-container' });
@@ -388,24 +381,26 @@ export const codexSettingsTabRenderer: ProviderSettingsTabRenderer = {
     }
 
     context.renderHiddenProviderCommandSetting(container, 'codex', {
-      name: t('codex.settings.hiddenSkills.name' as TranslationKey),
-      desc: t('codex.settings.hiddenSkills.desc' as TranslationKey),
+      name: t('codex.settings.hiddenSkills.name'),
+      desc: t('codex.settings.hiddenSkills.desc'),
       placeholder: 'analyze\nexplain\nfix',
     });
 
     // --- Subagents ---
 
-    new Setting(container).setName(t('codex.settings.subagents.heading' as TranslationKey)).setHeading();
+    new Setting(container).setName(t('codex.settings.subagents.heading')).setHeading();
 
     const subagentDesc = container.createDiv({ cls: 'codexian-sp-settings-desc' });
     subagentDesc.createEl('p', {
       cls: 'setting-item-description',
-      text: t('codex.settings.subagents.desc' as TranslationKey),
+      text: t('codex.settings.subagents.desc'),
     });
 
     const subagentContainer = container.createDiv({ cls: 'codexian-slash-commands-container' });
     new CodexSubagentSettings(subagentContainer, codexWorkspace.subagentStorage, context.plugin.app, () => {
-      void codexWorkspace.refreshAgentMentions?.();
+      runAsync(async () => {
+        await codexWorkspace.refreshAgentMentions?.();
+      });
     });
 
     // --- MCP Servers ---
@@ -413,11 +408,11 @@ export const codexSettingsTabRenderer: ProviderSettingsTabRenderer = {
     new Setting(container).setName(t('settings.mcpServers.name')).setHeading();
     const mcpNotice = container.createDiv({ cls: 'codexian-mcp-settings-desc' });
     const mcpDesc = mcpNotice.createEl('p', { cls: 'setting-item-description' });
-    mcpDesc.appendText(t('codex.settings.mcp.descPrefix' as TranslationKey));
-    mcpDesc.createEl('code', { text: 'codex mcp' });
-    mcpDesc.appendText(t('codex.settings.mcp.descSuffix' as TranslationKey));
+    mcpDesc.appendText(t('codex.settings.mcp.descPrefix'));
+    mcpDesc.createEl('code', { text: 'codex mcp'.toLocaleLowerCase() });
+    mcpDesc.appendText(t('codex.settings.mcp.descSuffix'));
     mcpDesc.createEl('a', {
-      text: t('codex.settings.mcp.learnMore' as TranslationKey),
+      text: t('codex.settings.mcp.learnMore'),
       href: 'https://developers.openai.com/codex/mcp',
     });
 
@@ -428,8 +423,8 @@ export const codexSettingsTabRenderer: ProviderSettingsTabRenderer = {
       plugin: context.plugin,
       scope: 'provider:codex',
       heading: t('settings.environment'),
-      name: t('codex.settings.environment.codex.name' as TranslationKey),
-      desc: t('codex.settings.environment.codex.desc' as TranslationKey),
+      name: t('codex.settings.environment.codex.name'),
+      desc: t('codex.settings.environment.codex.desc'),
       placeholder: `OPENAI_API_KEY=your-key\nOPENAI_BASE_URL=https://api.openai.com/v1\nOPENAI_MODEL=${DEFAULT_CODEX_PRIMARY_MODEL}\nCODEX_SANDBOX=workspace-write`,
       renderCustomContextLimits: (target) => context.renderCustomContextLimits(target, 'codex'),
     });

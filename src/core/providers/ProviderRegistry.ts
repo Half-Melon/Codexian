@@ -86,7 +86,7 @@ export class ProviderRegistry {
   }
 
   static getRegisteredProviderIds(): ProviderId[] {
-    return Object.keys(this.registrations) as ProviderId[];
+    return Object.keys(this.registrations);
   }
 
   static getEnabledProviderIds(settings: Record<string, unknown>): ProviderId[] {
@@ -108,7 +108,7 @@ export class ProviderRegistry {
   static resolveSettingsProviderId(settings: Record<string, unknown>): ProviderId {
     const current = settings.settingsProvider;
     if (typeof current === 'string') {
-      const currentProvider = current as ProviderId;
+      const currentProvider = current;
       if (
         this.getRegisteredProviderIds().includes(currentProvider)
         && this.isEnabled(currentProvider, settings)

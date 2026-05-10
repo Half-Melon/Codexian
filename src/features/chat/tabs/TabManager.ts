@@ -418,7 +418,7 @@ export class TabManager implements TabManagerInterface {
     const isSameView = crossViewResult?.view === this.view;
     if (crossViewResult && !isSameView) {
       // Focus the other view and switch to its tab instead of opening duplicate
-      this.plugin.app.workspace.revealLeaf(crossViewResult.view.leaf);
+      void this.plugin.app.workspace.revealLeaf(crossViewResult.view.leaf);
       await crossViewResult.view.getTabManager()?.switchToTab(crossViewResult.tabId);
       return;
     }
@@ -718,10 +718,11 @@ export class TabManager implements TabManagerInterface {
       return [];
     }
 
-    const context = await this.buildProviderCommandContext(
+    const resolvedWarmupContext = warmupContext ?? await this.buildProviderWarmupContext(tab, providerId);
+    const context = this.buildProviderCommandContext(
       tab,
       providerId,
-      warmupContext ?? await this.buildProviderWarmupContext(tab, providerId),
+      resolvedWarmupContext,
     );
     const cached = this.providerCommandCache.get(tab.id);
     if (
@@ -757,7 +758,7 @@ export class TabManager implements TabManagerInterface {
   private isProviderCommandLoaderAvailable(providerId: ProviderId): boolean {
     const loader = ProviderWorkspaceRegistry.getRuntimeCommandLoader(providerId);
     if (!loader) return false;
-    return loader.isAvailable(this.plugin.settings as unknown as Record<string, unknown>);
+    return loader.isAvailable(this.plugin.settings);
   }
 
   private async prewarmProviderTab(tab: TabData): Promise<void> {
@@ -852,7 +853,7 @@ export class TabManager implements TabManagerInterface {
     warmupContext: ProviderWarmupContext,
   ): ProviderCommandContext {
     const providerSettings = ProviderSettingsCoordinator.getProviderSettingsSnapshot(
-      this.plugin.settings as unknown as Record<string, unknown>,
+      this.plugin.settings,
       providerId,
     );
 

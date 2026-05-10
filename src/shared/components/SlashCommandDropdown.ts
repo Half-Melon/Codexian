@@ -3,7 +3,6 @@ import type { ProviderCommandDropdownConfig } from '../../core/providers/command
 import type { ProviderCommandEntry } from '../../core/providers/commands/ProviderCommandEntry';
 import type { SlashCommand } from '../../core/types';
 import { t } from '../../i18n/i18n';
-import type { TranslationKey } from '../../i18n/types';
 import { normalizeArgumentHint } from '../../utils/slashCommand';
 
 interface DropdownItem {
@@ -131,7 +130,7 @@ export class SlashCommandDropdown {
     this.triggerStartIndex = triggerIndex;
     this.activeTriggerChar = triggerChar;
     const isAtPosition0 = triggerIndex === 0;
-    this.showDropdown(searchText, isAtPosition0);
+    void this.showDropdown(searchText, isAtPosition0);
   }
 
   handleKeydown(e: KeyboardEvent): boolean {
@@ -267,7 +266,7 @@ export class SlashCommandDropdown {
             displayPrefix: '/',
             insertPrefix: '/',
             isBuiltIn: true,
-            slashCommand: cmd as SlashCommand,
+            slashCommand: cmd,
           });
         }
       }
@@ -319,7 +318,7 @@ export class SlashCommandDropdown {
 
     if (this.filteredItems.length === 0) {
       const emptyEl = this.dropdownEl.createDiv({ cls: 'codexian-slash-empty' });
-      emptyEl.setText(t('chat.slash.noMatchingCommands' as TranslationKey));
+      emptyEl.setText(t('chat.slash.noMatchingCommands'));
     } else {
       for (let i = 0; i < this.filteredItems.length; i++) {
         const item = this.filteredItems[i];
@@ -375,12 +374,9 @@ export class SlashCommandDropdown {
     if (!this.dropdownEl || !this.isFixed) return;
 
     const inputRect = this.inputEl.getBoundingClientRect();
-    this.dropdownEl.style.position = 'fixed';
-    this.dropdownEl.style.bottom = `${window.innerHeight - inputRect.top + 4}px`;
+    this.dropdownEl.style.bottom = `${activeWindow.innerHeight - inputRect.top + 4}px`;
     this.dropdownEl.style.left = `${inputRect.left}px`;
-    this.dropdownEl.style.right = 'auto';
     this.dropdownEl.style.width = `${Math.max(inputRect.width, 280)}px`;
-    this.dropdownEl.style.zIndex = '10001';
   }
 
   private navigate(direction: number): void {

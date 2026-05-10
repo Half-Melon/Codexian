@@ -4,7 +4,6 @@ import { getToolIcon } from '../../../core/tools/toolIcons';
 import { TOOL_SPAWN_AGENT } from '../../../core/tools/toolNames';
 import type { SubagentInfo, ToolCallInfo } from '../../../core/types';
 import { t } from '../../../i18n/i18n';
-import type { TranslationKey } from '../../../i18n/types';
 import { setupCollapsible } from './collapsible';
 import {
   getToolLabel,
@@ -49,7 +48,7 @@ const SUBAGENT_TOOL_STATUS_ICONS: Partial<Record<ToolCallInfo['status'], string>
 };
 
 function extractSubagentDescription(input: Record<string, unknown>): string {
-  return (input.description as string) || t('chat.subagent.defaultDescription' as TranslationKey);
+  return (input.description as string) || t('chat.subagent.defaultDescription');
 }
 
 function extractSubagentPrompt(input: Record<string, unknown>): string {
@@ -85,20 +84,20 @@ function createSection(parentEl: HTMLElement, title: string, bodyClass?: string)
 function setPromptText(promptBodyEl: HTMLElement, prompt: string): void {
   promptBodyEl.empty();
   const textEl = promptBodyEl.createDiv({ cls: 'codexian-subagent-prompt-text' });
-  textEl.setText(prompt || t('chat.subagent.noPrompt' as TranslationKey));
+  textEl.setText(prompt || t('chat.subagent.noPrompt'));
 }
 
 function updateSyncHeaderAria(state: SubagentState): void {
   state.headerEl.setAttribute(
     'aria-label',
-    t('chat.subagent.headerAria' as TranslationKey, {
+    t('chat.subagent.headerAria', {
       description: truncateDescription(state.info.description),
       status: state.info.status,
     }),
   );
   state.statusEl.setAttribute(
     'aria-label',
-    t('chat.subagent.status' as TranslationKey, { status: state.info.status }),
+    t('chat.subagent.status', { status: state.info.status }),
   );
 }
 
@@ -107,7 +106,7 @@ function renderSubagentToolContent(contentEl: HTMLElement, toolCall: ToolCallInf
 
   if (!toolCall.result && toolCall.status === 'running') {
     const emptyEl = contentEl.createDiv({ cls: 'codexian-subagent-tool-empty' });
-    emptyEl.setText(t('chat.subagent.running' as TranslationKey));
+    emptyEl.setText(t('chat.subagent.running'));
     return;
   }
 
@@ -120,7 +119,7 @@ function setSubagentToolStatus(view: SubagentToolView, status: ToolCallInfo['sta
   view.statusEl.empty();
   view.statusEl.setAttribute(
     'aria-label',
-    t('chat.subagent.status' as TranslationKey, { status }),
+    t('chat.subagent.status', { status }),
   );
 
   const statusIcon = SUBAGENT_TOOL_STATUS_ICONS[status];
@@ -185,7 +184,7 @@ function ensureResultSection(state: SubagentState): SubagentSection {
 
   const section = createSection(
     state.contentEl,
-    t('chat.subagent.result' as TranslationKey),
+    t('chat.subagent.result'),
     'codexian-subagent-result-body',
   );
   section.wrapperEl.addClass('codexian-subagent-section-result');
@@ -223,8 +222,8 @@ function hydrateSyncSubagentStateFromStored(state: SubagentState, subagent: Suba
 
   if (subagent.status === 'completed' || subagent.status === 'error') {
     const fallback = subagent.status === 'error'
-      ? t('chat.writeEdit.error' as TranslationKey)
-      : t('chat.writeEdit.done' as TranslationKey);
+      ? t('chat.writeEdit.error')
+      : t('chat.writeEdit.done');
     finalizeSubagentBlock(state, subagent.result || fallback, subagent.status === 'error');
   } else {
     state.statusEl.className = 'codexian-subagent-status status-running';
@@ -267,14 +266,14 @@ export function createSubagentBlock(
   const statusEl = headerEl.createDiv({ cls: 'codexian-subagent-status status-running' });
   statusEl.setAttribute(
     'aria-label',
-    t('chat.subagent.status' as TranslationKey, { status: 'running' }),
+    t('chat.subagent.status', { status: 'running' }),
   );
 
   const contentEl = wrapperEl.createDiv({ cls: 'codexian-subagent-content' });
 
   const promptSection = createSection(
     contentEl,
-    t('chat.subagent.prompt' as TranslationKey),
+    t('chat.subagent.prompt'),
     'codexian-subagent-prompt-body',
   );
   promptSection.wrapperEl.addClass('codexian-subagent-section-prompt');
@@ -309,7 +308,7 @@ export function addSubagentToolCall(
 ): void {
   const existingIndex = state.info.toolCalls.findIndex(tc => tc.id === toolCall.id);
   if (existingIndex >= 0) {
-    const existingToolCall = state.info.toolCalls[existingIndex]!;
+    const existingToolCall = state.info.toolCalls[existingIndex];
     const mergedToolCall: ToolCallInfo = {
       ...existingToolCall,
       ...toolCall,
@@ -384,8 +383,8 @@ export function finalizeSubagentBlock(
   const finalText = result?.trim()
     ? result
     : isError
-      ? t('chat.writeEdit.error' as TranslationKey)
-      : t('chat.writeEdit.done' as TranslationKey);
+      ? t('chat.writeEdit.error')
+      : t('chat.writeEdit.done');
   setResultText(state, finalText);
 
   updateSyncHeaderAria(state);

@@ -1,19 +1,22 @@
+import { createMockEl } from '@test/helpers/mockElement';
+
 import { CanvasSelectionController } from '@/features/chat/controllers/CanvasSelectionController';
 
 function createMockIndicator() {
-  return {
-    textContent: '',
-    style: { display: 'none' },
-  } as any;
+  const indicator = createMockEl();
+  indicator.style.display = 'none';
+  return indicator;
 }
 
 function createMockContextRow() {
   const elements: Record<string, any> = {
-    '.codexian-selection-indicator': { style: { display: 'none' } },
-    '.codexian-canvas-indicator': { style: { display: 'none' } },
+    '.codexian-selection-indicator': createMockEl(),
+    '.codexian-canvas-indicator': createMockEl(),
     '.codexian-file-indicator': null,
     '.codexian-image-preview': null,
   };
+  elements['.codexian-selection-indicator'].style.display = 'none';
+  elements['.codexian-canvas-indicator'].style.display = 'none';
 
   return {
     classList: {
@@ -175,7 +178,7 @@ describe('CanvasSelectionController', () => {
       { view: inactiveCanvasView },
       { view: activeCanvasView },
     ]);
-    app.workspace.activeLeaf = { view: activeCanvasView };
+    app.workspace.getMostRecentLeaf = jest.fn().mockReturnValue({ view: activeCanvasView });
 
     controller.start();
     jest.advanceTimersByTime(250);
@@ -187,7 +190,7 @@ describe('CanvasSelectionController', () => {
   });
 
   it('handles no canvas view gracefully', () => {
-    app.workspace.activeLeaf = null;
+    app.workspace.getMostRecentLeaf = jest.fn().mockReturnValue(null);
     app.workspace.getLeavesOfType.mockReturnValue([]);
 
     controller.start();

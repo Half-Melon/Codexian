@@ -142,8 +142,9 @@ describe('MessageRenderer', () => {
     // Check the content contains interrupt styling
     const contentEl = msgEl.children[0];
     const textEl = contentEl.children[0];
-    expect(textEl.innerHTML).toContain('codexian-interrupted');
-    expect(textEl.innerHTML).toContain('Interrupted');
+    const interruptedEl = textEl.querySelector('.codexian-interrupted');
+    expect(interruptedEl).not.toBeNull();
+    expect(interruptedEl?.textContent).toContain('Interrupted');
   });
 
   it('renders interrupted assistant message with content + interrupt indicator', () => {
@@ -169,8 +170,9 @@ describe('MessageRenderer', () => {
     // The content div should have both content rendering and an interrupt indicator
     const contentEl = msgEl.children[0];
     const lastChild = contentEl.children[contentEl.children.length - 1];
-    expect(lastChild.innerHTML).toContain('codexian-interrupted');
-    expect(lastChild.innerHTML).toContain('Interrupted');
+    const interruptedEl = lastChild.querySelector('.codexian-interrupted');
+    expect(interruptedEl).not.toBeNull();
+    expect(interruptedEl?.textContent).toContain('Interrupted');
   });
 
   it('renders bare interrupt marker for empty interrupted assistant message', () => {
@@ -194,7 +196,7 @@ describe('MessageRenderer', () => {
     expect(msgEl.hasClass('codexian-message-assistant')).toBe(true);
     const contentEl = msgEl.children[0];
     const textEl = contentEl.children[0];
-    expect(textEl.innerHTML).toContain('codexian-interrupted');
+    expect(textEl.querySelector('.codexian-interrupted')).not.toBeNull();
   });
 
   it('skips rebuilt context messages', () => {
@@ -839,7 +841,8 @@ describe('MessageRenderer', () => {
       { deferMath: true }
     );
 
-    expect(MarkdownRenderer.renderMarkdown).toHaveBeenCalledWith(
+    expect(MarkdownRenderer.render).toHaveBeenCalledWith(
+      expect.anything(),
       'Live \\$x + y\\$ and `echo $PATH`',
       el,
       '',
@@ -1128,7 +1131,7 @@ describe('MessageRenderer', () => {
   describe('renderContent - error handling', () => {
     it('renderContent shows error div when MarkdownRenderer throws', async () => {
       const { MarkdownRenderer } = await import('obsidian');
-      (MarkdownRenderer.renderMarkdown as jest.Mock).mockRejectedValueOnce(
+      (MarkdownRenderer.render as jest.Mock).mockRejectedValueOnce(
         new Error('Render failed')
       );
 
@@ -1243,7 +1246,8 @@ describe('MessageRenderer', () => {
         expect.anything(),
         ''
       );
-      expect(MarkdownRenderer.renderMarkdown).toHaveBeenCalledWith(
+      expect(MarkdownRenderer.render).toHaveBeenCalledWith(
+        expect.anything(),
         '<span title="[[note.md]]">raw html</span>\n    [[note.md]]',
         el,
         '',
@@ -1257,8 +1261,8 @@ describe('MessageRenderer', () => {
       const { renderer } = createRenderer();
       const el = createMockEl();
 
-      // Mock renderMarkdown to create a pre element in the container
-      (MarkdownRenderer.renderMarkdown as jest.Mock).mockImplementationOnce(
+      // Mock render to create a pre element in the container
+      (MarkdownRenderer.render as jest.Mock).mockImplementationOnce(
         async (_md: string, container: any) => {
           const pre = container.createEl('pre');
           pre.createEl('code', { text: 'console.log("hello")' });
@@ -1270,7 +1274,7 @@ describe('MessageRenderer', () => {
       // The pre should be wrapped in a codexian-code-wrapper
       // Due to mock limitations, check that querySelectorAll was called on el
       // The actual wrapping logic runs on real DOM, but the mock captures calls
-      expect(MarkdownRenderer.renderMarkdown).toHaveBeenCalled();
+      expect(MarkdownRenderer.render).toHaveBeenCalled();
     });
 
     it('should skip wrapping already-wrapped pre elements', async () => {
@@ -1278,8 +1282,8 @@ describe('MessageRenderer', () => {
       const { renderer } = createRenderer();
       const el = createMockEl();
 
-      // Mock renderMarkdown to create an already-wrapped pre element
-      (MarkdownRenderer.renderMarkdown as jest.Mock).mockImplementationOnce(
+      // Mock render to create an already-wrapped pre element
+      (MarkdownRenderer.render as jest.Mock).mockImplementationOnce(
         async (_md: string, container: any) => {
           const wrapper = container.createDiv({ cls: 'codexian-code-wrapper' });
           wrapper.createEl('pre');
@@ -1289,7 +1293,7 @@ describe('MessageRenderer', () => {
       await renderer.renderContent(el, '```\nalready wrapped\n```');
 
       // Should not throw and should complete normally
-      expect(MarkdownRenderer.renderMarkdown).toHaveBeenCalled();
+      expect(MarkdownRenderer.render).toHaveBeenCalled();
     });
   });
 
@@ -1336,7 +1340,7 @@ describe('MessageRenderer', () => {
       const { renderer } = createRenderer();
       const el = createMockEl();
 
-      (MarkdownRenderer.renderMarkdown as jest.Mock).mockImplementationOnce(
+      (MarkdownRenderer.render as jest.Mock).mockImplementationOnce(
         async (_md: string, container: any) => {
           const pre = container.createEl('pre');
           const code = pre.createEl('code');
@@ -1347,7 +1351,7 @@ describe('MessageRenderer', () => {
 
       await renderer.renderContent(el, '```typescript\nconst x = 1;\n```');
 
-      expect(MarkdownRenderer.renderMarkdown).toHaveBeenCalled();
+      expect(MarkdownRenderer.render).toHaveBeenCalled();
     });
 
     it('should move copy-code-button outside pre into wrapper', async () => {
@@ -1355,7 +1359,7 @@ describe('MessageRenderer', () => {
       const { renderer } = createRenderer();
       const el = createMockEl();
 
-      (MarkdownRenderer.renderMarkdown as jest.Mock).mockImplementationOnce(
+      (MarkdownRenderer.render as jest.Mock).mockImplementationOnce(
         async (_md: string, container: any) => {
           const pre = container.createEl('pre');
           pre.createEl('code', { text: 'some code' });
@@ -1366,7 +1370,7 @@ describe('MessageRenderer', () => {
 
       await renderer.renderContent(el, '```\nsome code\n```');
 
-      expect(MarkdownRenderer.renderMarkdown).toHaveBeenCalled();
+      expect(MarkdownRenderer.render).toHaveBeenCalled();
     });
   });
 

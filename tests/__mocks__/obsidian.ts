@@ -230,7 +230,7 @@ export class Menu {
 }
 
 export const MarkdownRenderer = {
-  renderMarkdown: jest.fn().mockResolvedValue(undefined),
+  render: jest.fn().mockResolvedValue(undefined),
 };
 
 export const setIcon = jest.fn();

@@ -3,8 +3,8 @@ import { Setting } from 'obsidian';
 import { getEnvironmentReviewKeysForScope } from '../../../core/providers/providerEnvironment';
 import type { EnvironmentScope } from '../../../core/types/settings';
 import { t } from '../../../i18n/i18n';
-import type { TranslationKey } from '../../../i18n/types';
 import type CodexianPlugin from '../../../main';
+import { hideElement, runAsync, showElement } from '../../../utils/dom';
 import { EnvSnippetManager } from './EnvSnippetManager';
 
 interface EnvironmentSettingsSectionOptions {
@@ -38,22 +38,17 @@ export function renderEnvironmentSettingsSection(
 
   let envTextarea: HTMLTextAreaElement | null = null;
   const reviewEl = container.createDiv({ cls: 'codexian-env-review-warning' });
-  reviewEl.style.color = 'var(--text-warning)';
-  reviewEl.style.fontSize = '0.85em';
-  reviewEl.style.marginTop = '-0.5em';
-  reviewEl.style.marginBottom = '0.5em';
-  reviewEl.style.display = 'none';
-
+  hideElement(reviewEl);
   const updateReviewWarning = () => {
     const reviewKeys = getEnvironmentReviewKeysForScope(envTextarea?.value ?? '', scope);
     if (reviewKeys.length === 0) {
-      reviewEl.style.display = 'none';
+      hideElement(reviewEl);
       reviewEl.empty();
       return;
     }
 
-    reviewEl.setText(t('notices.reviewEnvironmentOwnership' as TranslationKey, { keys: reviewKeys.join(', ') }));
-    reviewEl.style.display = 'block';
+    reviewEl.setText(t('notices.reviewEnvironmentOwnership', { keys: reviewKeys.join(', ') }));
+    showElement(reviewEl, 'block');
   };
 
   new Setting(container)
@@ -68,10 +63,12 @@ export function renderEnvironmentSettingsSection(
       text.inputEl.addClass('codexian-settings-env-textarea');
       text.inputEl.dataset.envScope = scope;
       text.inputEl.addEventListener('input', () => updateReviewWarning());
-      text.inputEl.addEventListener('blur', async () => {
-        await plugin.applyEnvironmentVariables(scope, text.inputEl.value);
-        renderCustomContextLimits?.(contextLimitsContainer);
-        updateReviewWarning();
+      text.inputEl.addEventListener('blur', () => {
+        runAsync(async () => {
+          await plugin.applyEnvironmentVariables(scope, text.inputEl.value);
+          renderCustomContextLimits?.(contextLimitsContainer);
+          updateReviewWarning();
+        });
       });
       envTextarea = text.inputEl;
     });

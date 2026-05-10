@@ -7,6 +7,30 @@
   font-family: var(--font-text);
 }
 
+.codexian-hidden {
+  display: none !important;
+}
+
+.codexian-display-block {
+  display: block !important;
+}
+
+.codexian-display-contents {
+  display: contents !important;
+}
+
+.codexian-display-flex {
+  display: flex !important;
+}
+
+.codexian-display-inline {
+  display: inline !important;
+}
+
+.codexian-display-inline-flex {
+  display: inline-flex !important;
+}
+
 .codexian-provider-icon-variant--dark {
   display: none;
 }

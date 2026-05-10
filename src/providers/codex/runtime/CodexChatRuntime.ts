@@ -251,7 +251,7 @@ export class CodexChatRuntime implements ChatRuntime {
     this.currentQueryThreadId = null;
     this.pendingTurnNotifications = [];
     let tailEngine: CodexFileTailEngine | null = null;
-    let tailDrainInterval: ReturnType<typeof setInterval> | null = null;
+    let tailDrainInterval: number | null = null;
     let toolSourceMode: 'transcript' | 'fallback' = 'fallback';
     let tailDonePromise: Promise<void> | null = null;
     let transcriptSessionFilePath: string | null | undefined;
@@ -275,7 +275,7 @@ export class CodexChatRuntime implements ChatRuntime {
 
       toolSourceMode = 'fallback';
       if (tailDrainInterval) {
-        clearInterval(tailDrainInterval);
+        activeWindow.clearInterval(tailDrainInterval);
         tailDrainInterval = null;
       }
 
@@ -313,7 +313,7 @@ export class CodexChatRuntime implements ChatRuntime {
 
     const stopTailToolPolling = async (): Promise<void> => {
       if (tailDrainInterval) {
-        clearInterval(tailDrainInterval);
+        activeWindow.clearInterval(tailDrainInterval);
         tailDrainInterval = null;
       }
       if (tailEngine) {
@@ -332,7 +332,7 @@ export class CodexChatRuntime implements ChatRuntime {
 
       tailDonePromise = (async () => {
         try {
-          await tailEngine!.waitForSettle();
+          await tailEngine.waitForSettle();
           if (syncTailPollingState()) {
             return;
           }
@@ -572,7 +572,7 @@ export class CodexChatRuntime implements ChatRuntime {
             transcriptSessionFilePath ?? undefined,
           );
           if (transcriptPollingStarted) {
-            tailDrainInterval = setInterval(() => {
+            tailDrainInterval = activeWindow.setInterval(() => {
               drainTailToolChunks();
             }, 50);
           } else {
@@ -902,7 +902,7 @@ export class CodexChatRuntime implements ChatRuntime {
 
   private getProviderSettings(): Record<string, unknown> {
     return ProviderSettingsCoordinator.getProviderSettingsSnapshot(
-      this.plugin.settings as unknown as Record<string, unknown>,
+      this.plugin.settings,
       this.providerId,
     );
   }

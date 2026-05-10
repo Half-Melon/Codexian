@@ -1,4 +1,5 @@
-import { Notice, setIcon } from 'obsidian';
+import { Notice, Platform, setIcon } from 'obsidian';
+import { homedir } from 'os';
 import * as path from 'path';
 
 import type {
@@ -15,6 +16,7 @@ import type {
 } from '../../../core/types';
 import { t } from '../../../i18n/i18n';
 import { createProviderIconSvg } from '../../../shared/icons';
+import { hideElement, runAsync, setElementVisible, showElement } from '../../../utils/dom';
 import { filterValidPaths, findConflictingPath, isDuplicatePath, isValidDirectoryPath, validateDirectoryPath } from '../../../utils/externalContext';
 import { expandHomePath, normalizePathForFilesystem } from '../../../utils/path';
 
@@ -39,6 +41,26 @@ export interface ToolbarCallbacks {
   getUIConfig: () => ProviderChatUIConfig;
   getCapabilities: () => ProviderCapabilities;
 }
+
+type ElectronDialogResult = {
+  canceled: boolean;
+  filePaths: string[];
+};
+
+type ElectronRemoteLike = {
+  dialog?: {
+    showOpenDialog(options: {
+      properties: string[];
+      title: string;
+    }): Promise<ElectronDialogResult>;
+  };
+};
+
+type ElectronWindow = Window & {
+  require?: (moduleName: 'electron') => {
+    remote?: ElectronRemoteLike;
+  };
+};
 
 export class ModelSelector {
   private container: HTMLElement;
@@ -118,11 +140,13 @@ export class ModelSelector {
         option.setAttribute('title', model.description);
       }
 
-      option.addEventListener('click', async (e) => {
+      option.addEventListener('click', (e) => {
         e.stopPropagation();
-        await this.callbacks.onModelChange(model.value);
-        this.updateDisplay();
-        this.renderOptions();
+        runAsync(async () => {
+          await this.callbacks.onModelChange(model.value);
+          this.updateDisplay();
+          this.renderOptions();
+        });
       });
     }
   }
@@ -150,7 +174,9 @@ export class ModeSelector {
     this.labelEl = this.container.createSpan({ cls: 'codexian-mode-label' });
     this.toggleEl = this.container.createDiv({ cls: 'codexian-toggle-switch' });
 
-    this.toggleEl.addEventListener('click', () => this.toggle());
+    this.toggleEl.addEventListener('click', () => {
+      runAsync(() => this.toggle());
+    });
 
     this.updateDisplay();
   }
@@ -174,11 +200,11 @@ export class ModeSelector {
 
     const selectorConfig = this.getSelectorConfig();
     if (!selectorConfig || selectorConfig.options.length !== 2) {
-      this.container.style.display = 'none';
+      hideElement(this.container);
       return;
     }
 
-    this.container.style.display = '';
+    showElement(this.container);
     const { active, inactive } = this.resolveOptionPair(selectorConfig);
     const currentOption = selectorConfig.options.find((option) => option.value === selectorConfig.value)
       ?? selectorConfig.options[0];
@@ -272,10 +298,12 @@ export class ThinkingBudgetSelector {
         gearEl.addClass('selected');
       }
 
-      gearEl.addEventListener('click', async (e) => {
+      gearEl.addEventListener('click', (e) => {
         e.stopPropagation();
-        await this.callbacks.onEffortLevelChange(effort.value);
-        this.updateDisplay();
+        runAsync(async () => {
+          await this.callbacks.onEffortLevelChange(effort.value);
+          this.updateDisplay();
+        });
       });
     }
   }
@@ -306,10 +334,12 @@ export class ThinkingBudgetSelector {
         gearEl.addClass('selected');
       }
 
-      gearEl.addEventListener('click', async (e) => {
+      gearEl.addEventListener('click', (e) => {
         e.stopPropagation();
-        await this.callbacks.onThinkingBudgetChange(budget.value);
-        this.updateDisplay();
+        runAsync(async () => {
+          await this.callbacks.onThinkingBudgetChange(budget.value);
+          this.updateDisplay();
+        });
       });
     }
   }
@@ -317,8 +347,8 @@ export class ThinkingBudgetSelector {
   updateDisplay() {
     const capabilities = this.callbacks.getCapabilities();
     if (capabilities.reasoningControl === 'none') {
-      if (this.effortEl) this.effortEl.style.display = 'none';
-      if (this.budgetEl) this.budgetEl.style.display = 'none';
+      hideElement(this.effortEl);
+      hideElement(this.budgetEl);
       return;
     }
 
@@ -331,18 +361,18 @@ export class ThinkingBudgetSelector {
       || (options.length === 1 && options[0]?.value === defaultValue);
 
     if (shouldHide) {
-      if (this.effortEl) this.effortEl.style.display = 'none';
-      if (this.budgetEl) this.budgetEl.style.display = 'none';
+      hideElement(this.effortEl);
+      hideElement(this.budgetEl);
       return;
     }
 
     const adaptive = uiConfig.isAdaptiveReasoningModel(model, settings);
 
     if (this.effortEl) {
-      this.effortEl.style.display = adaptive ? '' : 'none';
+      setElementVisible(this.effortEl, adaptive);
     }
     if (this.budgetEl) {
-      this.budgetEl.style.display = adaptive ? 'none' : '';
+      setElementVisible(this.budgetEl, !adaptive);
     }
 
     if (adaptive) {
@@ -379,7 +409,9 @@ export class PermissionToggle {
 
     this.updateDisplay();
 
-    this.toggleEl.addEventListener('click', () => this.toggle());
+    this.toggleEl.addEventListener('click', () => {
+      runAsync(() => this.toggle());
+    });
   }
 
   private getToggleConfig(): ProviderPermissionModeToggleConfig | null {
@@ -393,22 +425,22 @@ export class PermissionToggle {
     const toggleConfig = this.getToggleConfig();
     const capabilities = this.callbacks.getCapabilities();
     if (!this.visible || !toggleConfig) {
-      this.container.style.display = 'none';
+      hideElement(this.container);
       return;
     }
 
-    this.container.style.display = '';
+    showElement(this.container);
     const mode = this.callbacks.getSettings().permissionMode;
     const planValue = toggleConfig.planValue;
     const planLabel = toggleConfig.planLabel ?? 'PLAN';
     const canShowPlan = Boolean(planValue) && capabilities.supportsPlanMode;
 
     if (canShowPlan && planValue && mode === planValue) {
-      this.toggleEl.style.display = 'none';
+      hideElement(this.toggleEl);
       this.labelEl.setText(planLabel);
       this.labelEl.addClass('plan-active');
     } else {
-      this.toggleEl.style.display = '';
+      showElement(this.toggleEl);
       this.labelEl.removeClass('plan-active');
       if (mode === toggleConfig.activeValue) {
         this.toggleEl.addClass('active');
@@ -454,7 +486,9 @@ export class ServiceTierToggle {
 
     this.updateDisplay();
 
-    this.buttonEl.addEventListener('click', () => this.toggle());
+    this.buttonEl.addEventListener('click', () => {
+      runAsync(() => this.toggle());
+    });
   }
 
   private getToggleConfig(): ProviderServiceTierToggleConfig | null {
@@ -467,11 +501,11 @@ export class ServiceTierToggle {
 
     const toggleConfig = this.getToggleConfig();
     if (!toggleConfig) {
-      this.container.style.display = 'none';
+      hideElement(this.container);
       return;
     }
 
-    this.container.style.display = '';
+    showElement(this.container);
     const current = this.callbacks.getSettings().serviceTier;
     const isActive = current === toggleConfig.activeValue;
     if (isActive) {
@@ -697,7 +731,7 @@ export class ExternalContextSelector {
     // Click to open native folder picker
     iconWrapper.addEventListener('click', (e) => {
       e.stopPropagation();
-      this.openFolderPicker();
+      runAsync(() => this.openFolderPicker());
     });
 
     this.dropdownEl = this.container.createDiv({ cls: 'codexian-external-context-dropdown' });
@@ -706,9 +740,14 @@ export class ExternalContextSelector {
 
   private async openFolderPicker() {
     try {
-      // Access Electron's dialog through remote
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      const { remote } = require('electron');
+      if (!Platform.isDesktopApp) {
+        throw new Error('Folder picker is only available in the desktop app');
+      }
+      const electronRequire = (activeWindow as ElectronWindow).require;
+      const remote = electronRequire?.('electron').remote;
+      if (!remote?.dialog) {
+        throw new Error('Electron dialog is unavailable');
+      }
       const result = await remote.dialog.showOpenDialog({
         properties: ['openDirectory'],
         title: t('chat.externalContexts.selectTitle'),
@@ -804,9 +843,7 @@ export class ExternalContextSelector {
   /** Shorten path for display (replace home dir with ~) */
   private shortenPath(fullPath: string): string {
     try {
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      const os = require('os');
-      const homeDir = os.homedir();
+      const homeDir = homedir();
       const normalize = (value: string) => value.replace(/\\/g, '/');
       const normalizedFull = normalize(fullPath);
       const normalizedHome = normalize(homeDir);
@@ -861,11 +898,11 @@ export class ContextUsageMeter {
     this.container = parentEl.createDiv({ cls: 'codexian-context-meter' });
     this.render();
     // Initially hidden
-    this.container.style.display = 'none';
+    hideElement(this.container);
   }
 
   setVisible(visible: boolean): void {
-    this.container.style.display = visible ? '' : 'none';
+    setElementVisible(this.container, visible);
   }
 
   private render() {
@@ -890,28 +927,41 @@ export class ContextUsageMeter {
     const y2 = cy + radius * Math.sin(endRad);
 
     const gaugeEl = this.container.createDiv({ cls: 'codexian-context-meter-gauge' });
-    gaugeEl.innerHTML = `
-      <svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
-        <path class="codexian-meter-bg"
-          d="M ${x1} ${y1} A ${radius} ${radius} 0 1 1 ${x2} ${y2}"
-          fill="none" stroke-width="${strokeWidth}" stroke-linecap="round"/>
-        <path class="codexian-meter-fill"
-          d="M ${x1} ${y1} A ${radius} ${radius} 0 1 1 ${x2} ${y2}"
-          fill="none" stroke-width="${strokeWidth}" stroke-linecap="round"
-          stroke-dasharray="${this.circumference}" stroke-dashoffset="${this.circumference}"/>
-      </svg>
-    `;
-    this.fillPath = gaugeEl.querySelector('.codexian-meter-fill');
+    const svg = activeDocument.createSvg('svg');
+    svg.setAttribute('width', String(size));
+    svg.setAttribute('height', String(size));
+    svg.setAttribute('viewBox', `0 0 ${size} ${size}`);
+
+    const arcPath = `M ${x1} ${y1} A ${radius} ${radius} 0 1 1 ${x2} ${y2}`;
+    const bgPath = activeDocument.createSvg('path');
+    bgPath.addClass('codexian-meter-bg');
+    bgPath.setAttribute('d', arcPath);
+    bgPath.setAttribute('fill', 'none');
+    bgPath.setAttribute('stroke-width', String(strokeWidth));
+    bgPath.setAttribute('stroke-linecap', 'round');
+    svg.appendChild(bgPath);
+
+    this.fillPath = activeDocument.createSvg('path');
+    this.fillPath.addClass('codexian-meter-fill');
+    this.fillPath.setAttribute('d', arcPath);
+    this.fillPath.setAttribute('fill', 'none');
+    this.fillPath.setAttribute('stroke-width', String(strokeWidth));
+    this.fillPath.setAttribute('stroke-linecap', 'round');
+    this.fillPath.setAttribute('stroke-dasharray', String(this.circumference));
+    this.fillPath.setAttribute('stroke-dashoffset', String(this.circumference));
+    svg.appendChild(this.fillPath);
+
+    gaugeEl.appendChild(svg);
 
     this.percentEl = this.container.createSpan({ cls: 'codexian-context-meter-percent' });
   }
 
   update(usage: UsageInfo | null): void {
     if (!usage || usage.contextTokens <= 0) {
-      this.container.style.display = 'none';
+      hideElement(this.container);
       return;
     }
-    this.container.style.display = 'flex';
+    showElement(this.container, 'flex');
     const fillLength = (usage.percentage / 100) * this.circumference;
     if (this.fillPath) {
       this.fillPath.style.strokeDashoffset = String(this.circumference - fillLength);

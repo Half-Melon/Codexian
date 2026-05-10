@@ -1409,7 +1409,7 @@ describe('StreamController - Text Content', () => {
       const clearIntervalSpy = jest.spyOn(global, 'clearInterval');
 
       // Manually set a pre-existing interval
-      deps.state.flavorTimerInterval = setInterval(() => {}, 9999) as unknown as ReturnType<typeof setInterval>;
+      deps.state.flavorTimerInterval = setInterval(() => {}, 9999) as unknown as number;
 
       controller.showThinkingIndicator();
       jest.advanceTimersByTime(500);

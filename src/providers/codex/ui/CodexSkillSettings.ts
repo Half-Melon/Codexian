@@ -1,9 +1,10 @@
+import type { App } from 'obsidian';
 import { Modal, Notice, setIcon, Setting } from 'obsidian';
 
 import type { ProviderCommandCatalog } from '../../../core/providers/commands/ProviderCommandCatalog';
 import type { ProviderCommandEntry } from '../../../core/providers/commands/ProviderCommandEntry';
 import { t } from '../../../i18n/i18n';
-import type { TranslationKey } from '../../../i18n/types';
+import { runAsync } from '../../../utils/dom';
 import { validateCommandName } from '../../../utils/slashCommand';
 import {
   CODEX_SKILL_ROOT_OPTIONS,
@@ -23,7 +24,7 @@ export class CodexSkillModal extends Modal {
   private _triggerSave!: () => Promise<void>;
 
   constructor(
-    app: any,
+    app: App,
     existing: ProviderCommandEntry | null,
     onSave: (entry: ProviderCommandEntry) => Promise<void>
   ) {
@@ -46,15 +47,15 @@ export class CodexSkillModal extends Modal {
 
   onOpen() {
     this.setTitle(this.existing
-      ? t('codex.skills.modal.titleEdit' as TranslationKey)
-      : t('codex.skills.modal.titleAdd' as TranslationKey));
+      ? t('codex.skills.modal.titleEdit')
+      : t('codex.skills.modal.titleAdd'));
     this.modalEl.addClass('codexian-sp-modal');
 
     const { contentEl } = this;
 
     new Setting(contentEl)
-      .setName(t('codex.skills.modal.directory' as TranslationKey))
-      .setDesc(t('codex.skills.modal.directoryDesc' as TranslationKey))
+      .setName(t('codex.skills.modal.directory'))
+      .setDesc(t('codex.skills.modal.directoryDesc'))
       .addDropdown(dropdown => {
         for (const opt of CODEX_SKILL_ROOT_OPTIONS) {
           dropdown.addOption(opt.id, opt.label);
@@ -64,32 +65,32 @@ export class CodexSkillModal extends Modal {
       });
 
     new Setting(contentEl)
-      .setName(t('codex.skills.modal.name' as TranslationKey))
-      .setDesc(t('codex.skills.modal.nameDesc' as TranslationKey))
+      .setName(t('codex.skills.modal.name'))
+      .setDesc(t('codex.skills.modal.nameDesc'))
       .addText(text => {
         this._nameInput = text.inputEl;
         text.setValue(this.existing?.name || '')
-          .setPlaceholder('analyze-code');
+          .setPlaceholder('analyze-code'.toLocaleLowerCase());
       });
 
     new Setting(contentEl)
-      .setName(t('codex.skills.modal.description' as TranslationKey))
-      .setDesc(t('codex.skills.modal.descriptionDesc' as TranslationKey))
+      .setName(t('codex.skills.modal.description'))
+      .setDesc(t('codex.skills.modal.descriptionDesc'))
       .addText(text => {
         this._descInput = text.inputEl;
         text.setValue(this.existing?.description || '');
       });
 
     new Setting(contentEl)
-      .setName(t('codex.skills.modal.instructions' as TranslationKey))
-      .setDesc(t('codex.skills.modal.instructionsDesc' as TranslationKey));
+      .setName(t('codex.skills.modal.instructions'))
+      .setDesc(t('codex.skills.modal.instructionsDesc'));
 
     const contentArea = contentEl.createEl('textarea', {
       cls: 'codexian-sp-content-area',
-      attr: { rows: '10', placeholder: t('codex.skills.modal.instructionsPlaceholder' as TranslationKey) },
+      attr: { rows: '10', placeholder: t('codex.skills.modal.instructionsPlaceholder') },
     });
     contentArea.value = this.existing?.content || '';
-    this._contentArea = contentArea as HTMLTextAreaElement;
+    this._contentArea = contentArea;
 
     const doSave = async () => {
       const name = this._nameInput.value.trim();
@@ -101,7 +102,7 @@ export class CodexSkillModal extends Modal {
 
       const content = this._contentArea.value;
       if (!content.trim()) {
-        new Notice(t('codex.skills.instructionsRequired' as TranslationKey));
+        new Notice(t('codex.skills.instructionsRequired'));
         return;
       }
 
@@ -127,7 +128,7 @@ export class CodexSkillModal extends Modal {
       try {
         await this.onSave(entry);
       } catch {
-        new Notice(t('codex.skills.saveFailed' as TranslationKey));
+        new Notice(t('codex.skills.saveFailed'));
         return;
       }
       this.close();
@@ -146,7 +147,9 @@ export class CodexSkillModal extends Modal {
       text: t('common.save'),
       cls: 'codexian-save-btn',
     });
-    saveBtn.addEventListener('click', doSave);
+    saveBtn.addEventListener('click', () => {
+      runAsync(doSave);
+    });
   }
 
   onClose() {
@@ -158,13 +161,13 @@ export class CodexSkillSettings {
   private containerEl: HTMLElement;
   private catalog: ProviderCommandCatalog;
   private entries: ProviderCommandEntry[] = [];
-  private app?: any;
+  private app?: App;
 
-  constructor(containerEl: HTMLElement, catalog: ProviderCommandCatalog, app?: any) {
+  constructor(containerEl: HTMLElement, catalog: ProviderCommandCatalog, app?: App) {
     this.containerEl = containerEl;
     this.catalog = catalog;
     this.app = app;
-    this.render();
+    runAsync(() => this.render());
   }
 
   async deleteEntry(entry: ProviderCommandEntry): Promise<void> {
@@ -187,7 +190,7 @@ export class CodexSkillSettings {
     }
 
     const headerEl = this.containerEl.createDiv({ cls: 'codexian-sp-header' });
-    headerEl.createSpan({ text: t('codex.skills.header' as TranslationKey), cls: 'codexian-sp-label' });
+    headerEl.createSpan({ text: t('codex.skills.header'), cls: 'codexian-sp-label' });
 
     const actionsEl = headerEl.createDiv({ cls: 'codexian-sp-header-actions' });
     const refreshBtn = actionsEl.createEl('button', {
@@ -206,7 +209,7 @@ export class CodexSkillSettings {
 
     if (this.entries.length === 0) {
       const emptyEl = this.containerEl.createDiv({ cls: 'codexian-sp-empty-state' });
-      emptyEl.setText(t('codex.skills.empty' as TranslationKey));
+      emptyEl.setText(t('codex.skills.empty'));
       return;
     }
 
@@ -223,7 +226,7 @@ export class CodexSkillSettings {
     const headerRow = infoEl.createDiv({ cls: 'codexian-sp-item-header' });
     const nameEl = headerRow.createSpan({ cls: 'codexian-sp-item-name' });
     nameEl.setText(`$${entry.name}`);
-    headerRow.createSpan({ text: t('codex.skills.badge' as TranslationKey), cls: 'codexian-slash-item-badge' });
+    headerRow.createSpan({ text: t('codex.skills.badge'), cls: 'codexian-slash-item-badge' });
 
     if (entry.description) {
       const descEl = infoEl.createDiv({ cls: 'codexian-sp-item-desc' });
@@ -247,13 +250,13 @@ export class CodexSkillSettings {
         attr: { 'aria-label': t('common.delete') },
       });
       setIcon(deleteBtn, 'trash-2');
-      deleteBtn.addEventListener('click', async () => {
-        try {
+      deleteBtn.addEventListener('click', () => {
+        runAsync(async () => {
           await this.deleteEntry(entry);
-          new Notice(t('codex.skills.deleted' as TranslationKey, { name: entry.name }));
-        } catch {
-          new Notice(t('codex.skills.deleteFailed' as TranslationKey));
-        }
+          new Notice(t('codex.skills.deleted', { name: entry.name }));
+        }, () => {
+          new Notice(t('codex.skills.deleteFailed'));
+        });
       });
     }
   }
@@ -269,8 +272,8 @@ export class CodexSkillSettings {
         await this.render();
         new Notice(t(
           existing
-            ? 'codex.skills.updated' as TranslationKey
-            : 'codex.skills.saved' as TranslationKey,
+            ? 'codex.skills.updated'
+            : 'codex.skills.saved',
           { name: entry.name },
         ));
       }

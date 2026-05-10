@@ -26,8 +26,9 @@ import {
 import { extractToolResultContent } from '../../../core/tools/toolResultContent';
 import type { AskUserQuestionItem, AskUserQuestionOption, ToolCallInfo } from '../../../core/types';
 import { t } from '../../../i18n/i18n';
-import { MCP_ICON_SVG } from '../../../shared/icons';
+import { appendMcpIcon } from '../../../shared/icons';
 import { parseApplyPatchDiffs } from '../../../utils/diff';
+import { setElementVisible } from '../../../utils/dom';
 import { setupCollapsible } from './collapsible';
 import { renderDiffContent } from './DiffRenderer';
 import { renderTodoItems } from './todoUtils';
@@ -35,7 +36,7 @@ import { renderTodoItems } from './todoUtils';
 export function setToolIcon(el: HTMLElement, name: string): void {
   const icon = getToolIcon(name);
   if (icon === MCP_ICON_MARKER) {
-    el.innerHTML = MCP_ICON_SVG;
+    appendMcpIcon(el);
   } else {
     setIcon(el, icon);
   }
@@ -113,9 +114,9 @@ export function getToolLabel(name: string, input: Record<string, unknown>): stri
       return `Bash: ${cmd.length > 40 ? cmd.substring(0, 40) + '...' : cmd}`;
     }
     case TOOL_GLOB:
-      return `Glob: ${input.pattern || 'files'}`;
+      return `Glob: ${stringValue(input.pattern, 'files')}`;
     case TOOL_GREP:
-      return `Grep: ${input.pattern || 'pattern'}`;
+      return `Grep: ${stringValue(input.pattern, 'pattern')}`;
     case TOOL_WEB_SEARCH: {
       return getWebSearchLabel(input, 40);
     }
@@ -193,9 +194,11 @@ function getWriteStdinSummary(input: Record<string, unknown>): string {
   const chars = typeof input.chars === 'string' ? input.chars.replace(/\n/g, '\\n') : '';
   if (chars) {
     const preview = chars.length > 24 ? `${chars.slice(0, 24)}...` : chars;
-    return sessionId ? `#${String(sessionId)} ${preview}` : preview;
+    const sessionLabel = stringValue(sessionId);
+    return sessionLabel ? `#${sessionLabel} ${preview}` : preview;
   }
-  return sessionId ? `#${String(sessionId)}` : '';
+  const sessionLabel = stringValue(sessionId);
+  return sessionLabel ? `#${sessionLabel}` : '';
 }
 
 function getAgentLifecycleSummary(name: string, input: Record<string, unknown>): string {
@@ -499,9 +502,7 @@ function renderToolSearchExpanded(container: HTMLElement, result: string): void 
 function renderWebFetchExpanded(container: HTMLElement, result: string): void {
   const maxChars = 500;
   const linesEl = container.createDiv({ cls: 'codexian-tool-lines' });
-  const lineEl = linesEl.createDiv({ cls: 'codexian-tool-line' });
-  lineEl.style.whiteSpace = 'pre-wrap';
-  lineEl.style.wordBreak = 'break-word';
+  const lineEl = linesEl.createDiv({ cls: 'codexian-tool-line codexian-tool-line-wrap' });
 
   if (result.length > maxChars) {
     lineEl.setText(result.slice(0, maxChars));
@@ -604,13 +605,26 @@ function renderAgentLifecycleExpanded(container: HTMLElement, result: string): v
       const linesEl = container.createDiv({ cls: 'codexian-tool-lines' });
       for (const [key, value] of Object.entries(parsed)) {
         const lineEl = linesEl.createDiv({ cls: 'codexian-tool-line' });
-        const displayValue = typeof value === 'object' ? JSON.stringify(value) : String(value);
+        const displayValue = stringValue(value);
         lineEl.setText(`${key}: ${displayValue}`);
       }
       return;
     } catch { /* fall through to plain text */ }
   }
   renderLinesExpanded(container, result, 20);
+}
+
+function stringValue(value: unknown, fallback = ''): string {
+  if (value === null || value === undefined) return fallback;
+  if (typeof value === 'string') return value || fallback;
+  if (typeof value === 'number' || typeof value === 'boolean' || typeof value === 'bigint') {
+    return String(value);
+  }
+  try {
+    return JSON.stringify(value) ?? fallback;
+  } catch {
+    return fallback;
+  }
 }
 
 export function renderExpandedContent(
@@ -791,7 +805,7 @@ function formatAnswer(raw: unknown): string {
 }
 
 function resolveAskUserAnswers(toolCall: ToolCallInfo): Record<string, unknown> | undefined {
-  if (toolCall.resolvedAnswers) return toolCall.resolvedAnswers as Record<string, unknown>;
+  if (toolCall.resolvedAnswers) return toolCall.resolvedAnswers;
 
   const parsed = extractResolvedAnswersFromResultText(toolCall.result);
   if (parsed) {
@@ -935,10 +949,10 @@ function createTodoToggleHandler(
   return (expanded: boolean) => {
     if (onExpandChange) onExpandChange(expanded);
     if (currentTaskEl) {
-      currentTaskEl.style.display = expanded ? 'none' : '';
+      setElementVisible(currentTaskEl, !expanded, 'inline');
     }
     if (statusEl) {
-      statusEl.style.display = expanded ? 'none' : '';
+      setElementVisible(statusEl, !expanded, 'inline');
     }
   };
 }
