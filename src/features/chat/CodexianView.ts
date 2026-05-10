@@ -6,6 +6,8 @@ import { ProviderRegistry } from '../../core/providers/ProviderRegistry';
 import { ProviderSettingsCoordinator } from '../../core/providers/ProviderSettingsCoordinator';
 import { DEFAULT_CHAT_PROVIDER_ID, type ProviderId } from '../../core/providers/types';
 import { VIEW_TYPE_CODEXIAN } from '../../core/types';
+import { t } from '../../i18n/i18n';
+import type { TranslationKey } from '../../i18n/types';
 import type CodexianPlugin from '../../main';
 import { createProviderIconSvg } from '../../shared/icons';
 import type { HistoryConversationOpenState } from './controllers/ConversationController';
@@ -383,7 +385,7 @@ export class CodexianView extends ItemView {
     const tab = await this.tabManager?.createTab();
     if (!tab) {
       const maxTabs = this.plugin.settings.maxTabs ?? 3;
-      new Notice(`Maximum ${maxTabs} tabs allowed`);
+      new Notice(t('notices.maximumTabsAllowed' as TranslationKey, { count: maxTabs }));
       return;
     }
     this.updateTabBarVisibility();

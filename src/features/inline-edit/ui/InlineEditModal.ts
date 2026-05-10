@@ -8,6 +8,8 @@ import { getHiddenProviderCommandSet } from '../../../core/providers/commands/hi
 import { ProviderRegistry } from '../../../core/providers/ProviderRegistry';
 import { ProviderWorkspaceRegistry } from '../../../core/providers/ProviderWorkspaceRegistry';
 import { DEFAULT_CHAT_PROVIDER_ID, type InlineEditMode, type InlineEditService, type ProviderId } from '../../../core/providers/types';
+import { t } from '../../../i18n/i18n';
+import type { TranslationKey } from '../../../i18n/types';
 import type CodexianPlugin from '../../../main';
 import { hideSelectionHighlight, showSelectionHighlight } from '../../../shared/components/SelectionHighlight';
 import { SlashCommandDropdown } from '../../../shared/components/SlashCommandDropdown';
@@ -233,7 +235,7 @@ export class InlineEditModal {
     }
 
     if (!editorView) {
-      new Notice('Inline edit unavailable: could not access the active editor. Try reopening the note.');
+      new Notice(t('notices.inlineEditUnavailableEditor' as TranslationKey));
       return { decision: 'reject' };
     }
 
@@ -307,7 +309,7 @@ class InlineEditController {
     this.resolvedProviderId = providerId;
     this.mentionDataProvider = new VaultMentionDataProvider(this.app, {
       onFileLoadError: () => {
-        new Notice('Failed to load vault files. Vault @-mentions may be unavailable.');
+        new Notice(t('notices.vaultFilesLoadFailed' as TranslationKey));
       },
     });
     this.mentionDataProvider.initializeInBackground();
@@ -428,7 +430,9 @@ class InlineEditController {
     this.inputEl = document.createElement('input');
     this.inputEl.type = 'text';
     this.inputEl.className = 'codexian-inline-input';
-    this.inputEl.placeholder = this.mode === 'cursor' ? 'Insert instructions...' : 'Edit instructions...';
+    this.inputEl.placeholder = this.mode === 'cursor'
+      ? t('inlineEdit.insertPlaceholder' as TranslationKey)
+      : t('inlineEdit.editPlaceholder' as TranslationKey);
     this.inputEl.spellcheck = false;
     inputWrap.appendChild(this.inputEl);
 
@@ -530,13 +534,13 @@ class InlineEditController {
         this.isConversing = true;
         this.inputEl.disabled = false;
         this.inputEl.value = '';
-        this.inputEl.placeholder = 'Reply to continue...';
+        this.inputEl.placeholder = t('inlineEdit.replyPlaceholder' as TranslationKey);
         this.inputEl.focus();
       } else {
-        this.handleError('No response from agent');
+        this.handleError(t('inlineEdit.noResponse' as TranslationKey));
       }
     } else {
-      this.handleError(result.error || 'Error - try again');
+      this.handleError(result.error || t('inlineEdit.errorTryAgain' as TranslationKey));
     }
   }
 
@@ -698,7 +702,7 @@ class InlineEditController {
       const vaultPath = getVaultPath(this.app);
       return normalizePathForVaultUtil(rawPath, vaultPath);
     } catch {
-      new Notice('Failed to attach file: invalid path');
+      new Notice(t('notices.attachFileInvalidPath' as TranslationKey));
       return null;
     }
   }

@@ -4,6 +4,7 @@
     "cancel": "Cancel",
     "delete": "Delete",
     "edit": "Edit",
+    "rename": "Rename",
     "add": "Add",
     "remove": "Remove",
     "clear": "Clear",
@@ -19,9 +20,163 @@
     "disabled": "Disabled",
     "platform": "Platform",
     "refresh": "Refresh",
-    "rewind": "Rewind"
+    "rewind": "Rewind",
+    "insert": "Insert",
+    "copy": "Copy",
+    "copied": "copied!",
+    "unknownError": "Unknown error",
+    "allowOnce": "Allow once",
+    "alwaysAllow": "Always allow",
+    "deny": "Deny"
   },
   "chat": {
+    "placeholder": "How can I help you today?",
+    "history": {
+      "title": "Conversations",
+      "empty": "No conversations",
+      "openInNewTab": "Open in New Tab",
+      "openInBackgroundTab": "Open in Background Tab",
+      "switchToOpenSession": "Switch to Open Session",
+      "currentSession": "Current session",
+      "generatingTitle": "Generating title...",
+      "regenerateTitle": "Regenerate title"
+    },
+    "resume": {
+      "title": "Resume conversation",
+      "empty": "No conversations"
+    },
+    "slash": {
+      "noMatchingCommands": "No matching commands"
+    },
+    "conversationCompacted": "Conversation compacted",
+    "queue": {
+      "queued": "Queued",
+      "steering": "Steering",
+      "steeringButton": "Steering...",
+      "steerNow": "Steer Now",
+      "images": "images",
+      "queuedPrefix": "Queued: {message}",
+      "steeringPrefix": "Steering: {message}"
+    },
+    "plan": {
+      "complete": "Plan complete",
+      "implement": "Implement",
+      "revisePlaceholder": "Enter feedback to revise plan...",
+      "approveNewSession": "Approve (new session)",
+      "approveCurrentSession": "Approve (current session)",
+      "requestedPermissions": "Requested permissions:",
+      "continuePlanningPlaceholder": "Enter feedback to continue planning...",
+      "hints": "Arrow keys to navigate · Enter to select · Esc to cancel",
+      "readFailed": "Could not read plan file: {message}. \"Approve (new session)\" will not include plan details.",
+      "implementThisPlan": "Implement this plan:\n\n{plan}",
+      "implementApprovedPlan": "Implement the approved plan.",
+      "approvedNewSessionResult": "User approved the plan and started a new session."
+    },
+    "ask": {
+      "submit": "Submit",
+      "reviewAnswers": "Review your answers",
+      "readyToSubmit": "Ready to submit your answers?",
+      "submitAnswers": "Submit answers",
+      "questionTitle": "Question",
+      "customPlaceholder": "Type something.",
+      "secretPlaceholder": "Enter secret.",
+      "notAnswered": "Not answered",
+      "waitingForAnswer": "Waiting for answer...",
+      "noOptionsRecorded": "No options recorded",
+      "hints": "Enter to select · Tab/Arrow keys to navigate · Esc to cancel",
+      "hintsImmediate": "Enter to select · Arrow keys to navigate · Esc to cancel",
+      "approvalTitle": "Permission required",
+      "approvalQuestion": "Allow this action?",
+      "unexpectedApprovalSelection": "Unexpected approval selection: \"{selection}\"",
+      "agentLabel": "Agent: {agent}"
+    },
+    "image": {
+      "dropHere": "Drop image here",
+      "remove": "Remove image",
+      "sizeLimit": "Image exceeds the {size} limit.",
+      "unsupportedType": "Unsupported image type.",
+      "attachFailed": "Failed to attach image.",
+      "fileNotFound": "File not found",
+      "permissionDenied": "Permission denied"
+    },
+    "externalContexts": {
+      "title": "External Contexts",
+      "empty": "Click folder icon to add",
+      "selectTitle": "Select external context",
+      "persisted": "Persistent (click to make session-only)",
+      "sessionOnly": "Session-only (click to persist)",
+      "removePath": "Remove path",
+      "addTitle": "Add external contexts (click)",
+      "addMoreTitle": "{count} external context(s) (click to add more)"
+    },
+    "thinking": {
+      "effort": "Effort:",
+      "thinking": "Thinking:",
+      "disabled": "Disabled",
+      "fastMode": "Toggle fast mode",
+      "extended": "Extended thinking - click to expand",
+      "active": "Thinking {seconds}s...",
+      "activeElapsed": "Thinking {seconds}s...",
+      "final": "Thought for {seconds}s",
+      "stored": "Thought",
+      "compacting": "Compacting...",
+      "interruptHint": "esc to interrupt",
+      "interrupted": "Interrupted",
+      "interruptedHint": "What should Codexian do instead?",
+      "completedFor": "* {flavor} for {duration}",
+      "indicatorHint": "(esc to interrupt · {duration})"
+    },
+    "render": {
+      "failed": "Failed to render message content."
+    },
+    "diff": {
+      "noChanges": "No changes",
+      "moreLines": "... {count} more lines"
+    },
+    "tools": {
+      "noResult": "No result",
+      "noMatchesFound": "No matches found",
+      "openPage": "Open page",
+      "findInPage": "Find in page",
+      "urlUnavailable": "URL unavailable",
+      "pattern": "Pattern: {pattern}",
+      "query": "Query: {query}",
+      "altQuery": "Alt query: {query}",
+      "searchWeb": "Search web",
+      "moreQueries": "... {count} more query(s)",
+      "moreLines": "... {count} more lines",
+      "moreCharacters": "... {count} more character(s)",
+      "fileDeleted": "File deleted",
+      "noTextualDiff": "No textual diff available",
+      "tasks": "Tasks",
+      "tasksProgress": "Tasks {completed}/{total}",
+      "enteringPlanMode": "Entering plan mode",
+      "planComplete": "Plan complete",
+      "tasksUpdated": "Tasks updated",
+      "notAnswered": "Not answered",
+      "noOptionsRecorded": "No options recorded",
+      "status": "Status: {status}",
+      "running": "Running...",
+      "waitingForAnswer": "Waiting for answer..."
+    },
+    "subagent": {
+      "defaultDescription": "Codex subagent",
+      "noPrompt": "No prompt provided",
+      "running": "Running...",
+      "result": "Result",
+      "status": "Status: {status}",
+      "prompt": "Prompt",
+      "headerAria": "Codex subagent: {description} - Status: {status} - click to expand",
+      "clickToExpand": "{tool} - click to expand"
+    },
+    "writeEdit": {
+      "writing": "Writing...",
+      "done": "DONE",
+      "error": "ERROR",
+      "status": "Status: {status}",
+      "clickToExpand": "{tool}: {path} - click to expand",
+      "file": "file"
+    },
     "rewind": {
       "confirmMessage": "Rewind to this point? File changes after this message will be reverted. Rewinding does not affect files edited manually or via bash.",
       "confirmButton": "Rewind",
@@ -317,6 +472,245 @@
         "name": "Archive log template",
         "desc": "Log structure used when recording new/ to raw/ archive moves."
       }
+    }
+  },
+  "commands": {
+    "openView": {
+      "name": "Open chat view"
+    },
+    "inlineEdit": {
+      "name": "Inline edit"
+    },
+    "newTab": {
+      "name": "New tab"
+    },
+    "newSession": {
+      "name": "New session (in current tab)"
+    },
+    "closeCurrentTab": {
+      "name": "Close current tab"
+    }
+  },
+  "ribbon": {
+    "openCodexian": "Open Codexian"
+  },
+  "notices": {
+    "inlineEditUnavailableMarkdown": "Inline edit unavailable: could not access the active markdown view.",
+    "inlineEditInserted": "Inserted",
+    "inlineEditApplied": "Edit applied",
+    "tabLayoutSaveFailed": "Failed to save tab layout",
+    "environmentTabsRestartFailed": "Environment changes applied, but {count} affected tab(s) failed to restart.",
+    "environmentAppliedRebuild": "Environment variables applied. Sessions will be rebuilt on next message.",
+    "environmentApplied": "Environment variables applied.",
+    "failedToRegenerate": "Failed to regenerate response",
+    "failedToRenameConversation": "Failed to rename conversation",
+    "inlineEditUnavailableEditor": "Inline edit unavailable: could not access the active editor. Try reopening the note.",
+    "vaultFilesLoadFailed": "Failed to load vault files. Vault @-mentions may be unavailable.",
+    "attachFileInvalidPath": "Failed to attach file: invalid path",
+    "agentInitFailed": "Failed to initialize agent service. Please try again.",
+    "agentUnavailable": "Agent service not available. Please reload the plugin.",
+    "steerFailed": "Failed to steer the queued Codex message. It is still available.",
+    "instructionAdded": "Instruction added to custom system prompt",
+    "noInstruction": "No instruction received",
+    "externalContextUnavailable": "External context selector not available.",
+    "forkUnsupported": "Fork is not supported by this provider.",
+    "forkUnavailable": "Fork not available.",
+    "noConversationsToResume": "No conversations to resume",
+    "boundSessionProviderSwitch": "Cannot switch provider on a bound session. Start a new tab instead.",
+    "imageUnsupported": "Image attachments are not supported by this provider.",
+    "folderAlreadyAdded": "This folder is already added as an external context.",
+    "folderPickerUnavailable": "Unable to open folder picker.",
+    "failedToInsertSnippet": "Failed to insert snippet",
+    "failedToDeleteSnippet": "Failed to delete snippet",
+    "failedToProcessResponse": "Failed to process response",
+    "failedToRefineInstruction": "Failed to refine instruction",
+    "failedToOpenConversation": "Failed to open conversation: {message}",
+    "failedToLoadConversation": "Failed to load conversation",
+    "failedToDeleteConversation": "Failed to delete conversation",
+    "unsupportedCommand": "/{command} is not supported by this provider.",
+    "unknownCommand": "Unknown command: {command}",
+    "externalContextAdded": "Added external context: {path}",
+    "externalContextInvalidRemoved": "Removed {count} invalid external context path(s): {paths}",
+    "externalContextPathRequired": "No path provided. Usage: /add-dir /absolute/path",
+    "externalContextPathAbsolute": "Path must be absolute. Usage: /add-dir /absolute/path",
+    "externalContextConflictParent": "Cannot add \"{newPath}\" - it is inside existing path \"{existingPath}\"",
+    "externalContextConflictChild": "Cannot add \"{newPath}\" - it contains existing path \"{existingPath}\"",
+    "cannotPersistMissingPath": "Cannot persist \"{path}\" - directory no longer exists",
+    "environmentSnippetSaved": "Environment snippet \"{name}\" saved",
+    "environmentSnippetUpdated": "Environment snippet \"{name}\" updated",
+    "environmentSnippetDeleted": "Environment snippet \"{name}\" deleted",
+    "deleteEnvironmentSnippetConfirm": "Delete environment snippet \"{name}\"?",
+    "reviewEnvironmentOwnership": "Review environment ownership for: {keys}",
+    "maximumTabsAllowed": "Maximum {count} tabs allowed",
+    "errorPrefix": "Error: {message}",
+    "commandFailed": "Command failed: {message}",
+    "couldNotOpenFile": "Could not open file: {path}",
+    "failedToOpenFile": "Failed to open file: {message}"
+  },
+  "inlineInstruction": {
+    "title": "Add Custom Instruction",
+    "yourInput": "Your input:",
+    "processing": "Processing your instruction...",
+    "yourResponse": "Your response:",
+    "responsePlaceholder": "Provide more details...",
+    "refinedSnippet": "Refined snippet:",
+    "submit": "Submit",
+    "submitResponse": "Submit response",
+    "editInstruction": "Edit instruction",
+    "acceptInstruction": "Accept",
+    "preview": "Preview"
+  },
+  "inlineEdit": {
+    "insertPlaceholder": "Insert instructions...",
+    "editPlaceholder": "Edit instructions...",
+    "replyPlaceholder": "Reply to continue...",
+    "noResponse": "No response from agent",
+    "errorTryAgain": "Error - try again"
+  },
+  "codex": {
+    "settings": {
+      "enableProvider": {
+        "name": "Enable Codex provider",
+        "desc": "When enabled, Codex models appear in the model selector for new conversations. Existing Codex sessions are preserved."
+      },
+      "installationMethod": {
+        "name": "Installation method",
+        "desc": "How Codexian should launch Codex on Windows. Native Windows uses a Windows executable path. WSL launches the Linux CLI inside a selected distro.",
+        "nativeWindows": "Native Windows",
+        "wsl": "WSL"
+      },
+      "cliPath": {
+        "name": "Codex CLI path ({host})",
+        "desc": "Custom path to the local Codex CLI. Leave empty for auto-detection from PATH.",
+        "descWsl": "Linux-side Codex command or absolute path to run inside WSL. Leave empty for PATH lookup inside the selected distro.",
+        "descWindows": "Custom path to the local Codex CLI. Leave empty for auto-detection from PATH. Use the native Windows executable path, usually `codex.exe`.",
+        "validation": {
+          "wslWindowsPath": "WSL mode expects a Linux command or Linux absolute path, not a Windows executable path."
+        }
+      },
+      "wslDistro": {
+        "name": "WSL distro override",
+        "desc": "Optional advanced override. Leave empty to infer the distro from a \\\\wsl$ workspace path when possible, otherwise use the default WSL distro."
+      },
+      "customModels": {
+        "name": "Custom models",
+        "desc": "Append additional Codex model IDs to the picker, one per line. OPENAI_MODEL still takes precedence when set."
+      },
+      "reasoningSummary": {
+        "name": "Reasoning summary",
+        "desc": "Show a summary of the model's reasoning process in the thinking block.",
+        "auto": "Auto",
+        "concise": "Concise",
+        "detailed": "Detailed",
+        "none": "Off"
+      },
+      "skills": {
+        "heading": "Codex Skills",
+        "desc": "Manage vault-level Codex skills stored in .codex/skills/ or .agents/skills/. Home-level skills are excluded here."
+      },
+      "hiddenSkills": {
+        "name": "Hidden Skills",
+        "desc": "Hide specific Codex skills from the dropdown. Enter skill names without the leading $, one per line."
+      },
+      "subagents": {
+        "heading": "Codex Subagents",
+        "desc": "Manage vault-level Codex subagents stored in .codex/agents/. Each TOML file defines one custom agent."
+      },
+      "mcp": {
+        "descPrefix": "Codex manages MCP servers via its own CLI. Configure with ",
+        "descSuffix": " and they will be available in Codexian. ",
+        "learnMore": "Learn more"
+      },
+      "environment": {
+        "shared": {
+          "name": "Shared environment",
+          "desc": "Provider-neutral runtime variables shared across all providers. Use this for PATH, proxy, cert, and temp variables."
+        },
+        "codex": {
+          "name": "Codex environment",
+          "desc": "Codex-owned runtime variables only. Use this for OPENAI_* and CODEX_* settings. If Codex auto-detection needs help, add its install directory to shared PATH instead of this provider section."
+        }
+      },
+      "effort": {
+        "low": "Low",
+        "medium": "Medium",
+        "high": "High",
+        "xhigh": "XHigh"
+      },
+      "permissionMode": {
+        "safe": "Safe",
+        "yolo": "YOLO",
+        "plan": "Plan"
+      },
+      "serviceTier": {
+        "standard": "Standard",
+        "fast": "Fast"
+      }
+    },
+    "skills": {
+      "modal": {
+        "titleEdit": "Edit Codex Skill",
+        "titleAdd": "Add Codex Skill",
+        "directory": "Directory",
+        "directoryDesc": "Where to store the skill",
+        "name": "Skill name",
+        "nameDesc": "The name used after $ (e.g., \"analyze\" for $analyze)",
+        "description": "Description",
+        "descriptionDesc": "Optional description shown in dropdown",
+        "instructions": "Instructions",
+        "instructionsDesc": "The skill instructions (SKILL.md content)",
+        "instructionsPlaceholder": "Analyze the code for..."
+      },
+      "instructionsRequired": "Instructions are required",
+      "saveFailed": "Failed to save Codex skill",
+      "header": "Codex Skills",
+      "empty": "No Codex skills in vault. Click + to create one.",
+      "deleted": "Codex skill \"$${name}\" deleted",
+      "deleteFailed": "Failed to delete Codex skill",
+      "saved": "Codex skill \"$${name}\" created",
+      "updated": "Codex skill \"$${name}\" updated",
+      "badge": "skill"
+    },
+    "subagents": {
+      "modal": {
+        "titleEdit": "Edit Codex Subagent",
+        "titleAdd": "Add Codex Subagent",
+        "name": "Name",
+        "nameDesc": "Agent name Codex uses when spawning (lowercase, hyphens, underscores)",
+        "description": "Description",
+        "descriptionDesc": "When Codex should use this agent",
+        "descriptionPlaceholder": "Reviews code for correctness and security",
+        "advancedOptions": "Advanced options",
+        "model": "Model",
+        "modelDesc": "Model override (leave empty to inherit)",
+        "reasoningEffort": "Reasoning effort",
+        "reasoningEffortDesc": "Model reasoning effort level",
+        "sandboxMode": "Sandbox mode",
+        "sandboxModeDesc": "Sandbox restriction for this agent",
+        "nicknames": "Nickname candidates",
+        "nicknamesDesc": "Comma-separated display nicknames (e.g., Atlas, Delta, Echo)",
+        "instructions": "Developer instructions",
+        "instructionsDesc": "Core instructions that define the agent's behavior",
+        "instructionsPlaceholder": "Review code like an owner.\nPrioritize correctness, security, and missing test coverage."
+      },
+      "validation": {
+        "nameRequired": "Subagent name is required",
+        "nameTooLong": "Subagent name must be {count} characters or fewer",
+        "namePattern": "Subagent name can only contain lowercase letters, numbers, hyphens, and underscores",
+        "nicknamesPattern": "Nickname candidates can only contain ASCII letters, numbers, spaces, hyphens, and underscores",
+        "nicknamesUnique": "Nickname candidates must be unique"
+      },
+      "descriptionRequired": "Description is required",
+      "instructionsRequired": "Developer instructions are required",
+      "duplicateName": "A subagent named \"{name}\" already exists",
+      "saveFailed": "Failed to save subagent: {message}",
+      "header": "Codex Subagents",
+      "empty": "No Codex subagents in vault. Click + to create one.",
+      "deleteConfirm": "Delete subagent \"{name}\"?",
+      "deleted": "Subagent \"{name}\" deleted",
+      "deleteFailed": "Failed to delete subagent",
+      "created": "Subagent \"{name}\" created",
+      "updated": "Subagent \"{name}\" updated"
     }
   },
   "knowledgeWorkflow": {

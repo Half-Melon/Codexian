@@ -4,6 +4,7 @@
     "cancel": "取消",
     "delete": "删除",
     "edit": "编辑",
+    "rename": "重命名",
     "add": "添加",
     "remove": "移除",
     "clear": "清除",
@@ -19,9 +20,163 @@
     "disabled": "已禁用",
     "platform": "平台",
     "refresh": "刷新",
-    "rewind": "回退"
+    "rewind": "回退",
+    "insert": "插入",
+    "copy": "复制",
+    "copied": "已复制！",
+    "unknownError": "未知错误",
+    "allowOnce": "允许一次",
+    "alwaysAllow": "总是允许",
+    "deny": "拒绝"
   },
   "chat": {
+    "placeholder": "今天想让 Codexian 帮你做什么？",
+    "history": {
+      "title": "对话",
+      "empty": "暂无对话",
+      "openInNewTab": "在新标签页打开",
+      "openInBackgroundTab": "在后台标签页打开",
+      "switchToOpenSession": "切换到已打开会话",
+      "currentSession": "当前会话",
+      "generatingTitle": "正在生成标题...",
+      "regenerateTitle": "重新生成标题"
+    },
+    "resume": {
+      "title": "恢复对话",
+      "empty": "暂无对话"
+    },
+    "slash": {
+      "noMatchingCommands": "没有匹配的命令"
+    },
+    "conversationCompacted": "对话已压缩",
+    "queue": {
+      "queued": "已排队",
+      "steering": "正在调整",
+      "steeringButton": "调整中...",
+      "steerNow": "立即调整",
+      "images": "图片",
+      "queuedPrefix": "已排队：{message}",
+      "steeringPrefix": "正在调整：{message}"
+    },
+    "plan": {
+      "complete": "计划完成",
+      "implement": "执行",
+      "revisePlaceholder": "输入反馈以修改计划...",
+      "approveNewSession": "批准（新会话）",
+      "approveCurrentSession": "批准（当前会话）",
+      "requestedPermissions": "请求的权限：",
+      "continuePlanningPlaceholder": "输入反馈以继续规划...",
+      "hints": "方向键导航 · Enter 选择 · Esc 取消",
+      "readFailed": "无法读取计划文件：{message}。\"批准（新会话）\" 将不会包含计划详情。",
+      "implementThisPlan": "执行这个计划：\n\n{plan}",
+      "implementApprovedPlan": "执行已批准的计划。",
+      "approvedNewSessionResult": "用户已批准计划并启动新会话。"
+    },
+    "ask": {
+      "submit": "提交",
+      "reviewAnswers": "检查你的回答",
+      "readyToSubmit": "准备提交回答？",
+      "submitAnswers": "提交回答",
+      "questionTitle": "问题",
+      "customPlaceholder": "输入其他内容。",
+      "secretPlaceholder": "输入保密内容。",
+      "notAnswered": "未回答",
+      "waitingForAnswer": "等待回答...",
+      "noOptionsRecorded": "没有记录可选项",
+      "hints": "Enter 选择 · Tab/方向键导航 · Esc 取消",
+      "hintsImmediate": "Enter 选择 · 方向键导航 · Esc 取消",
+      "approvalTitle": "需要权限",
+      "approvalQuestion": "允许这项操作吗？",
+      "unexpectedApprovalSelection": "意外的权限选择：“{selection}”",
+      "agentLabel": "代理：{agent}"
+    },
+    "image": {
+      "dropHere": "把图片拖到这里",
+      "remove": "移除图片",
+      "sizeLimit": "图片超过 {size} 限制。",
+      "unsupportedType": "不支持的图片类型。",
+      "attachFailed": "附加图片失败。",
+      "fileNotFound": "文件未找到",
+      "permissionDenied": "权限被拒绝"
+    },
+    "externalContexts": {
+      "title": "外部上下文",
+      "empty": "点击文件夹图标添加",
+      "selectTitle": "选择外部上下文",
+      "persisted": "持久保留（点击改为仅本会话）",
+      "sessionOnly": "仅本会话（点击持久保留）",
+      "removePath": "移除路径",
+      "addTitle": "添加外部上下文（点击）",
+      "addMoreTitle": "{count} 个外部上下文（点击继续添加）"
+    },
+    "thinking": {
+      "effort": "强度：",
+      "thinking": "思考：",
+      "disabled": "已关闭",
+      "fastMode": "切换快速模式",
+      "extended": "扩展思考 - 点击展开",
+      "active": "思考中 {seconds}s...",
+      "activeElapsed": "思考中 {seconds}s...",
+      "final": "思考用时 {seconds}s",
+      "stored": "思考",
+      "compacting": "正在压缩...",
+      "interruptHint": "按 Esc 中断",
+      "interrupted": "已中断",
+      "interruptedHint": "接下来要让 Codexian 怎么做？",
+      "completedFor": "* {flavor}，用时 {duration}",
+      "indicatorHint": "（按 Esc 中断 · {duration}）"
+    },
+    "render": {
+      "failed": "渲染消息内容失败。"
+    },
+    "diff": {
+      "noChanges": "没有变更",
+      "moreLines": "... 还有 {count} 行"
+    },
+    "tools": {
+      "noResult": "没有结果",
+      "noMatchesFound": "没有找到匹配项",
+      "openPage": "打开页面",
+      "findInPage": "在页面中查找",
+      "urlUnavailable": "URL 不可用",
+      "pattern": "模式：{pattern}",
+      "query": "查询：{query}",
+      "altQuery": "备用查询：{query}",
+      "searchWeb": "搜索网页",
+      "moreQueries": "... 还有 {count} 个查询",
+      "moreLines": "... 还有 {count} 行",
+      "moreCharacters": "... 还有 {count} 个字符",
+      "fileDeleted": "文件已删除",
+      "noTextualDiff": "没有可显示的文本 diff",
+      "tasks": "任务",
+      "tasksProgress": "任务 {completed}/{total}",
+      "enteringPlanMode": "正在进入计划模式",
+      "planComplete": "计划完成",
+      "tasksUpdated": "任务已更新",
+      "notAnswered": "未回答",
+      "noOptionsRecorded": "没有记录可选项",
+      "status": "状态：{status}",
+      "running": "运行中...",
+      "waitingForAnswer": "等待回答..."
+    },
+    "subagent": {
+      "defaultDescription": "Codex 子代理",
+      "noPrompt": "没有提供提示词",
+      "running": "运行中...",
+      "result": "结果",
+      "status": "状态：{status}",
+      "prompt": "提示词",
+      "headerAria": "Codex 子代理：{description} - 状态：{status} - 点击展开",
+      "clickToExpand": "{tool} - 点击展开"
+    },
+    "writeEdit": {
+      "writing": "正在写入...",
+      "done": "完成",
+      "error": "错误",
+      "status": "状态：{status}",
+      "clickToExpand": "{tool}：{path} - 点击展开",
+      "file": "文件"
+    },
     "rewind": {
       "confirmMessage": "回退到此处？此消息之后的文件更改将被还原。回退不会影响手动或通过 bash 编辑的文件。",
       "confirmButton": "回退",
@@ -87,7 +242,7 @@
     },
     "mediaFolder": {
       "name": "媒体文件夹",
-      "desc": "Folder containing attachments/images. When notes use ![[image.jpg]], Codex will look here. Leave empty for vault root."
+      "desc": "用于存放附件和图片的文件夹。笔记使用 ![[image.jpg]] 时，Codex 会在这里查找。留空则使用 vault 根目录。"
     },
     "systemPrompt": {
       "name": "自定义系统提示词",
@@ -143,21 +298,21 @@
       "btnSet": "设置快捷键"
     },
     "slashCommands": {
-      "name": "Commands and Skills",
-      "desc": "Manage vault-level Codex skills stored in .codex/skills/ and .agents/skills/. Triggered by $name."
+      "name": "命令和技能",
+      "desc": "管理保存在 .codex/skills/ 和 .agents/skills/ 中的 vault 级 Codex 技能。通过 $名称 触发。"
     },
     "hiddenSlashCommands": {
-      "name": "Hidden Commands and Skills",
-      "desc": "Hide specific commands and skills from the dropdown. Enter names without the leading slash or dollar sign, one per line.",
+      "name": "隐藏命令和技能",
+      "desc": "从下拉列表中隐藏指定命令和技能。每行输入一个名称，不要包含开头的斜杠或美元符号。",
       "placeholder": "commit\nbuild\ntest"
     },
     "mcpServers": {
-      "name": "MCP Servers",
-      "desc": "Codex MCP servers are configured by the Codex CLI. Use codex mcp to manage them."
+      "name": "MCP 服务器",
+      "desc": "Codex MCP 服务器由 Codex CLI 配置。请使用 codex mcp 管理。"
     },
     "plugins": {
-      "name": "Codex Plugins",
-      "desc": "Codexian is Codex-only and does not manage third-party provider plugins."
+      "name": "Codex 插件",
+      "desc": "Codexian 只面向 Codex，不在这里管理第三方 provider 插件。"
     },
     "subagents": {
       "name": "子代理",
@@ -199,17 +354,17 @@
     },
     "safety": "安全",
     "loadUserSettings": {
-      "name": "Load user Codex settings",
-      "desc": "Codex reads its own CLI configuration. Codexian keeps provider settings under this vault."
+      "name": "加载用户 Codex 设置",
+      "desc": "Codex 会读取自己的 CLI 配置。Codexian 会把 provider 设置保存在当前 vault 下。"
     },
     "codexSafeMode": {
-      "name": "Safe mode",
-      "desc": "Sandbox mode used when the Safe toggle is active."
+      "name": "安全模式",
+      "desc": "启用安全开关时使用的沙盒模式。"
     },
     "environment": "环境",
     "customVariables": {
       "name": "自定义变量",
-      "desc": "Environment variables for the active provider (KEY=VALUE format, one per line). Shell export prefix supported."
+      "desc": "当前 provider 使用的环境变量。格式为 KEY=VALUE，每行一个；支持 shell export 前缀。"
     },
     "envSnippets": {
       "name": "片段",
@@ -236,13 +391,13 @@
       "invalid": "格式无效。使用：256k、1m 或精确数量（1000-10000000）。"
     },
     "customModels": {
-      "name": "Custom models",
-      "desc": "Append additional Codex model IDs to the picker, one per line. Environment model overrides still replace the picker.",
+      "name": "自定义模型",
+      "desc": "向模型选择器追加额外的 Codex 模型 ID，每行一个。环境变量中的模型覆盖仍会替换选择器。",
       "placeholder": "gpt-5.4\ngpt-5.3-codex"
     },
     "enableChrome": {
-      "name": "Browser integration",
-      "desc": "Browser integration is provider-specific. Codexian does not manage a separate Chrome extension here."
+      "name": "浏览器集成",
+      "desc": "浏览器集成由 provider 决定。Codexian 不在这里管理单独的 Chrome 扩展。"
     },
     "enableBangBash": {
       "name": "启用命令模式 (!)",
@@ -253,7 +408,7 @@
     },
     "maxTabs": {
       "name": "最大聊天标签数",
-      "desc": "Maximum number of chat tabs open simultaneously (3-10). Each tab uses a separate Codex session.",
+      "desc": "同时打开的聊天标签页上限（3-10）。每个标签页使用独立的 Codex 会话。",
       "warning": "超过 5 个标签可能会影响性能和内存使用。"
     },
     "tabBarPosition": {
@@ -264,7 +419,7 @@
     },
     "enableAutoScroll": {
       "name": "流式传输时自动滚动",
-      "desc": "Automatically scroll down while Codex streams responses. Disable to stay at the top and read from the beginning."
+      "desc": "Codex 流式回复时自动向下滚动。关闭后会停留在顶部，便于从开头阅读。"
     },
     "deferMathRenderingDuringStreaming": {
       "name": "流式传输时延迟渲染数学公式",
@@ -278,10 +433,10 @@
       "mainTab": "主编辑器标签页"
     },
     "cliPath": {
-      "name": "Codex CLI path",
-      "desc": "Custom path to Codex CLI. Leave empty for auto-detection.",
-      "descWindows": "For native Windows, use codex.exe. For WSL, use a Linux command or Linux absolute path inside the selected distro.",
-      "descUnix": "Paste the output of \"which codex\", or leave empty for PATH lookup.",
+      "name": "Codex CLI 路径",
+      "desc": "Codex CLI 的自定义路径。留空则自动检测。",
+      "descWindows": "原生 Windows 使用 codex.exe。WSL 使用所选发行版内的 Linux 命令或 Linux 绝对路径。",
+      "descUnix": "粘贴 \"which codex\" 的输出，或留空使用 PATH 查找。",
       "validation": {
         "notExist": "路径不存在",
         "isDirectory": "路径是目录，不是文件"
@@ -317,6 +472,245 @@
         "name": "归档日志模板",
         "desc": "记录 new/ 到 raw/ 归档移动时使用的日志结构。"
       }
+    }
+  },
+  "commands": {
+    "openView": {
+      "name": "打开聊天视图"
+    },
+    "inlineEdit": {
+      "name": "内联编辑"
+    },
+    "newTab": {
+      "name": "新建标签页"
+    },
+    "newSession": {
+      "name": "新建会话（当前标签页）"
+    },
+    "closeCurrentTab": {
+      "name": "关闭当前标签页"
+    }
+  },
+  "ribbon": {
+    "openCodexian": "打开 Codexian"
+  },
+  "notices": {
+    "inlineEditUnavailableMarkdown": "内联编辑不可用：无法访问当前 Markdown 视图。",
+    "inlineEditInserted": "已插入",
+    "inlineEditApplied": "已应用编辑",
+    "tabLayoutSaveFailed": "保存标签布局失败",
+    "environmentTabsRestartFailed": "环境变更已应用，但 {count} 个受影响标签页重启失败。",
+    "environmentAppliedRebuild": "环境变量已应用。会话将在下一条消息时重建。",
+    "environmentApplied": "环境变量已应用。",
+    "failedToRegenerate": "重新生成回复失败",
+    "failedToRenameConversation": "重命名对话失败",
+    "inlineEditUnavailableEditor": "内联编辑不可用：无法访问当前编辑器。请重新打开笔记后再试。",
+    "vaultFilesLoadFailed": "加载 vault 文件失败。vault @ 提及可能不可用。",
+    "attachFileInvalidPath": "附加文件失败：路径无效",
+    "agentInitFailed": "初始化代理服务失败。请重试。",
+    "agentUnavailable": "代理服务不可用。请重新加载插件。",
+    "steerFailed": "调整排队中的 Codex 消息失败。该消息仍然保留。",
+    "instructionAdded": "指令已添加到自定义系统提示词",
+    "noInstruction": "没有收到指令",
+    "externalContextUnavailable": "外部上下文选择器不可用。",
+    "forkUnsupported": "当前 provider 不支持分叉。",
+    "forkUnavailable": "分叉不可用。",
+    "noConversationsToResume": "没有可恢复的对话",
+    "boundSessionProviderSwitch": "已绑定会话不能切换 provider。请新建标签页。",
+    "imageUnsupported": "当前 provider 不支持图片附件。",
+    "folderAlreadyAdded": "该文件夹已经添加为外部上下文。",
+    "folderPickerUnavailable": "无法打开文件夹选择器。",
+    "failedToInsertSnippet": "插入片段失败",
+    "failedToDeleteSnippet": "删除片段失败",
+    "failedToProcessResponse": "处理回复失败",
+    "failedToRefineInstruction": "优化指令失败",
+    "failedToOpenConversation": "打开对话失败：{message}",
+    "failedToLoadConversation": "加载对话失败",
+    "failedToDeleteConversation": "删除对话失败",
+    "unsupportedCommand": "/{command} 当前 provider 不支持。",
+    "unknownCommand": "未知命令：{command}",
+    "externalContextAdded": "已添加外部上下文：{path}",
+    "externalContextInvalidRemoved": "已移除 {count} 个无效外部上下文路径：{paths}",
+    "externalContextPathRequired": "没有提供路径。用法：/add-dir /absolute/path",
+    "externalContextPathAbsolute": "路径必须是绝对路径。用法：/add-dir /absolute/path",
+    "externalContextConflictParent": "无法添加 \"{newPath}\"，它位于已有路径 \"{existingPath}\" 内",
+    "externalContextConflictChild": "无法添加 \"{newPath}\"，它包含已有路径 \"{existingPath}\"",
+    "cannotPersistMissingPath": "无法持久保留 \"{path}\"，目录已不存在",
+    "environmentSnippetSaved": "环境变量片段“{name}”已保存",
+    "environmentSnippetUpdated": "环境变量片段“{name}”已更新",
+    "environmentSnippetDeleted": "环境变量片段“{name}”已删除",
+    "deleteEnvironmentSnippetConfirm": "删除环境变量片段“{name}”？",
+    "reviewEnvironmentOwnership": "请检查这些环境变量的归属：{keys}",
+    "maximumTabsAllowed": "最多允许打开 {count} 个标签页",
+    "errorPrefix": "错误：{message}",
+    "commandFailed": "命令执行失败：{message}",
+    "couldNotOpenFile": "无法打开文件：{path}",
+    "failedToOpenFile": "打开文件失败：{message}"
+  },
+  "inlineInstruction": {
+    "title": "添加自定义指令",
+    "yourInput": "你的输入：",
+    "processing": "正在处理你的指令...",
+    "yourResponse": "你的回复：",
+    "responsePlaceholder": "补充更多细节...",
+    "refinedSnippet": "优化后的片段：",
+    "submit": "提交",
+    "submitResponse": "提交回复",
+    "editInstruction": "编辑指令",
+    "acceptInstruction": "接受指令",
+    "preview": "预览"
+  },
+  "inlineEdit": {
+    "insertPlaceholder": "输入插入指令...",
+    "editPlaceholder": "输入编辑指令...",
+    "replyPlaceholder": "回复以继续...",
+    "noResponse": "代理没有返回响应",
+    "errorTryAgain": "出错了，请重试"
+  },
+  "codex": {
+    "settings": {
+      "enableProvider": {
+        "name": "启用 Codex provider",
+        "desc": "启用后，Codex 模型会出现在新对话的模型选择器中。已有 Codex 会话会被保留。"
+      },
+      "installationMethod": {
+        "name": "安装方式",
+        "desc": "Codexian 在 Windows 上启动 Codex 的方式。原生 Windows 使用 Windows 可执行文件路径；WSL 会在所选发行版内启动 Linux CLI。",
+        "nativeWindows": "原生 Windows",
+        "wsl": "WSL"
+      },
+      "cliPath": {
+        "name": "Codex CLI 路径（{host}）",
+        "desc": "本机 Codex CLI 的自定义路径。留空则从 PATH 自动检测。",
+        "descWsl": "在 WSL 内运行的 Linux 侧 Codex 命令或绝对路径。留空则在所选发行版内使用 PATH 查找。",
+        "descWindows": "本机 Codex CLI 的自定义路径。留空则从 PATH 自动检测。原生 Windows 通常使用 codex.exe。",
+        "validation": {
+          "wslWindowsPath": "WSL 模式需要 Linux 命令或 Linux 绝对路径，不能使用 Windows 可执行文件路径。"
+        }
+      },
+      "wslDistro": {
+        "name": "WSL 发行版覆盖",
+        "desc": "可选高级覆盖。留空时，如果可行会从 \\\\wsl$ 工作区路径推断发行版，否则使用默认 WSL 发行版。"
+      },
+      "customModels": {
+        "name": "自定义模型",
+        "desc": "向选择器追加额外的 Codex 模型 ID，每行一个。设置 OPENAI_MODEL 时仍会优先生效。"
+      },
+      "reasoningSummary": {
+        "name": "推理摘要",
+        "desc": "在 thinking 区块中显示模型推理过程摘要。",
+        "auto": "自动",
+        "concise": "简洁",
+        "detailed": "详细",
+        "none": "关闭"
+      },
+      "skills": {
+        "heading": "Codex 技能",
+        "desc": "管理保存在 .codex/skills/ 或 .agents/skills/ 中的 vault 级 Codex 技能。这里不显示 home 级技能。"
+      },
+      "hiddenSkills": {
+        "name": "隐藏技能",
+        "desc": "从下拉列表中隐藏指定 Codex 技能。每行输入一个技能名，不要包含开头的 $。"
+      },
+      "subagents": {
+        "heading": "Codex 子代理",
+        "desc": "管理保存在 .codex/agents/ 中的 vault 级 Codex 子代理。每个 TOML 文件定义一个自定义代理。"
+      },
+      "mcp": {
+        "descPrefix": "Codex 通过自己的 CLI 管理 MCP 服务器。请使用 ",
+        "descSuffix": " 配置，配置后会在 Codexian 中可用。",
+        "learnMore": "了解更多"
+      },
+      "environment": {
+        "shared": {
+          "name": "共享环境",
+          "desc": "所有 provider 共用的运行时变量。适合 PATH、代理、证书和临时变量。"
+        },
+        "codex": {
+          "name": "Codex 环境",
+          "desc": "仅 Codex 使用的运行时变量。适合 OPENAI_* 和 CODEX_* 设置。如果 Codex 自动检测需要帮助，请把安装目录添加到共享 PATH，而不是这个 provider 区域。"
+        }
+      },
+      "effort": {
+        "low": "低",
+        "medium": "中",
+        "high": "高",
+        "xhigh": "超高"
+      },
+      "permissionMode": {
+        "safe": "安全",
+        "yolo": "YOLO",
+        "plan": "计划"
+      },
+      "serviceTier": {
+        "standard": "标准",
+        "fast": "快速"
+      }
+    },
+    "skills": {
+      "modal": {
+        "titleEdit": "编辑 Codex 技能",
+        "titleAdd": "添加 Codex 技能",
+        "directory": "目录",
+        "directoryDesc": "技能保存位置",
+        "name": "技能名称",
+        "nameDesc": "$ 后使用的名称，例如 $analyze 对应 \"analyze\"",
+        "description": "描述",
+        "descriptionDesc": "下拉列表中显示的可选描述",
+        "instructions": "指令",
+        "instructionsDesc": "技能指令内容（SKILL.md 内容）",
+        "instructionsPlaceholder": "分析代码中的..."
+      },
+      "instructionsRequired": "指令为必填项",
+      "saveFailed": "保存 Codex 技能失败",
+      "header": "Codex 技能",
+      "empty": "vault 中没有 Codex 技能。点击 + 创建一个。",
+      "deleted": "Codex 技能 \"$${name}\" 已删除",
+      "deleteFailed": "删除 Codex 技能失败",
+      "saved": "Codex 技能 \"$${name}\" 已创建",
+      "updated": "Codex 技能 \"$${name}\" 已更新",
+      "badge": "技能"
+    },
+    "subagents": {
+      "modal": {
+        "titleEdit": "编辑 Codex 子代理",
+        "titleAdd": "添加 Codex 子代理",
+        "name": "名称",
+        "nameDesc": "Codex spawn 时使用的代理名称（小写、连字符、下划线）",
+        "description": "描述",
+        "descriptionDesc": "Codex 什么时候应该使用这个代理",
+        "descriptionPlaceholder": "审查代码的正确性和安全性",
+        "advancedOptions": "高级选项",
+        "model": "模型",
+        "modelDesc": "此代理的模型覆盖（留空则继承）",
+        "reasoningEffort": "推理强度",
+        "reasoningEffortDesc": "模型推理强度级别",
+        "sandboxMode": "沙盒模式",
+        "sandboxModeDesc": "此代理的沙盒限制",
+        "nicknames": "昵称候选",
+        "nicknamesDesc": "用逗号分隔的显示昵称，例如 Atlas, Delta, Echo",
+        "instructions": "开发者指令",
+        "instructionsDesc": "定义代理行为的核心指令",
+        "instructionsPlaceholder": "像代码 owner 一样审查代码。\n优先关注正确性、安全性和缺失的测试覆盖。"
+      },
+      "validation": {
+        "nameRequired": "子代理名称为必填项",
+        "nameTooLong": "子代理名称不能超过 {count} 个字符",
+        "namePattern": "子代理名称只能包含小写字母、数字、连字符和下划线",
+        "nicknamesPattern": "昵称候选只能包含 ASCII 字母、数字、空格、连字符和下划线",
+        "nicknamesUnique": "昵称候选不能重复"
+      },
+      "descriptionRequired": "描述为必填项",
+      "instructionsRequired": "开发者指令为必填项",
+      "duplicateName": "名为 \"{name}\" 的子代理已存在",
+      "saveFailed": "保存子代理失败：{message}",
+      "header": "Codex 子代理",
+      "empty": "vault 中没有 Codex 子代理。点击 + 创建一个。",
+      "deleteConfirm": "删除子代理 \"{name}\"？",
+      "deleted": "子代理 \"{name}\" 已删除",
+      "deleteFailed": "删除子代理失败",
+      "created": "子代理 \"{name}\" 已创建",
+      "updated": "子代理 \"{name}\" 已更新"
     }
   },
   "knowledgeWorkflow": {

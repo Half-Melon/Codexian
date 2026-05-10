@@ -1,7 +1,8 @@
+import type { Locale } from '../../i18n/types';
 import {
   buildTitleGenerationPrompt,
+  getTitleGenerationSystemPrompt,
   parseTitleGenerationResponse,
-  TITLE_GENERATION_SYSTEM_PROMPT,
 } from '../prompt/titleGeneration';
 import type {
   TitleGenerationCallback,
@@ -18,6 +19,7 @@ interface ActiveGeneration {
 export interface QueryBackedTitleGenerationServiceOptions {
   createRunner: () => AuxQueryRunner;
   resolveModel?: () => string | undefined;
+  resolveLocale?: () => Locale;
 }
 
 export class QueryBackedTitleGenerationService implements TitleGenerationService {
@@ -42,11 +44,12 @@ export class QueryBackedTitleGenerationService implements TitleGenerationService
     this.activeGenerations.set(conversationId, generation);
 
     try {
+      const locale = this.options.resolveLocale?.() ?? 'en';
       const text = await runner.query({
         abortController,
         model: this.options.resolveModel?.(),
-        systemPrompt: TITLE_GENERATION_SYSTEM_PROMPT,
-      }, buildTitleGenerationPrompt(userMessage));
+        systemPrompt: getTitleGenerationSystemPrompt(locale),
+      }, buildTitleGenerationPrompt(userMessage, locale));
       const title = parseTitleGenerationResponse(text);
       await this.safeCallback(
         callback,

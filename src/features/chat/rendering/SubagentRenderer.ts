@@ -3,6 +3,8 @@ import { setIcon } from 'obsidian';
 import { getToolIcon } from '../../../core/tools/toolIcons';
 import { TOOL_SPAWN_AGENT } from '../../../core/tools/toolNames';
 import type { SubagentInfo, ToolCallInfo } from '../../../core/types';
+import { t } from '../../../i18n/i18n';
+import type { TranslationKey } from '../../../i18n/types';
 import { setupCollapsible } from './collapsible';
 import {
   getToolLabel,
@@ -47,7 +49,7 @@ const SUBAGENT_TOOL_STATUS_ICONS: Partial<Record<ToolCallInfo['status'], string>
 };
 
 function extractSubagentDescription(input: Record<string, unknown>): string {
-  return (input.description as string) || 'Codex subagent';
+  return (input.description as string) || t('chat.subagent.defaultDescription' as TranslationKey);
 }
 
 function extractSubagentPrompt(input: Record<string, unknown>): string {
@@ -83,15 +85,21 @@ function createSection(parentEl: HTMLElement, title: string, bodyClass?: string)
 function setPromptText(promptBodyEl: HTMLElement, prompt: string): void {
   promptBodyEl.empty();
   const textEl = promptBodyEl.createDiv({ cls: 'codexian-subagent-prompt-text' });
-  textEl.setText(prompt || 'No prompt provided');
+  textEl.setText(prompt || t('chat.subagent.noPrompt' as TranslationKey));
 }
 
 function updateSyncHeaderAria(state: SubagentState): void {
   state.headerEl.setAttribute(
     'aria-label',
-    `Codex subagent: ${truncateDescription(state.info.description)} - Status: ${state.info.status} - click to expand`
+    t('chat.subagent.headerAria' as TranslationKey, {
+      description: truncateDescription(state.info.description),
+      status: state.info.status,
+    }),
   );
-  state.statusEl.setAttribute('aria-label', `Status: ${state.info.status}`);
+  state.statusEl.setAttribute(
+    'aria-label',
+    t('chat.subagent.status' as TranslationKey, { status: state.info.status }),
+  );
 }
 
 function renderSubagentToolContent(contentEl: HTMLElement, toolCall: ToolCallInfo): void {
@@ -99,7 +107,7 @@ function renderSubagentToolContent(contentEl: HTMLElement, toolCall: ToolCallInf
 
   if (!toolCall.result && toolCall.status === 'running') {
     const emptyEl = contentEl.createDiv({ cls: 'codexian-subagent-tool-empty' });
-    emptyEl.setText('Running...');
+    emptyEl.setText(t('chat.subagent.running' as TranslationKey));
     return;
   }
 
@@ -110,7 +118,10 @@ function setSubagentToolStatus(view: SubagentToolView, status: ToolCallInfo['sta
   view.statusEl.className = 'codexian-subagent-tool-status';
   view.statusEl.addClass(`status-${status}`);
   view.statusEl.empty();
-  view.statusEl.setAttribute('aria-label', `Status: ${status}`);
+  view.statusEl.setAttribute(
+    'aria-label',
+    t('chat.subagent.status' as TranslationKey, { status }),
+  );
 
   const statusIcon = SUBAGENT_TOOL_STATUS_ICONS[status];
   if (statusIcon) {
@@ -172,7 +183,11 @@ function ensureResultSection(state: SubagentState): SubagentSection {
     return { wrapperEl: state.resultSectionEl, bodyEl: state.resultBodyEl };
   }
 
-  const section = createSection(state.contentEl, 'Result', 'codexian-subagent-result-body');
+  const section = createSection(
+    state.contentEl,
+    t('chat.subagent.result' as TranslationKey),
+    'codexian-subagent-result-body',
+  );
   section.wrapperEl.addClass('codexian-subagent-section-result');
   state.resultSectionEl = section.wrapperEl;
   state.resultBodyEl = section.bodyEl;
@@ -207,7 +222,9 @@ function hydrateSyncSubagentStateFromStored(state: SubagentState, subagent: Suba
   }
 
   if (subagent.status === 'completed' || subagent.status === 'error') {
-    const fallback = subagent.status === 'error' ? 'ERROR' : 'DONE';
+    const fallback = subagent.status === 'error'
+      ? t('chat.writeEdit.error' as TranslationKey)
+      : t('chat.writeEdit.done' as TranslationKey);
     finalizeSubagentBlock(state, subagent.result || fallback, subagent.status === 'error');
   } else {
     state.statusEl.className = 'codexian-subagent-status status-running';
@@ -248,11 +265,18 @@ export function createSubagentBlock(
   labelEl.setText(truncateDescription(description));
 
   const statusEl = headerEl.createDiv({ cls: 'codexian-subagent-status status-running' });
-  statusEl.setAttribute('aria-label', 'Status: running');
+  statusEl.setAttribute(
+    'aria-label',
+    t('chat.subagent.status' as TranslationKey, { status: 'running' }),
+  );
 
   const contentEl = wrapperEl.createDiv({ cls: 'codexian-subagent-content' });
 
-  const promptSection = createSection(contentEl, 'Prompt', 'codexian-subagent-prompt-body');
+  const promptSection = createSection(
+    contentEl,
+    t('chat.subagent.prompt' as TranslationKey),
+    'codexian-subagent-prompt-body',
+  );
   promptSection.wrapperEl.addClass('codexian-subagent-section-prompt');
   setPromptText(promptSection.bodyEl, prompt);
 
@@ -357,7 +381,11 @@ export function finalizeSubagentBlock(
     state.wrapperEl.addClass('error');
   }
 
-  const finalText = result?.trim() ? result : (isError ? 'ERROR' : 'DONE');
+  const finalText = result?.trim()
+    ? result
+    : isError
+      ? t('chat.writeEdit.error' as TranslationKey)
+      : t('chat.writeEdit.done' as TranslationKey);
   setResultText(state, finalText);
 
   updateSyncHeaderAria(state);

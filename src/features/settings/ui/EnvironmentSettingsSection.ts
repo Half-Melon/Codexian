@@ -2,6 +2,8 @@ import { Setting } from 'obsidian';
 
 import { getEnvironmentReviewKeysForScope } from '../../../core/providers/providerEnvironment';
 import type { EnvironmentScope } from '../../../core/types/settings';
+import { t } from '../../../i18n/i18n';
+import type { TranslationKey } from '../../../i18n/types';
 import type CodexianPlugin from '../../../main';
 import { EnvSnippetManager } from './EnvSnippetManager';
 
@@ -50,7 +52,7 @@ export function renderEnvironmentSettingsSection(
       return;
     }
 
-    reviewEl.setText(`Review environment ownership for: ${reviewKeys.join(', ')}`);
+    reviewEl.setText(t('notices.reviewEnvironmentOwnership' as TranslationKey, { keys: reviewKeys.join(', ') }));
     reviewEl.style.display = 'block';
   };
 

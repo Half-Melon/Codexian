@@ -1,7 +1,5 @@
 import type { AskUserQuestionItem, AskUserQuestionOption } from '../../../core/types/tools';
-
-const HINTS_TEXT = 'Enter to select \u00B7 Tab/Arrow keys to navigate \u00B7 Esc to cancel';
-const HINTS_TEXT_IMMEDIATE = 'Enter to select \u00B7 Arrow keys to navigate \u00B7 Esc to cancel';
+import { t } from '../../../i18n/i18n';
 
 export interface InlineAskQuestionConfig {
   title?: string;
@@ -46,7 +44,7 @@ export class InlineAskUserQuestion {
     this.resolveCallback = resolve;
     this.signal = signal;
     this.config = {
-      title: config?.title ?? 'Question',
+      title: config?.title ?? t('chat.ask.questionTitle'),
       headerEl: config?.headerEl,
       showCustomInput: config?.showCustomInput ?? true,
       immediateSelect: config?.immediateSelect ?? false,
@@ -191,7 +189,7 @@ export class InlineAskUserQuestion {
     const allAnswered = this.questions.every((_, i) => this.isQuestionAnswered(i));
     const submitTab = this.tabBar.createSpan({ cls: 'codexian-ask-tab' });
     submitTab.createSpan({ text: allAnswered ? '\u2713 ' : '', cls: 'codexian-ask-tab-submit-check' });
-    submitTab.createSpan({ text: 'Submit', cls: 'codexian-ask-tab-label' });
+    submitTab.createSpan({ text: t('chat.ask.submit'), cls: 'codexian-ask-tab-label' });
     if (this.activeTabIndex === this.questions.length) submitTab.addClass('is-active');
     submitTab.addEventListener('click', () => this.switchTab(this.questions.length));
     this.tabElements.push(submitTab);
@@ -296,7 +294,10 @@ export class InlineAskUserQuestion {
         value: customText,
       });
       inputEl.setAttribute('type', q.isSecret ? 'password' : 'text');
-      inputEl.setAttribute('placeholder', q.isSecret ? 'Enter secret.' : 'Type something.');
+      inputEl.setAttribute(
+        'placeholder',
+        q.isSecret ? t('chat.ask.secretPlaceholder') : t('chat.ask.customPlaceholder')
+      );
 
       inputEl.addEventListener('input', () => {
         this.customInputs.set(idx, inputEl.value);
@@ -317,14 +318,14 @@ export class InlineAskUserQuestion {
     }
 
     this.contentArea.createDiv({
-      text: this.config.immediateSelect ? HINTS_TEXT_IMMEDIATE : HINTS_TEXT,
+      text: this.config.immediateSelect ? t('chat.ask.hintsImmediate') : t('chat.ask.hints'),
       cls: 'codexian-ask-hints',
     });
   }
 
   private renderSubmitTab(): void {
     this.contentArea.createDiv({
-      text: 'Review your answers',
+      text: t('chat.ask.reviewAnswers'),
       cls: 'codexian-ask-review-title',
     });
 
@@ -339,14 +340,14 @@ export class InlineAskUserQuestion {
       const bodyEl = pairEl.createDiv({ cls: 'codexian-ask-review-body' });
       bodyEl.createDiv({ text: q.question, cls: 'codexian-ask-review-q-text' });
       bodyEl.createDiv({
-        text: answerText || 'Not answered',
+        text: answerText || t('chat.ask.notAnswered'),
         cls: answerText ? 'codexian-ask-review-a-text' : 'codexian-ask-review-empty',
       });
       pairEl.addEventListener('click', () => this.switchTab(idx));
     }
 
     this.contentArea.createDiv({
-      text: 'Ready to submit your answers?',
+      text: t('chat.ask.readyToSubmit'),
       cls: 'codexian-ask-review-prompt',
     });
 
@@ -358,7 +359,7 @@ export class InlineAskUserQuestion {
     if (!allAnswered) submitRow.addClass('is-disabled');
     submitRow.createSpan({ text: this.focusedItemIndex === 0 ? '\u203A' : '\u00A0', cls: 'codexian-ask-cursor' });
     submitRow.createSpan({ text: '1. ', cls: 'codexian-ask-item-num' });
-    submitRow.createSpan({ text: 'Submit answers', cls: 'codexian-ask-item-label' });
+    submitRow.createSpan({ text: t('chat.ask.submitAnswers'), cls: 'codexian-ask-item-label' });
     submitRow.addEventListener('click', () => {
       this.focusedItemIndex = 0;
       this.updateFocusIndicator();
@@ -370,7 +371,7 @@ export class InlineAskUserQuestion {
     if (this.focusedItemIndex === 1) cancelRow.addClass('is-focused');
     cancelRow.createSpan({ text: this.focusedItemIndex === 1 ? '\u203A' : '\u00A0', cls: 'codexian-ask-cursor' });
     cancelRow.createSpan({ text: '2. ', cls: 'codexian-ask-item-num' });
-    cancelRow.createSpan({ text: 'Cancel', cls: 'codexian-ask-item-label' });
+    cancelRow.createSpan({ text: t('common.cancel'), cls: 'codexian-ask-item-label' });
     cancelRow.addEventListener('click', () => {
       this.focusedItemIndex = 1;
       this.handleResolve(null);
@@ -378,7 +379,7 @@ export class InlineAskUserQuestion {
     this.currentItems.push(cancelRow);
 
     this.contentArea.createDiv({
-      text: HINTS_TEXT,
+      text: t('chat.ask.hints'),
       cls: 'codexian-ask-hints',
     });
   }

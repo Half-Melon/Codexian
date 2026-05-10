@@ -21,6 +21,7 @@ import type { ChatRuntime } from '../../../core/runtime/ChatRuntime';
 import type { AutoTurnResult } from '../../../core/runtime/types';
 import type { ChatMessage, Conversation } from '../../../core/types';
 import { t } from '../../../i18n/i18n';
+import type { TranslationKey } from '../../../i18n/types';
 import type CodexianPlugin from '../../../main';
 import { SlashCommandDropdown } from '../../../shared/components/SlashCommandDropdown';
 import { getEnhancedPath } from '../../../utils/env';
@@ -463,7 +464,7 @@ function buildTabDOM(contentEl: HTMLElement): TabDOMElements {
   const inputEl = inputWrapper.createEl('textarea', {
     cls: 'codexian-input',
     attr: {
-      placeholder: 'How can I help you today?',
+      placeholder: t('chat.placeholder' as TranslationKey),
       rows: '3',
       dir: 'auto',
     },
@@ -773,7 +774,7 @@ function initializeInputToolbar(
       const boundProvider = tab.providerId;
       const modelProvider = getProviderForModel(model, plugin.settings as unknown as Record<string, unknown>);
       if (modelProvider !== boundProvider) {
-        new Notice('Cannot switch provider on a bound session. Start a new tab instead.');
+        new Notice(t('notices.boundSessionProviderSwitch' as TranslationKey));
         tab.ui.modelSelector?.updateDisplay();
         return;
       }
@@ -1007,7 +1008,7 @@ async function handleForkRequest(
   const { state } = tab;
 
   if (!getTabCapabilities(tab, plugin).supportsFork) {
-    new Notice('Fork is not supported by this provider.');
+    new Notice(t('notices.forkUnsupported' as TranslationKey));
     return;
   }
 
@@ -1057,7 +1058,7 @@ async function handleForkAll(
   const { state } = tab;
 
   if (!getTabCapabilities(tab, plugin).supportsFork) {
-    new Notice('Fork is not supported by this provider.');
+    new Notice(t('notices.forkUnsupported' as TranslationKey));
     return;
   }
 

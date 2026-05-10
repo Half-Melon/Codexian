@@ -21,6 +21,8 @@ import type {
 } from '../../../core/runtime/types';
 import { TOOL_EXIT_PLAN_MODE } from '../../../core/tools/toolNames';
 import type { ApprovalDecision, ChatMessage, ExitPlanModeDecision, StreamChunk } from '../../../core/types';
+import { getLocale, t } from '../../../i18n/i18n';
+import type { TranslationKey } from '../../../i18n/types';
 import type CodexianPlugin from '../../../main';
 import { ResumeSessionDropdown } from '../../../shared/components/ResumeSessionDropdown';
 import { InstructionModal } from '../../../shared/modals/InstructionConfirmModal';
@@ -29,7 +31,7 @@ import type { CanvasSelectionContext } from '../../../utils/canvas';
 import { formatDurationMmSs } from '../../../utils/date';
 import type { EditorSelectionContext } from '../../../utils/editor';
 import { appendMarkdownSnippet } from '../../../utils/markdown';
-import { COMPLETION_FLAVOR_WORDS } from '../constants';
+import { getCompletionFlavorWords } from '../constants';
 import { type InlineAskQuestionConfig, InlineAskUserQuestion } from '../rendering/InlineAskUserQuestion';
 import { InlineExitPlanMode } from '../rendering/InlineExitPlanMode';
 import { InlinePlanApproval,type PlanApprovalDecision } from '../rendering/InlinePlanApproval';
@@ -49,18 +51,19 @@ import type { ConversationController } from './ConversationController';
 import type { SelectionController } from './SelectionController';
 import type { StreamController } from './StreamController';
 
-const APPROVAL_OPTION_MAP: Record<string, ApprovalDecision> = {
-  'Deny': 'deny',
-  'Allow once': 'allow',
-  'Always allow': 'allow-always',
+const APPROVAL_DECISION_LABEL_KEYS: Record<string, TranslationKey> = {
+  'Deny': 'common.deny',
+  'Allow once': 'common.allowOnce',
+  'Always allow': 'common.alwaysAllow',
 };
 
-const DEFAULT_APPROVAL_DECISION_OPTIONS: ApprovalDecisionOption[] =
-  Object.entries(APPROVAL_OPTION_MAP).map(([label, decision]) => ({
-    label,
+function getDefaultApprovalDecisionOptions(): ApprovalDecisionOption[] {
+  return Object.entries(APPROVAL_DECISION_LABEL_KEYS).map(([label, labelKey]) => ({
+    label: t(labelKey),
     value: label,
-    decision,
+    decision: label === 'Deny' ? 'deny' : label === 'Always allow' ? 'allow-always' : 'allow',
   }));
+}
 
 export interface InputControllerDeps {
   plugin: CodexianPlugin;
@@ -315,7 +318,7 @@ export class InputController {
     this.awaitingProviderAssistantStart = true;
 
     streamController.showThinkingIndicator(
-      isCompact ? 'Compacting...' : undefined,
+      isCompact ? t('chat.thinking.compacting' as TranslationKey) : undefined,
       isCompact ? 'codexian-thinking--compact' : undefined,
     );
     state.responseStartTime = performance.now();
@@ -329,7 +332,7 @@ export class InputController {
     if (this.deps.ensureServiceInitialized) {
       const ready = await this.deps.ensureServiceInitialized();
       if (!ready) {
-        new Notice('Failed to initialize agent service. Please try again.');
+        new Notice(t('notices.agentInitFailed' as TranslationKey));
         streamController.hideThinkingIndicator();
         state.isStreaming = false;
         this.activeStreamingAssistantMessage = null;
@@ -340,7 +343,7 @@ export class InputController {
 
     const agentService = this.getAgentService();
     if (!agentService) {
-      new Notice('Agent service not available. Please reload the plugin.');
+      new Notice(t('notices.agentUnavailable' as TranslationKey));
       this.activeStreamingAssistantMessage = null;
       this.resetProviderMessageBoundaryState();
       return;
@@ -410,7 +413,9 @@ export class InputController {
       if (!wasInvalidated && state.streamGeneration === streamGeneration) {
         const didCancelThisTurn = wasInterrupted || state.cancelRequested;
         if (didCancelThisTurn && !state.pendingNewSessionPlan) {
-          await streamController.appendText('\n\n<span class="codexian-interrupted">Interrupted</span> <span class="codexian-interrupted-hint">· What should Codexian do instead?</span>');
+          await streamController.appendText(
+            `\n\n<span class="codexian-interrupted">${t('chat.thinking.interrupted' as TranslationKey)}</span> <span class="codexian-interrupted-hint">· ${t('chat.thinking.interruptedHint' as TranslationKey)}</span>`,
+          );
         }
         streamController.hideThinkingIndicator();
         state.isStreaming = false;
@@ -424,15 +429,19 @@ export class InputController {
             ? Math.floor((performance.now() - state.responseStartTime) / 1000)
             : 0;
           if (durationSeconds > 0) {
+            const completionFlavorWords = getCompletionFlavorWords(getLocale());
             const flavorWord =
-              COMPLETION_FLAVOR_WORDS[Math.floor(Math.random() * COMPLETION_FLAVOR_WORDS.length)];
+              completionFlavorWords[Math.floor(Math.random() * completionFlavorWords.length)];
             finalAssistantMsg.durationSeconds = durationSeconds;
             finalAssistantMsg.durationFlavorWord = flavorWord;
             // Add footer to live message in DOM
             if (state.currentContentEl) {
               const footerEl = state.currentContentEl.createDiv({ cls: 'codexian-response-footer' });
               footerEl.createSpan({
-                text: `* ${flavorWord} for ${formatDurationMmSs(durationSeconds)}`,
+                text: t('chat.thinking.completedFor' as TranslationKey, {
+                  flavor: flavorWord,
+                  duration: formatDurationMmSs(durationSeconds),
+                }),
                 cls: 'codexian-baked-duration',
               });
             }
@@ -477,7 +486,7 @@ export class InputController {
             planApprovalInvalidated = true;
           } else if (decision?.type === 'implement') {
             this.deps.restorePrePlanPermissionModeIfNeeded?.();
-            planAutoSendContent = 'Implement the plan.';
+            planAutoSendContent = t('chat.plan.implementApprovedPlan' as TranslationKey);
           } else if (decision?.type === 'revise') {
             // Keep plan mode active, populate input with feedback text
             this.deps.getInputEl().value = decision.text;
@@ -544,15 +553,21 @@ export class InputController {
     const visibleQueuedMessage = state.queuedMessage ?? this.pendingSteerMessage;
     if (visibleQueuedMessage) {
       const isPendingSteerOnly = !state.queuedMessage && !!this.pendingSteerMessage;
+      const queuedMessageDisplay = this.getQueuedMessageDisplay(visibleQueuedMessage);
       indicatorEl.createSpan({
         cls: 'codexian-queue-indicator-text',
-        text: `${isPendingSteerOnly ? '⌙ Steering: ' : '⌙ Queued: '}${this.getQueuedMessageDisplay(visibleQueuedMessage)}`,
+        text: `⌙ ${t(
+          (isPendingSteerOnly ? 'chat.queue.steeringPrefix' : 'chat.queue.queuedPrefix') as TranslationKey,
+          { message: queuedMessageDisplay },
+        )}`,
       });
 
       if (state.queuedMessage && this.canSteerQueuedMessage()) {
         const steerButton = indicatorEl.createEl('button', {
           cls: 'codexian-queue-indicator-action',
-          text: this.steerInFlight ? 'Steering...' : 'Steer Now',
+          text: this.steerInFlight
+            ? t('chat.queue.steeringButton' as TranslationKey)
+            : t('chat.queue.steerNow' as TranslationKey),
         });
         steerButton.setAttribute('type', 'button');
         if (this.steerInFlight) {
@@ -690,7 +705,8 @@ export class InputController {
     const hasImages = (message.images?.length ?? 0) > 0;
 
     if (hasImages) {
-      return preview ? `${preview} [images]` : '[images]';
+      const imageLabel = `[${t('chat.queue.images' as TranslationKey)}]`;
+      return preview ? `${preview} ${imageLabel}` : imageLabel;
     }
 
     return preview;
@@ -820,7 +836,7 @@ export class InputController {
       });
     } catch {
       this.restoreQueuedMessageAfterSteerFailure(queuedMessage);
-      new Notice('Failed to steer the queued Codex message. It is still available.');
+      new Notice(t('notices.steerFailed' as TranslationKey));
     }
   }
 
@@ -1122,7 +1138,7 @@ export class InputController {
             plugin.settings.systemPrompt = appendMarkdownSnippet(currentPrompt, finalInstruction);
             await plugin.saveSettings();
 
-            new Notice('Instruction added to custom system prompt');
+            new Notice(t('notices.instructionAdded' as TranslationKey));
             instructionModeManager?.clear();
           },
           onReject: () => {
@@ -1142,8 +1158,9 @@ export class InputController {
               if (result.error === 'Cancelled') {
                 return;
               }
-              new Notice(result.error || 'Failed to process response');
-              modal?.showError(result.error || 'Failed to process response');
+              const fallback = t('notices.failedToProcessResponse' as TranslationKey);
+              new Notice(result.error || fallback);
+              modal?.showError(result.error || fallback);
               return;
             }
 
@@ -1173,8 +1190,9 @@ export class InputController {
           instructionModeManager?.clear();
           return;
         }
-        new Notice(result.error || 'Failed to refine instruction');
-        modal.showError(result.error || 'Failed to refine instruction');
+        const fallback = t('notices.failedToRefineInstruction' as TranslationKey);
+        new Notice(result.error || fallback);
+        modal.showError(result.error || fallback);
         instructionModeManager?.clear();
         return;
       }
@@ -1184,13 +1202,14 @@ export class InputController {
       } else if (result.refinedInstruction) {
         modal.showConfirmation(result.refinedInstruction);
       } else {
-        new Notice('No instruction received');
-        modal.showError('No instruction received');
+        const fallback = t('notices.noInstruction' as TranslationKey);
+        new Notice(fallback);
+        modal.showError(fallback);
         instructionModeManager?.clear();
       }
     } catch (error) {
-      const errorMsg = error instanceof Error ? error.message : 'Unknown error';
-      new Notice(`Error: ${errorMsg}`);
+      const errorMsg = error instanceof Error ? error.message : t('common.unknownError' as TranslationKey);
+      new Notice(t('notices.errorPrefix' as TranslationKey, { message: errorMsg }));
       modal?.showError(errorMsg);
       instructionModeManager?.clear();
     }
@@ -1229,12 +1248,15 @@ export class InputController {
       headerEl.createDiv({ text: approvalOptions.blockedPath, cls: 'codexian-ask-approval-blocked-path' });
     }
     if (approvalOptions?.agentID) {
-      headerEl.createDiv({ text: `Agent: ${approvalOptions.agentID}`, cls: 'codexian-ask-approval-agent' });
+      headerEl.createDiv({
+        text: t('chat.ask.agentLabel' as TranslationKey, { agent: approvalOptions.agentID }),
+        cls: 'codexian-ask-approval-agent',
+      });
     }
 
     headerEl.createDiv({ text: description, cls: 'codexian-ask-approval-desc' });
 
-    const decisionOptions = approvalOptions?.decisionOptions ?? DEFAULT_APPROVAL_DECISION_OPTIONS;
+    const decisionOptions = approvalOptions?.decisionOptions ?? getDefaultApprovalDecisionOptions();
     const optionDecisionMap = new Map<string, ApprovalDecision>();
     const questionOptions = decisionOptions.map((option, index) => {
       const value = option.value || `approval-option-${index}`;
@@ -1249,7 +1271,7 @@ export class InputController {
     });
     const input = {
       questions: [{
-        question: 'Allow this action?',
+        question: t('chat.ask.approvalQuestion' as TranslationKey),
         options: questionOptions,
         isOther: false,
         isSecret: false,
@@ -1262,14 +1284,14 @@ export class InputController {
       input,
       (inline) => { this.pendingApprovalInline = inline; },
       undefined,
-      { title: 'Permission required', headerEl, showCustomInput: false, immediateSelect: true },
+      { title: t('chat.ask.approvalTitle' as TranslationKey), headerEl, showCustomInput: false, immediateSelect: true },
     );
 
     if (!result) return 'cancel';
     const selected = Object.values(result)[0];
     const selectedValue = Array.isArray(selected) ? selected[0] : selected;
     if (typeof selectedValue !== 'string') {
-      new Notice(`Unexpected approval selection: "${String(selectedValue)}"`);
+      new Notice(t('chat.ask.unexpectedApprovalSelection' as TranslationKey, { selection: String(selectedValue) }));
       return 'cancel';
     }
 
@@ -1479,7 +1501,7 @@ export class InputController {
     const capabilities = this.getActiveCapabilities();
 
     if (!isBuiltInCommandSupported(command, capabilities)) {
-      new Notice(`/${command.name} is not supported by this provider.`);
+      new Notice(t('notices.unsupportedCommand' as TranslationKey, { command: command.name }));
       return;
     }
 
@@ -1490,12 +1512,12 @@ export class InputController {
       case 'add-dir': {
         const externalContextSelector = this.deps.getExternalContextSelector();
         if (!externalContextSelector) {
-          new Notice('External context selector not available.');
+          new Notice(t('notices.externalContextUnavailable' as TranslationKey));
           return;
         }
         const result = externalContextSelector.addExternalContext(args);
         if (result.success) {
-          new Notice(`Added external context: ${result.normalizedPath}`);
+          new Notice(t('notices.externalContextAdded' as TranslationKey, { path: result.normalizedPath }));
         } else {
           new Notice(result.error);
         }
@@ -1506,11 +1528,11 @@ export class InputController {
         break;
       case 'fork': {
         if (!this.getActiveCapabilities().supportsFork) {
-          new Notice('Fork is not supported by this provider.');
+          new Notice(t('notices.forkUnsupported' as TranslationKey));
           return;
         }
         if (!this.deps.onForkAll) {
-          new Notice('Fork not available.');
+          new Notice(t('notices.forkUnavailable' as TranslationKey));
           return;
         }
         await this.deps.onForkAll();
@@ -1518,7 +1540,7 @@ export class InputController {
       }
       default:
         // Unknown command - notify user
-        new Notice(`Unknown command: ${command.action}`);
+        new Notice(t('notices.unknownCommand' as TranslationKey, { command: command.action }));
     }
   }
 
@@ -1550,7 +1572,7 @@ export class InputController {
 
     const conversations = plugin.getConversationList();
     if (conversations.length === 0) {
-      new Notice('No conversations to resume');
+      new Notice(t('notices.noConversationsToResume' as TranslationKey));
       return;
     }
 
@@ -1567,7 +1589,7 @@ export class InputController {
           this.destroyResumeDropdown();
           openConversation(id).catch((err: unknown) => {
             const msg = err instanceof Error ? err.message : String(err);
-            new Notice(`Failed to open conversation: ${msg}`);
+            new Notice(t('notices.failedToOpenConversation' as TranslationKey, { message: msg }));
           });
         },
         onDismiss: () => {

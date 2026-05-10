@@ -19,7 +19,10 @@ import {
   getCodexProviderSettings,
   updateCodexProviderSettings,
 } from '../../providers/codex/settings';
-import { DEFAULT_CODEXIAN_SETTINGS } from './defaultSettings';
+import {
+  DEFAULT_CODEXIAN_SETTINGS,
+  normalizeKnowledgeWorkflowSettingsForLocale,
+} from './defaultSettings';
 
 export {
   CODEXIAN_SETTINGS_PATH,
@@ -127,6 +130,12 @@ export class CodexianSettingsStorage {
     const providerConfigs = normalizeProviderConfigs(stored.providerConfigs);
     const chatViewPlacement = normalizeChatViewPlacement(stored.chatViewPlacement);
     const locale = normalizeLanguagePreference(stored.locale);
+    const normalizedWorkflow = normalizeKnowledgeWorkflowSettingsForLocale(
+      typeof stored.knowledgeWorkflow === 'object' && stored.knowledgeWorkflow !== null
+        ? stored.knowledgeWorkflow as Record<string, unknown>
+        : undefined,
+      locale,
+    );
     const normalizedSettings = {
       ...stored,
       locale,
@@ -135,6 +144,7 @@ export class CodexianSettingsStorage {
       hiddenProviderCommands,
       providerConfigs,
       chatViewPlacement,
+      knowledgeWorkflow: normalizedWorkflow.settings,
     };
 
     const merged = {
@@ -150,6 +160,7 @@ export class CodexianSettingsStorage {
     if (
       stored.chatViewPlacement !== chatViewPlacement
       || stored.locale !== locale
+      || normalizedWorkflow.changed
       || JSON.stringify(envSnippets) !== JSON.stringify(stored.envSnippets ?? [])
     ) {
       await this.save(merged);

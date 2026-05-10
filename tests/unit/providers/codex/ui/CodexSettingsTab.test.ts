@@ -108,8 +108,53 @@ jest.mock('@/providers/codex/ui/CodexSubagentSettings', () => ({
   CodexSubagentSettings: jest.fn(),
 }));
 
+const translations: Record<string, string> = {
+  'settings.setup': 'Setup',
+  'settings.safety': 'Safety',
+  'settings.models': 'Models',
+  'settings.codexSafeMode.name': 'Safe mode',
+  'settings.codexSafeMode.desc': 'Sandbox mode used when the Safe toggle is active.',
+  'settings.cliPath.validation.notExist': 'Path does not exist',
+  'settings.cliPath.validation.isDirectory': 'Path is a directory, not a file',
+  'codex.settings.enableProvider.name': 'Enable Codex provider',
+  'codex.settings.enableProvider.desc': 'When enabled, Codex models appear in the model selector for new conversations. Existing Codex sessions are preserved.',
+  'codex.settings.installationMethod.name': 'Installation method',
+  'codex.settings.installationMethod.desc': 'How Codexian should launch Codex on Windows. Native Windows uses a Windows executable path. WSL launches the Linux CLI inside a selected distro.',
+  'codex.settings.installationMethod.nativeWindows': 'Native Windows',
+  'codex.settings.installationMethod.wsl': 'WSL',
+  'codex.settings.cliPath.name': 'Codex CLI path ({host})',
+  'codex.settings.cliPath.desc': 'Custom path to the local Codex CLI. Leave empty for auto-detection from PATH.',
+  'codex.settings.cliPath.descWsl': 'Linux-side Codex command or absolute path to run inside WSL. Leave empty for PATH lookup inside the selected distro.',
+  'codex.settings.cliPath.descWindows': 'Custom path to the local Codex CLI. Leave empty for auto-detection from PATH. Use the native Windows executable path, usually `codex.exe`.',
+  'codex.settings.cliPath.validation.wslWindowsPath': 'WSL mode expects a Linux command or Linux absolute path, not a Windows executable path.',
+  'codex.settings.wslDistro.name': 'WSL distro override',
+  'codex.settings.wslDistro.desc': 'Optional advanced override. Leave empty to infer the distro from a \\\\wsl$ workspace path when possible, otherwise use the default WSL distro.',
+  'codex.settings.customModels.name': 'Custom models',
+  'codex.settings.customModels.desc': 'Append additional Codex model IDs to the picker, one per line. OPENAI_MODEL still takes precedence when set.',
+  'codex.settings.reasoningSummary.name': 'Reasoning summary',
+  'codex.settings.reasoningSummary.desc': "Show a summary of the model's reasoning process in the thinking block.",
+  'codex.settings.reasoningSummary.auto': 'Auto',
+  'codex.settings.reasoningSummary.concise': 'Concise',
+  'codex.settings.reasoningSummary.detailed': 'Detailed',
+  'codex.settings.reasoningSummary.none': 'Off',
+  'codex.settings.skills.heading': 'Codex Skills',
+  'codex.settings.skills.desc': 'Manage vault-level Codex skills stored in .codex/skills/ or .agents/skills/. Home-level skills are excluded here.',
+  'codex.settings.hiddenSkills.name': 'Hidden Skills',
+  'codex.settings.hiddenSkills.desc': 'Hide specific Codex skills from the dropdown. Enter skill names without the leading $, one per line.',
+  'codex.settings.subagents.heading': 'Codex Subagents',
+  'codex.settings.subagents.desc': 'Manage vault-level Codex subagents stored in .codex/agents/. Each TOML file defines one custom agent.',
+  'codex.settings.mcp.descPrefix': 'Codex manages MCP servers via its own CLI. Configure with ',
+  'codex.settings.mcp.descSuffix': ' and they will be available in Codexian. ',
+  'codex.settings.mcp.learnMore': 'Learn more',
+  'codex.settings.environment.codex.name': 'Codex environment',
+  'codex.settings.environment.codex.desc': 'Codex-owned runtime variables only. Use this for OPENAI_* and CODEX_* settings. If Codex auto-detection needs help, add its install directory to shared PATH instead of this provider section.',
+};
+
 jest.mock('@/i18n/i18n', () => ({
-  t: (key: string) => key,
+  t: (key: string, params?: Record<string, string | number>) => {
+    const value = translations[key] ?? key;
+    return value.replace(/\{(\w+)\}/g, (_, param) => String(params?.[param] ?? `{${param}}`));
+  },
 }));
 
 jest.mock('@/utils/env', () => ({

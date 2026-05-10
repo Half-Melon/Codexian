@@ -7,37 +7,41 @@ import {
 } from '@/features/workflows/knowledgeWorkflowCommands';
 import { setLocale } from '@/i18n/i18n';
 
+const CJK_RE = /[\u3400-\u9fff]/;
+
 describe('knowledge workflow commands', () => {
   beforeEach(() => {
     setLocale('en');
   });
 
-  it('builds a compile prompt for new sources from the new folder', () => {
+  it('builds an English compile prompt for new sources from the new folder', () => {
     const prompt = buildKnowledgeWorkflowPrompt('compile-new-sources');
 
     expect(prompt).toContain('compile-source');
     expect(prompt).toContain('archive-source');
-    expect(prompt).toContain('编译新来源');
+    expect(prompt).toContain('compile new sources');
     expect(prompt).toContain('new/');
     expect(prompt).toContain('raw/inbox');
     expect(prompt).toContain('outputs/reports/YYYY-MM-DD-archive-log.md');
     expect(prompt).toContain('wiki/indexes/All-Sources.md');
     expect(prompt).toContain('wiki/indexes/All-Concepts.md');
-    expect(prompt).toContain('同步修正 summary');
-    expect(prompt).toContain('根据文档内容制定一个新的标题');
-    expect(prompt).toContain('如果目标文件已存在');
-    expect(prompt).toContain('不迁移 Clippings');
-    expect(prompt).toContain('不上 RAG');
-    expect(prompt).toContain('大规模概念合并');
+    expect(prompt).toContain('update the summary frontmatter source');
+    expect(prompt).toContain('create a new title from the document content');
+    expect(prompt).toContain('If the target file already exists');
+    expect(prompt).toContain('Do not migrate Clippings');
+    expect(prompt).toContain('do not add RAG');
+    expect(prompt).toContain('large concept merges');
+    expect(prompt).not.toMatch(CJK_RE);
   });
 
   it('builds a save-QA prompt for reusable current conversation conclusions', () => {
     const prompt = buildKnowledgeWorkflowPrompt('save-current-qa');
 
     expect(prompt).toContain('save-qa');
-    expect(prompt).toContain('当前这次对话');
+    expect(prompt).toContain('current conversation');
     expect(prompt).toContain('outputs/qa');
-    expect(prompt).toContain('可反哺到 wiki');
+    expect(prompt).toContain('can be reflected back into wiki');
+    expect(prompt).not.toMatch(CJK_RE);
   });
 
   it('builds a health-check prompt that writes a report without broad rewrites', () => {
@@ -45,8 +49,9 @@ describe('knowledge workflow commands', () => {
 
     expect(prompt).toContain('health-check');
     expect(prompt).toContain('outputs/health/YYYY-MM-DD-health-check.md');
-    expect(prompt).toContain('只生成报告');
-    expect(prompt).toContain('不自动大规模改写 wiki');
+    expect(prompt).toContain('Only generate the report');
+    expect(prompt).toContain('Do not automatically rewrite wiki at scale');
+    expect(prompt).not.toMatch(CJK_RE);
   });
 
   it('builds an apply-health-fixes prompt from the latest health report', () => {
@@ -54,8 +59,9 @@ describe('knowledge workflow commands', () => {
 
     expect(prompt).toContain('repair-health');
     expect(prompt).toContain('outputs/health');
-    expect(prompt).toContain('低风险修复');
-    expect(prompt).toContain('需要用户确认');
+    expect(prompt).toContain('low-risk fixes');
+    expect(prompt).toContain('Needs user confirmation');
+    expect(prompt).not.toMatch(CJK_RE);
   });
 
   it('builds an undo-last-archive prompt from archive logs', () => {
@@ -64,15 +70,17 @@ describe('knowledge workflow commands', () => {
     expect(prompt).toContain('undo-archive');
     expect(prompt).toContain('outputs/reports');
     expect(prompt).toContain('archive-log');
-    expect(prompt).toContain('撤销计划');
+    expect(prompt).toContain('undo plan');
+    expect(prompt).not.toMatch(CJK_RE);
   });
 
   it('builds a workflow acceptance prompt for real vault checks', () => {
     const prompt = buildKnowledgeWorkflowPrompt('workflow-acceptance-check');
 
     expect(prompt).toContain('workflow-acceptance');
-    expect(prompt).toContain('端到端验收');
+    expect(prompt).toContain('end-to-end acceptance');
     expect(prompt).toContain('outputs/reports/YYYY-MM-DD-workflow-acceptance.md');
+    expect(prompt).not.toMatch(CJK_RE);
   });
 
   it('includes user-configured workflow options in prompts', () => {
@@ -84,11 +92,23 @@ describe('knowledge workflow commands', () => {
       archiveLogTemplate: 'CUSTOM ARCHIVE LOG',
     });
 
-    expect(prompt).toContain('每次最多处理 7 个 new/ 来源文件');
+    expect(prompt).toContain('Process at most 7 new/ source file(s) per run');
     expect(prompt).toContain('CUSTOM SUMMARY TEMPLATE');
     expect(prompt).toContain('CUSTOM CONCEPT TEMPLATE');
     expect(prompt).toContain('CUSTOM ARCHIVE RULES');
     expect(prompt).toContain('CUSTOM ARCHIVE LOG');
+  });
+
+  it('builds Simplified Chinese workflow prompts when the locale is Simplified Chinese', () => {
+    setLocale('zh-CN');
+
+    const prompt = buildKnowledgeWorkflowPrompt('compile-new-sources');
+
+    expect(prompt).toContain('编译新来源');
+    expect(prompt).toContain('根据文档内容制定一个新的标题');
+    expect(prompt).toContain('如果目标文件已存在');
+    expect(prompt).toContain('不迁移 Clippings');
+    expect(prompt).toContain('不上 RAG');
   });
 
   it('exposes command entries that can also appear in the chat dropdown', () => {

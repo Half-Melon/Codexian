@@ -5,6 +5,8 @@ import type {
   ProviderServiceTierToggleConfig,
   ProviderUIOption,
 } from '../../../core/providers/types';
+import { t } from '../../../i18n/i18n';
+import type { TranslationKey } from '../../../i18n/types';
 import { OPENAI_PROVIDER_ICON } from '../../../shared/icons';
 import { getCodexModelOptions } from '../modelOptions';
 import { applyCodexModelDefaults } from '../settings';
@@ -15,34 +17,40 @@ import {
   FAST_TIER_CODEX_MODEL,
 } from '../types/models';
 
-const EFFORT_LEVELS: ProviderReasoningOption[] = [
-  { value: 'low', label: 'Low' },
-  { value: 'medium', label: 'Medium' },
-  { value: 'high', label: 'High' },
-  { value: 'xhigh', label: 'XHigh' },
-];
-
-const CODEX_PERMISSION_MODE_TOGGLE: ProviderPermissionModeToggleConfig = {
-  inactiveValue: 'normal',
-  inactiveLabel: 'Safe',
-  activeValue: 'yolo',
-  activeLabel: 'YOLO',
-  planValue: 'plan',
-  planLabel: 'Plan',
-};
-
-const CODEX_SERVICE_TIER_TOGGLE: ProviderServiceTierToggleConfig = {
-  inactiveValue: 'default',
-  inactiveLabel: 'Standard',
-  activeValue: 'fast',
-  activeLabel: 'Fast',
-  description: FAST_TIER_CODEX_DESCRIPTION,
-};
-
 const DEFAULT_CONTEXT_WINDOW = 200_000;
 
 function looksLikeCodexModel(model: string): boolean {
   return /^gpt-/i.test(model) || /^o\d/i.test(model);
+}
+
+function getEffortLevels(): ProviderReasoningOption[] {
+  return [
+    { value: 'low', label: t('codex.settings.effort.low' as TranslationKey) },
+    { value: 'medium', label: t('codex.settings.effort.medium' as TranslationKey) },
+    { value: 'high', label: t('codex.settings.effort.high' as TranslationKey) },
+    { value: 'xhigh', label: t('codex.settings.effort.xhigh' as TranslationKey) },
+  ];
+}
+
+function getCodexPermissionModeToggle(): ProviderPermissionModeToggleConfig {
+  return {
+    inactiveValue: 'normal',
+    inactiveLabel: t('codex.settings.permissionMode.safe' as TranslationKey),
+    activeValue: 'yolo',
+    activeLabel: t('codex.settings.permissionMode.yolo' as TranslationKey),
+    planValue: 'plan',
+    planLabel: t('codex.settings.permissionMode.plan' as TranslationKey),
+  };
+}
+
+function getCodexServiceTierToggle(): ProviderServiceTierToggleConfig {
+  return {
+    inactiveValue: 'default',
+    inactiveLabel: t('codex.settings.serviceTier.standard' as TranslationKey),
+    activeValue: 'fast',
+    activeLabel: t('codex.settings.serviceTier.fast' as TranslationKey),
+    description: FAST_TIER_CODEX_DESCRIPTION,
+  };
 }
 
 export const codexChatUIConfig: ProviderChatUIConfig = {
@@ -63,7 +71,7 @@ export const codexChatUIConfig: ProviderChatUIConfig = {
   },
 
   getReasoningOptions(_model: string, _settings: Record<string, unknown>): ProviderReasoningOption[] {
-    return [...EFFORT_LEVELS];
+    return getEffortLevels();
   },
 
   getDefaultReasoningValue(_model: string, _settings: Record<string, unknown>): string {
@@ -103,11 +111,11 @@ export const codexChatUIConfig: ProviderChatUIConfig = {
   },
 
   getPermissionModeToggle(): ProviderPermissionModeToggleConfig {
-    return CODEX_PERMISSION_MODE_TOGGLE;
+    return getCodexPermissionModeToggle();
   },
 
   getServiceTierToggle(settings): ProviderServiceTierToggleConfig | null {
-    return settings.model === FAST_TIER_CODEX_MODEL ? CODEX_SERVICE_TIER_TOGGLE : null;
+    return settings.model === FAST_TIER_CODEX_MODEL ? getCodexServiceTierToggle() : null;
   },
 
   getProviderIcon() {

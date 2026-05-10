@@ -13,6 +13,7 @@ import type {
 import type {
   UsageInfo,
 } from '../../../core/types';
+import { t } from '../../../i18n/i18n';
 import { createProviderIconSvg } from '../../../shared/icons';
 import { filterValidPaths, findConflictingPath, isDuplicatePath, isValidDirectoryPath, validateDirectoryPath } from '../../../utils/externalContext';
 import { expandHomePath, normalizePathForFilesystem } from '../../../utils/path';
@@ -235,13 +236,13 @@ export class ThinkingBudgetSelector {
     // Effort selector (for adaptive thinking models)
     this.effortEl = this.container.createDiv({ cls: 'codexian-thinking-effort' });
     const effortLabel = this.effortEl.createSpan({ cls: 'codexian-thinking-label-text' });
-    effortLabel.setText('Effort:');
+    effortLabel.setText(t('chat.thinking.effort'));
     this.effortGearsEl = this.effortEl.createDiv({ cls: 'codexian-thinking-gears' });
 
     // Legacy budget selector (for custom models)
     this.budgetEl = this.container.createDiv({ cls: 'codexian-thinking-budget' });
     const budgetLabel = this.budgetEl.createSpan({ cls: 'codexian-thinking-label-text' });
-    budgetLabel.setText('Thinking:');
+    budgetLabel.setText(t('chat.thinking.thinking'));
     this.budgetGearsEl = this.budgetEl.createDiv({ cls: 'codexian-thinking-gears' });
 
     this.updateDisplay();
@@ -299,7 +300,7 @@ export class ThinkingBudgetSelector {
       const gearEl = optionsEl.createDiv({ cls: 'codexian-thinking-gear' });
       gearEl.setText(budget.label);
       const tokens = budget.tokens ?? 0;
-      gearEl.setAttribute('title', tokens > 0 ? `${tokens.toLocaleString()} tokens` : 'Disabled');
+      gearEl.setAttribute('title', tokens > 0 ? `${tokens.toLocaleString()} tokens` : t('chat.thinking.disabled'));
 
       if (budget.value === currentBudget) {
         gearEl.addClass('selected');
@@ -479,7 +480,7 @@ export class ServiceTierToggle {
       this.buttonEl.removeClass('active');
     }
 
-    this.container.setAttribute('title', 'Toggle on/off fast mode');
+    this.container.setAttribute('title', t('chat.thinking.fastMode'));
   }
 
   private async toggle() {
@@ -553,7 +554,10 @@ export class ExternalContextSelector {
     // If invalid paths were removed, notify user and save updated list
     if (invalidPaths.length > 0) {
       const pathNames = invalidPaths.map(p => this.shortenPath(p)).join(', ');
-      new Notice(`Removed ${invalidPaths.length} invalid external context path(s): ${pathNames}`, 5000);
+      new Notice(t('notices.externalContextInvalidRemoved', {
+        count: invalidPaths.length,
+        paths: pathNames,
+      }), 5000);
       this.onPersistenceChangeCallback?.([...this.persistentPaths]);
     }
   }
@@ -564,7 +568,7 @@ export class ExternalContextSelector {
     } else {
       // Validate path still exists before persisting
       if (!isValidDirectoryPath(path)) {
-        new Notice(`Cannot persist "${this.shortenPath(path)}" - directory no longer exists`, 4000);
+        new Notice(t('notices.cannotPersistMissingPath', { path: this.shortenPath(path) }), 4000);
         return;
       }
       this.persistentPaths.add(path);
@@ -617,7 +621,7 @@ export class ExternalContextSelector {
   addExternalContext(pathInput: string): AddExternalContextResult {
     const trimmed = pathInput?.trim();
     if (!trimmed) {
-      return { success: false, error: 'No path provided. Usage: /add-dir /absolute/path' };
+      return { success: false, error: t('notices.externalContextPathRequired') };
     }
 
     // Strip surrounding quotes if present (e.g., "/path/with spaces")
@@ -632,7 +636,7 @@ export class ExternalContextSelector {
     const normalizedPath = normalizePathForFilesystem(expandedPath);
 
     if (!path.isAbsolute(normalizedPath)) {
-      return { success: false, error: 'Path must be absolute. Usage: /add-dir /absolute/path' };
+      return { success: false, error: t('notices.externalContextPathAbsolute') };
     }
 
     // Validate path exists and is a directory with specific error messages
@@ -643,7 +647,7 @@ export class ExternalContextSelector {
 
     // Check for duplicate (normalized comparison for cross-platform support)
     if (isDuplicatePath(normalizedPath, this.externalContextPaths)) {
-      return { success: false, error: 'This folder is already added as an external context.' };
+      return { success: false, error: t('notices.folderAlreadyAdded') };
     }
 
     // Check for nested/overlapping paths
@@ -707,7 +711,7 @@ export class ExternalContextSelector {
       const { remote } = require('electron');
       const result = await remote.dialog.showOpenDialog({
         properties: ['openDirectory'],
-        title: 'Select External Context',
+        title: t('chat.externalContexts.selectTitle'),
       });
 
       if (!result.canceled && result.filePaths.length > 0) {
@@ -715,7 +719,7 @@ export class ExternalContextSelector {
 
         // Check for duplicate (normalized comparison for cross-platform support)
         if (isDuplicatePath(selectedPath, this.externalContextPaths)) {
-          new Notice('This folder is already added as an external context.', 3000);
+          new Notice(t('notices.folderAlreadyAdded'), 3000);
           return;
         }
 
@@ -732,7 +736,7 @@ export class ExternalContextSelector {
         this.renderDropdown();
       }
     } catch {
-      new Notice('Unable to open folder picker.', 5000);
+      new Notice(t('notices.folderPickerUnavailable'), 5000);
     }
   }
 
@@ -741,8 +745,8 @@ export class ExternalContextSelector {
     const shortNew = this.shortenPath(newPath);
     const shortExisting = this.shortenPath(conflict.path);
     return conflict.type === 'parent'
-      ? `Cannot add "${shortNew}" - it's inside existing path "${shortExisting}"`
-      : `Cannot add "${shortNew}" - it contains existing path "${shortExisting}"`;
+      ? t('notices.externalContextConflictParent', { newPath: shortNew, existingPath: shortExisting })
+      : t('notices.externalContextConflictChild', { newPath: shortNew, existingPath: shortExisting });
   }
 
   private renderDropdown() {
@@ -752,14 +756,14 @@ export class ExternalContextSelector {
 
     // Header
     const headerEl = this.dropdownEl.createDiv({ cls: 'codexian-external-context-header' });
-    headerEl.setText('External Contexts');
+    headerEl.setText(t('chat.externalContexts.title'));
 
     // Path list
     const listEl = this.dropdownEl.createDiv({ cls: 'codexian-external-context-list' });
 
     if (this.externalContextPaths.length === 0) {
       const emptyEl = listEl.createDiv({ cls: 'codexian-external-context-empty' });
-      emptyEl.setText('Click folder icon to add');
+      emptyEl.setText(t('chat.externalContexts.empty'));
     } else {
       for (const pathStr of this.externalContextPaths) {
         const itemEl = listEl.createDiv({ cls: 'codexian-external-context-item' });
@@ -777,7 +781,10 @@ export class ExternalContextSelector {
           lockBtn.addClass('locked');
         }
         setIcon(lockBtn, isPersistent ? 'lock' : 'unlock');
-        lockBtn.setAttribute('title', isPersistent ? 'Persistent (click to make session-only)' : 'Session-only (click to persist)');
+        lockBtn.setAttribute(
+          'title',
+          isPersistent ? t('chat.externalContexts.persisted') : t('chat.externalContexts.sessionOnly')
+        );
         lockBtn.addEventListener('click', (e) => {
           e.stopPropagation();
           this.togglePersistence(pathStr);
@@ -785,7 +792,7 @@ export class ExternalContextSelector {
 
         const removeBtn = itemEl.createSpan({ cls: 'codexian-external-context-remove' });
         setIcon(removeBtn, 'x');
-        removeBtn.setAttribute('title', 'Remove path');
+        removeBtn.setAttribute('title', t('chat.externalContexts.removePath'));
         removeBtn.addEventListener('click', (e) => {
           e.stopPropagation();
           this.removePath(pathStr);
@@ -827,7 +834,7 @@ export class ExternalContextSelector {
 
     if (count > 0) {
       this.iconEl.addClass('active');
-      this.iconEl.setAttribute('title', `${count} external context${count > 1 ? 's' : ''} (click to add more)`);
+      this.iconEl.setAttribute('title', t('chat.externalContexts.addMoreTitle', { count }));
 
       // Show badge only when more than 1 path
       if (count > 1) {
@@ -838,7 +845,7 @@ export class ExternalContextSelector {
       }
     } else {
       this.iconEl.removeClass('active');
-      this.iconEl.setAttribute('title', 'Add external contexts (click)');
+      this.iconEl.setAttribute('title', t('chat.externalContexts.addTitle'));
       this.badgeEl.removeClass('visible');
     }
   }

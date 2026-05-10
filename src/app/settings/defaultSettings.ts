@@ -1,9 +1,75 @@
 import { getDefaultHiddenProviderCommands } from '../../core/providers/commands/hiddenCommands';
-import { type CodexianSettings } from '../../core/types/settings';
+import { type CodexianSettings, type KnowledgeWorkflowSettings } from '../../core/types/settings';
 import { DEFAULT_CODEX_PRIMARY_MODEL } from '../../providers/codex/types/models';
 import { getBuiltInProviderDefaultConfigs } from '../../providers/defaultProviderConfigs';
 
-export const DEFAULT_KNOWLEDGE_WORKFLOW_SETTINGS = {
+export const DEFAULT_KNOWLEDGE_WORKFLOW_SETTINGS: KnowledgeWorkflowSettings = {
+  batchSize: 5,
+  summaryTemplate: [
+    '---',
+    'type: summary',
+    'source: "[[Original source]]"',
+    'compiled_at: YYYY-MM-DD',
+    'concepts:',
+    '  - "[[C-xxx Concept name]]"',
+    'status: compiled',
+    '---',
+    '',
+    '# Title',
+    '',
+    '## Core conclusion',
+    '',
+    '## Key evidence',
+    '',
+    '## Reusable ideas',
+    '',
+    '## Questions / To verify',
+    '',
+    '## Related concepts',
+  ].join('\n'),
+  conceptTemplate: [
+    '---',
+    'type: concept',
+    'created: YYYY-MM-DD',
+    'updated: YYYY-MM-DD',
+    'sources:',
+    '  - "[[S-xxx Source summary]]"',
+    'status: active',
+    '---',
+    '',
+    '# C-xxx Concept name',
+    '',
+    '## One-sentence definition',
+    '',
+    '## Key points',
+    '',
+    '## Examples',
+    '',
+    '## Boundaries',
+    '',
+    '## Counterexamples / Confusions',
+    '',
+    '## Sources',
+  ].join('\n'),
+  archiveRules: [
+    'Create a new title from the document content before archiving: the title should fit the source topic more closely and describe the content clearly. It may be moderately long.',
+    'Use the new title as the filename, preserve the original extension, and remove filesystem-unsafe characters.',
+    'raw/papers/: papers, preprints, research reports, DOI/arXiv/PDF-style sources, or documents with abstract/references structure.',
+    'raw/transcripts/: podcast, video, meeting, interview, or talk transcripts, especially with timestamps or speakers.',
+    'raw/posts/: social posts, forum threads, short notes, and fragmented posts.',
+    'raw/articles/: web articles, essays, blog posts, newsletters, columns, and long-form pages.',
+    'raw/inbox/: sources whose category cannot be determined with enough confidence.',
+    'If the target file already exists, append a short distinguishing suffix to the filename and never overwrite an existing file.',
+  ].join('\n'),
+  archiveLogTemplate: [
+    '# YYYY-MM-DD archive log',
+    '',
+    '| Original | Archived | Category | Reason | Links updated | Uncertainty |',
+    '| --- | --- | --- | --- | --- | --- |',
+  ].join('\n'),
+};
+
+export const ZH_CN_KNOWLEDGE_WORKFLOW_SETTINGS: KnowledgeWorkflowSettings = {
   batchSize: 5,
   summaryTemplate: [
     '---',
@@ -68,6 +134,67 @@ export const DEFAULT_KNOWLEDGE_WORKFLOW_SETTINGS = {
     '| --- | --- | --- | --- | --- | --- |',
   ].join('\n'),
 };
+
+type KnowledgeWorkflowTemplateKey =
+  | 'summaryTemplate'
+  | 'conceptTemplate'
+  | 'archiveRules'
+  | 'archiveLogTemplate';
+
+const KNOWLEDGE_WORKFLOW_TEMPLATE_KEYS: KnowledgeWorkflowTemplateKey[] = [
+  'summaryTemplate',
+  'conceptTemplate',
+  'archiveRules',
+  'archiveLogTemplate',
+];
+
+function isChineseLocale(locale: unknown): boolean {
+  return typeof locale === 'string' && locale.toLowerCase().startsWith('zh');
+}
+
+export function getDefaultKnowledgeWorkflowSettings(
+  locale: unknown,
+): KnowledgeWorkflowSettings {
+  return isChineseLocale(locale)
+    ? ZH_CN_KNOWLEDGE_WORKFLOW_SETTINGS
+    : DEFAULT_KNOWLEDGE_WORKFLOW_SETTINGS;
+}
+
+function isBuiltInKnowledgeWorkflowTemplate(
+  key: KnowledgeWorkflowTemplateKey,
+  value: unknown,
+): value is string {
+  return value === DEFAULT_KNOWLEDGE_WORKFLOW_SETTINGS[key]
+    || value === ZH_CN_KNOWLEDGE_WORKFLOW_SETTINGS[key];
+}
+
+export function normalizeKnowledgeWorkflowSettingsForLocale(
+  settings: Partial<KnowledgeWorkflowSettings> | undefined,
+  locale: unknown,
+): { settings: KnowledgeWorkflowSettings; changed: boolean } {
+  const defaults = getDefaultKnowledgeWorkflowSettings(locale);
+  const source = settings ?? {};
+  const batchSize = Number.isFinite(source.batchSize)
+    ? Math.max(1, Math.min(20, Math.floor(source.batchSize as number)))
+    : defaults.batchSize;
+
+  let changed = settings == null || source.batchSize !== batchSize;
+  const normalized: KnowledgeWorkflowSettings = {
+    ...defaults,
+    ...source,
+    batchSize,
+  };
+
+  for (const key of KNOWLEDGE_WORKFLOW_TEMPLATE_KEYS) {
+    const current = source[key];
+    if (current == null || isBuiltInKnowledgeWorkflowTemplate(key, current)) {
+      normalized[key] = defaults[key];
+      changed = changed || current !== defaults[key];
+    }
+  }
+
+  return { settings: normalized, changed };
+}
 
 export const DEFAULT_CODEXIAN_SETTINGS: CodexianSettings = {
   userName: '',

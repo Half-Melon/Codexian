@@ -1,3 +1,4 @@
+import type { Locale } from '../../i18n/types';
 import { appendContextFiles } from '../../utils/context';
 import {
   buildInlineEditPrompt,
@@ -14,9 +15,17 @@ import type { AuxQueryRunner } from './AuxQueryRunner';
 export class QueryBackedInlineEditService implements InlineEditService {
   private abortController: AbortController | null = null;
   private hasConversation = false;
+  private readonly resolveLocale?: () => Locale;
+  private locale: Locale = 'en';
   private modelOverride: string | undefined;
 
-  constructor(private readonly runner: AuxQueryRunner) {}
+  constructor(
+    private readonly runner: AuxQueryRunner,
+    options: { resolveLocale?: () => Locale } = {},
+  ) {
+    this.resolveLocale = options.resolveLocale;
+    this.locale = options.resolveLocale?.() ?? 'en';
+  }
 
   setModelOverride(model?: string): void {
     const trimmed = model?.trim();
@@ -30,7 +39,8 @@ export class QueryBackedInlineEditService implements InlineEditService {
 
   async editText(request: InlineEditRequest): Promise<InlineEditResult> {
     this.resetConversation();
-    return this.sendMessage(buildInlineEditPrompt(request));
+    this.locale = this.getLocale();
+    return this.sendMessage(buildInlineEditPrompt(request, this.locale));
   }
 
   async continueConversation(message: string, contextFiles?: string[]): Promise<InlineEditResult> {
@@ -57,7 +67,7 @@ export class QueryBackedInlineEditService implements InlineEditService {
       const text = await this.runner.query({
         abortController: this.abortController,
         model: this.modelOverride,
-        systemPrompt: getInlineEditSystemPrompt(),
+        systemPrompt: getInlineEditSystemPrompt(this.locale),
       }, prompt);
       this.hasConversation = true;
       return parseInlineEditResponse(text);
@@ -69,5 +79,9 @@ export class QueryBackedInlineEditService implements InlineEditService {
     } finally {
       this.abortController = null;
     }
+  }
+
+  private getLocale(): Locale {
+    return this.resolveLocale?.() ?? this.locale;
   }
 }

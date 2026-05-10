@@ -3,6 +3,8 @@ import { setIcon } from 'obsidian';
 import { getToolIcon } from '../../../core/tools/toolIcons';
 import type { ToolCallInfo, ToolDiffData } from '../../../core/types';
 import type { DiffLine, DiffStats } from '../../../core/types/diff';
+import { t } from '../../../i18n/i18n';
+import type { TranslationKey } from '../../../i18n/types';
 import { setupCollapsible } from './collapsible';
 import { renderDiffContent } from './DiffRenderer';
 import { fileNameOnly } from './ToolCallRenderer';
@@ -21,7 +23,7 @@ export interface WriteEditState {
 }
 
 function shortenPath(filePath: string, maxLength = 40): string {
-  if (!filePath) return 'file';
+  if (!filePath) return t('chat.writeEdit.file' as TranslationKey);
   // Normalize path separators for cross-platform support
   const normalized = filePath.replace(/\\/g, '/');
   if (normalized.length <= maxLength) return normalized;
@@ -61,7 +63,7 @@ export function createWriteEditBlock(
   parentEl: HTMLElement,
   toolCall: ToolCallInfo
 ): WriteEditState {
-  const filePath = (toolCall.input.file_path as string) || 'file';
+  const filePath = (toolCall.input.file_path as string) || t('chat.writeEdit.file' as TranslationKey);
   const toolName = toolCall.name; // 'Write' or 'Edit'
 
   const wrapperEl = parentEl.createDiv({ cls: 'codexian-write-edit-block' });
@@ -71,7 +73,10 @@ export function createWriteEditBlock(
   const headerEl = wrapperEl.createDiv({ cls: 'codexian-write-edit-header' });
   headerEl.setAttribute('tabindex', '0');
   headerEl.setAttribute('role', 'button');
-  headerEl.setAttribute('aria-label', `${toolName}: ${shortenPath(filePath)} - click to expand`);
+  headerEl.setAttribute('aria-label', t('chat.writeEdit.clickToExpand' as TranslationKey, {
+    tool: toolName,
+    path: shortenPath(filePath),
+  }));
 
   // File icon
   const iconEl = headerEl.createDiv({ cls: 'codexian-write-edit-icon' });
@@ -81,13 +86,13 @@ export function createWriteEditBlock(
   const nameEl = headerEl.createDiv({ cls: 'codexian-write-edit-name' });
   nameEl.setText(toolName);
   const summaryEl = headerEl.createDiv({ cls: 'codexian-write-edit-summary' });
-  summaryEl.setText(fileNameOnly(filePath) || 'file');
+  summaryEl.setText(fileNameOnly(filePath) || t('chat.writeEdit.file' as TranslationKey));
 
   // Populated when diff is computed
   const statsEl = headerEl.createDiv({ cls: 'codexian-write-edit-stats' });
 
   const statusEl = headerEl.createDiv({ cls: 'codexian-write-edit-status status-running' });
-  statusEl.setAttribute('aria-label', 'Status: running');
+  statusEl.setAttribute('aria-label', t('chat.writeEdit.status' as TranslationKey, { status: 'running' }));
 
   // Content area (collapsed by default)
   const contentEl = wrapperEl.createDiv({ cls: 'codexian-write-edit-content' });
@@ -95,7 +100,7 @@ export function createWriteEditBlock(
   // Initial loading state
   const loadingRow = contentEl.createDiv({ cls: 'codexian-write-edit-diff-row' });
   const loadingEl = loadingRow.createDiv({ cls: 'codexian-write-edit-loading' });
-  loadingEl.setText('Writing...');
+  loadingEl.setText(t('chat.writeEdit.writing' as TranslationKey));
 
   // Create state object
   const state: WriteEditState = {
@@ -140,7 +145,7 @@ export function finalizeWriteEditBlock(state: WriteEditState, isError: boolean):
   if (isError) {
     state.statusEl.addClass('status-error');
     setIcon(state.statusEl, 'x');
-    state.statusEl.setAttribute('aria-label', 'Status: error');
+    state.statusEl.setAttribute('aria-label', t('chat.writeEdit.status' as TranslationKey, { status: 'error' }));
 
     // Show error in content if no diff was shown
     if (!state.diffLines) {
@@ -154,7 +159,7 @@ export function finalizeWriteEditBlock(state: WriteEditState, isError: boolean):
     state.contentEl.empty();
     const row = state.contentEl.createDiv({ cls: 'codexian-write-edit-diff-row' });
     const doneEl = row.createDiv({ cls: 'codexian-write-edit-done-text' });
-    doneEl.setText('DONE');
+    doneEl.setText(t('chat.writeEdit.done' as TranslationKey));
   }
 
   // Update wrapper class
@@ -166,7 +171,7 @@ export function finalizeWriteEditBlock(state: WriteEditState, isError: boolean):
 }
 
 export function renderStoredWriteEdit(parentEl: HTMLElement, toolCall: ToolCallInfo): HTMLElement {
-  const filePath = (toolCall.input.file_path as string) || 'file';
+  const filePath = (toolCall.input.file_path as string) || t('chat.writeEdit.file' as TranslationKey);
   const toolName = toolCall.name;
   const isError = toolCall.status === 'error' || toolCall.status === 'blocked';
 
@@ -191,7 +196,7 @@ export function renderStoredWriteEdit(parentEl: HTMLElement, toolCall: ToolCallI
   const nameEl = headerEl.createDiv({ cls: 'codexian-write-edit-name' });
   nameEl.setText(toolName);
   const summaryEl = headerEl.createDiv({ cls: 'codexian-write-edit-summary' });
-  summaryEl.setText(fileNameOnly(filePath) || 'file');
+  summaryEl.setText(fileNameOnly(filePath) || t('chat.writeEdit.file' as TranslationKey));
 
   const statsEl = headerEl.createDiv({ cls: 'codexian-write-edit-stats' });
   if (toolCall.diffData) {
@@ -219,7 +224,9 @@ export function renderStoredWriteEdit(parentEl: HTMLElement, toolCall: ToolCallI
     errorEl.setText(toolCall.result);
   } else {
     const doneEl = row.createDiv({ cls: 'codexian-write-edit-done-text' });
-    doneEl.setText(isError ? 'ERROR' : 'DONE');
+    doneEl.setText(isError
+      ? t('chat.writeEdit.error' as TranslationKey)
+      : t('chat.writeEdit.done' as TranslationKey));
   }
 
   // Setup collapsible behavior (handles click, keyboard, ARIA, CSS)

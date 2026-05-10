@@ -21,6 +21,8 @@ import {
 import { extractToolResultContent } from '../../../core/tools/toolResultContent';
 import type { ChatMessage, StreamChunk, ToolCallInfo } from '../../../core/types';
 import type { SDKToolUseResult } from '../../../core/types/diff';
+import { getLocale, t } from '../../../i18n/i18n';
+import type { TranslationKey } from '../../../i18n/types';
 import type CodexianPlugin from '../../../main';
 import {
   cancelScheduledAnimationFrame,
@@ -31,7 +33,7 @@ import { formatDurationMmSs } from '../../../utils/date';
 import { extractDiffData } from '../../../utils/diff';
 import { hasStreamingMathDelimiters } from '../../../utils/markdownMath';
 import { getVaultPath, normalizePathForVault } from '../../../utils/path';
-import { FLAVOR_TEXTS } from '../constants';
+import { getThinkingFlavorTexts } from '../constants';
 import type { MessageRenderer, RenderContentOptions } from '../rendering/MessageRenderer';
 import { resolveSubagentLifecycleAdapter } from '../rendering/subagentLifecycleResolution';
 import {
@@ -937,7 +939,8 @@ export class StreamController {
         ? `codexian-thinking ${overrideCls}`
         : 'codexian-thinking';
       state.thinkingEl = state.currentContentEl.createDiv({ cls });
-      const text = overrideText || FLAVOR_TEXTS[Math.floor(Math.random() * FLAVOR_TEXTS.length)];
+      const flavorTexts = getThinkingFlavorTexts(getLocale());
+      const text = overrideText || flavorTexts[Math.floor(Math.random() * flavorTexts.length)];
       state.thinkingEl.createSpan({ text });
 
       // Create timer span with initial value
@@ -953,7 +956,9 @@ export class StreamController {
           return;
         }
         const elapsedSeconds = Math.floor((performance.now() - state.responseStartTime) / 1000);
-        timerSpan.setText(` (esc to interrupt · ${formatDurationMmSs(elapsedSeconds)})`);
+        timerSpan.setText(t('chat.thinking.indicatorHint' as TranslationKey, {
+          duration: formatDurationMmSs(elapsedSeconds),
+        }));
       };
       updateTimer(); // Initial update
 
@@ -994,7 +999,10 @@ export class StreamController {
     if (!state.currentContentEl) return;
     this.hideThinkingIndicator();
     const el = state.currentContentEl.createDiv({ cls: 'codexian-compact-boundary' });
-    el.createSpan({ cls: 'codexian-compact-boundary-label', text: 'Conversation compacted' });
+    el.createSpan({
+      cls: 'codexian-compact-boundary-label',
+      text: t('chat.conversationCompacted' as TranslationKey),
+    });
   }
 
   // ============================================

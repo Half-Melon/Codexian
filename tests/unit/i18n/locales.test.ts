@@ -1,28 +1,12 @@
-import * as de from '@/i18n/locales/de.json';
 import * as en from '@/i18n/locales/en.json';
-import * as es from '@/i18n/locales/es.json';
-import * as fr from '@/i18n/locales/fr.json';
-import * as ja from '@/i18n/locales/ja.json';
-import * as ko from '@/i18n/locales/ko.json';
-import * as pt from '@/i18n/locales/pt.json';
-import * as ru from '@/i18n/locales/ru.json';
 import * as zhCN from '@/i18n/locales/zh-CN.json';
-import * as zhTW from '@/i18n/locales/zh-TW.json';
 
 interface TranslationTree {
   [key: string]: string | TranslationTree;
 }
 
 const locales = {
-  de,
-  es,
-  fr,
-  ja,
-  ko,
-  pt,
-  ru,
   'zh-CN': zhCN,
-  'zh-TW': zhTW,
 } as const;
 
 const localizedKeys = [
@@ -74,6 +58,26 @@ const localizedKeys = [
 const staleBangBashDesc =
   'Type ! on empty input to enter bash mode. Runs commands directly via Node.js child_process.';
 
+const cjkPattern = /[\u3400-\u9fff]/;
+const staleEnglishZhPhrases = [
+  'Open in New Tab',
+  'Open in Background Tab',
+  'Switch to Open Session',
+  'Drop image here',
+  'Conversation compacted',
+  'Writing...',
+  'Running...',
+  'Permission required',
+  'Allow this action?',
+  'No instruction received',
+  'Failed to initialize agent service',
+  'Failed to steer the queued Codex message',
+  'No conversations to resume',
+  'Copy message',
+  'Remove image',
+  'Status:',
+];
+
 function flattenTranslations(
   translations: TranslationTree,
   prefix = '',
@@ -123,5 +127,22 @@ describe('locale files', () => {
     expect(english['settings.hiddenSlashCommands.desc']).toBe(
       'Hide specific commands and skills from the dropdown. Enter names without the leading slash or dollar sign, one per line.',
     );
+  });
+
+  it('keeps the English locale free of Chinese UI copy', () => {
+    for (const [key, value] of Object.entries(english)) {
+      expect(`${key}: ${value}`).not.toMatch(cjkPattern);
+    }
+  });
+
+  it('keeps Simplified Chinese free of stale English UI phrases', () => {
+    const simplifiedChinese = flattenTranslations(zhCN as unknown as TranslationTree);
+    const combined = Object.entries(simplifiedChinese)
+      .map(([key, value]) => `${key}: ${value}`)
+      .join('\n');
+
+    for (const phrase of staleEnglishZhPhrases) {
+      expect(combined).not.toContain(phrase);
+    }
   });
 });

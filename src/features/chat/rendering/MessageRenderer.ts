@@ -290,7 +290,7 @@ export class MessageRenderer {
 
   private appendInterruptIndicator(contentEl: HTMLElement): void {
     const textEl = contentEl.createDiv({ cls: 'codexian-text-block' });
-    textEl.innerHTML = '<span class="codexian-interrupted">Interrupted</span> <span class="codexian-interrupted-hint">· What should Codexian do instead?</span>';
+    textEl.innerHTML = `<span class="codexian-interrupted">${t('chat.thinking.interrupted')}</span> <span class="codexian-interrupted-hint">· ${t('chat.thinking.interruptedHint')}</span>`;
   }
 
   /**
@@ -323,7 +323,10 @@ export class MessageRenderer {
           }
         } else if (block.type === 'context_compacted') {
           const boundaryEl = contentEl.createDiv({ cls: 'codexian-compact-boundary' });
-          boundaryEl.createSpan({ cls: 'codexian-compact-boundary-label', text: 'Conversation compacted' });
+          boundaryEl.createSpan({
+            cls: 'codexian-compact-boundary-label',
+            text: t('chat.conversationCompacted'),
+          });
         }
       }
 
@@ -355,7 +358,10 @@ export class MessageRenderer {
       const flavorWord = msg.durationFlavorWord || 'Baked';
       const footerEl = contentEl.createDiv({ cls: 'codexian-response-footer' });
       footerEl.createSpan({
-        text: `* ${flavorWord} for ${formatDurationMmSs(msg.durationSeconds)}`,
+        text: t('chat.thinking.completedFor', {
+          flavor: flavorWord,
+          duration: formatDurationMmSs(msg.durationSeconds),
+        }),
         cls: 'codexian-baked-duration',
       });
     }
@@ -528,7 +534,7 @@ export class MessageRenderer {
             label.addEventListener('click', async () => {
               try {
                 await navigator.clipboard.writeText(code.textContent || '');
-                label.setText('copied!');
+                label.setText(t('common.copied'));
                 setTimeout(() => label.setText(match[1]), 1500);
               } catch {
                 // Clipboard API may fail in non-secure contexts
@@ -551,7 +557,7 @@ export class MessageRenderer {
     } catch {
       el.createDiv({
         cls: 'codexian-render-error',
-        text: 'Failed to render message content.',
+        text: t('chat.render.failed'),
       });
     }
   }
@@ -592,7 +598,7 @@ export class MessageRenderer {
 
       // Show "copied!" feedback
       copyBtn.innerHTML = '';
-      copyBtn.setText('copied!');
+      copyBtn.setText(t('common.copied'));
       copyBtn.classList.add('copied');
 
       feedbackTimeout = setTimeout(() => {
@@ -636,7 +642,7 @@ export class MessageRenderer {
     const toolbar = this.getOrCreateActionsToolbar(msgEl);
     const copyBtn = toolbar.createSpan({ cls: 'codexian-user-msg-copy-btn' });
     copyBtn.innerHTML = MessageRenderer.COPY_ICON;
-    copyBtn.setAttribute('aria-label', 'Copy message');
+    copyBtn.setAttribute('aria-label', t('common.copy'));
 
     let feedbackTimeout: ReturnType<typeof setTimeout> | null = null;
 
@@ -649,7 +655,7 @@ export class MessageRenderer {
       }
       if (feedbackTimeout) clearTimeout(feedbackTimeout);
       copyBtn.innerHTML = '';
-      copyBtn.setText('copied!');
+      copyBtn.setText(t('common.copied'));
       copyBtn.classList.add('copied');
       feedbackTimeout = setTimeout(() => {
         copyBtn.innerHTML = MessageRenderer.COPY_ICON;
@@ -671,7 +677,7 @@ export class MessageRenderer {
       try {
         await this.rewindCallback?.(messageId);
       } catch (err) {
-        new Notice(t('chat.rewind.failed', { error: err instanceof Error ? err.message : 'Unknown error' }));
+        new Notice(t('chat.rewind.failed', { error: err instanceof Error ? err.message : t('common.unknownError') }));
       }
     });
   }
@@ -688,7 +694,7 @@ export class MessageRenderer {
       try {
         await this.forkCallback?.(messageId);
       } catch (err) {
-        new Notice(t('chat.fork.failed', { error: err instanceof Error ? err.message : 'Unknown error' }));
+        new Notice(t('chat.fork.failed', { error: err instanceof Error ? err.message : t('common.unknownError') }));
       }
     });
   }

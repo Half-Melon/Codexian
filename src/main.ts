@@ -7,7 +7,10 @@ import './providers';
 import type { Editor, WorkspaceLeaf } from 'obsidian';
 import { MarkdownView, Notice, Plugin } from 'obsidian';
 
-import { DEFAULT_CODEXIAN_SETTINGS } from './app/settings/defaultSettings';
+import {
+  DEFAULT_CODEXIAN_SETTINGS,
+  normalizeKnowledgeWorkflowSettingsForLocale,
+} from './app/settings/defaultSettings';
 import { SharedStorageService } from './app/storage/SharedStorageService';
 import type { SharedAppStorage } from './core/bootstrap/storage';
 import {
@@ -43,7 +46,8 @@ import {
 } from './features/workflows/knowledgeWorkflowCommands';
 import { KnowledgeWorkflowInitializer } from './features/workflows/KnowledgeWorkflowInitializer';
 import { KnowledgeWorkflowStatusService } from './features/workflows/KnowledgeWorkflowStatus';
-import { resolveLocalePreference, setLocale, t } from './i18n/i18n';
+import { getLocale, resolveLocalePreference, setLocale, t } from './i18n/i18n';
+import { getObsidianLocale } from './i18n/obsidianLocale';
 import { buildCursorContext } from './utils/editor';
 import { getVaultPath } from './utils/path';
 
@@ -51,17 +55,6 @@ function isCodexianView(value: unknown): value is CodexianView {
   return !!value
     && typeof value === 'object'
     && typeof (value as { getTabManager?: unknown }).getTabManager === 'function';
-}
-
-function getObsidianLocale(app: unknown): string | undefined {
-  const vault = app && typeof app === 'object'
-    ? (app as { vault?: unknown }).vault
-    : undefined;
-  const getConfig = vault && typeof vault === 'object'
-    ? (vault as { getConfig?: (key: string) => unknown }).getConfig
-    : undefined;
-  const locale = getConfig?.call(vault, 'locale');
-  return typeof locale === 'string' ? locale : undefined;
 }
 
 export default class CodexianPlugin extends Plugin {
@@ -80,14 +73,14 @@ export default class CodexianPlugin extends Plugin {
       (leaf) => new CodexianView(leaf, this)
     );
 
-    this.addRibbonIcon('bot', 'Open Codexian', () => {
+    this.addRibbonIcon('bot', t('ribbon.openCodexian'), () => {
       this.activateView();
     });
     registerKnowledgeWorkflowRibbonIcons(this);
 
     this.addCommand({
       id: 'open-view',
-      name: 'Open chat view',
+      name: t('commands.openView.name'),
       callback: () => {
         this.activateView();
       },
@@ -95,13 +88,13 @@ export default class CodexianPlugin extends Plugin {
 
     this.addCommand({
       id: 'inline-edit',
-      name: 'Inline edit',
+      name: t('commands.inlineEdit.name'),
       editorCallback: async (editor: Editor, ctx) => {
         const view = ctx instanceof MarkdownView
           ? ctx
           : this.app.workspace.getActiveViewOfType(MarkdownView);
         if (!view) {
-          new Notice('Inline edit unavailable: could not access the active markdown view.');
+          new Notice(t('notices.inlineEditUnavailableMarkdown'));
           return;
         }
 
@@ -134,14 +127,16 @@ export default class CodexianPlugin extends Plugin {
         const result = await modal.openAndWait();
 
         if (result.decision === 'accept' && result.editedText !== undefined) {
-          new Notice(editContext.mode === 'cursor' ? 'Inserted' : 'Edit applied');
+          new Notice(editContext.mode === 'cursor'
+            ? t('notices.inlineEditInserted')
+            : t('notices.inlineEditApplied'));
         }
       },
     });
 
     this.addCommand({
       id: 'new-tab',
-      name: 'New tab',
+      name: t('commands.newTab.name'),
       checkCallback: (checking: boolean) => {
         if (!this.canCreateNewTab()) return false;
 
@@ -154,7 +149,7 @@ export default class CodexianPlugin extends Plugin {
 
     this.addCommand({
       id: 'new-session',
-      name: 'New session (in current tab)',
+      name: t('commands.newSession.name'),
       checkCallback: (checking: boolean) => {
         const view = this.getView();
         if (!view) return false;
@@ -176,7 +171,7 @@ export default class CodexianPlugin extends Plugin {
 
     this.addCommand({
       id: 'close-current-tab',
-      name: 'Close current tab',
+      name: t('commands.closeCurrentTab.name'),
       checkCallback: (checking: boolean) => {
         const view = this.getView();
         if (!view) return false;
@@ -311,17 +306,17 @@ export default class CodexianPlugin extends Plugin {
     const lines = [
       t('knowledgeWorkflow.status.title'),
       '',
-      `${t('knowledgeWorkflow.status.pendingNewSources')}：${status.pendingNewSourceCount}`,
+      `${t('knowledgeWorkflow.status.pendingNewSources')}: ${status.pendingNewSourceCount}`,
       status.latestArchiveLog
-        ? `${t('knowledgeWorkflow.status.latestArchiveLog')}：${status.latestArchiveLog.path}`
-        : `${t('knowledgeWorkflow.status.latestArchiveLog')}：${t('knowledgeWorkflow.status.none')}`,
+        ? `${t('knowledgeWorkflow.status.latestArchiveLog')}: ${status.latestArchiveLog.path}`
+        : `${t('knowledgeWorkflow.status.latestArchiveLog')}: ${t('knowledgeWorkflow.status.none')}`,
       status.latestHealthCheck
-        ? `${t('knowledgeWorkflow.status.latestHealthCheck')}：${status.latestHealthCheck.path}`
-        : `${t('knowledgeWorkflow.status.latestHealthCheck')}：${t('knowledgeWorkflow.status.none')}`,
+        ? `${t('knowledgeWorkflow.status.latestHealthCheck')}: ${status.latestHealthCheck.path}`
+        : `${t('knowledgeWorkflow.status.latestHealthCheck')}: ${t('knowledgeWorkflow.status.none')}`,
     ];
 
     if (status.pendingNewSources.length > 0) {
-      lines.push('', `${t('knowledgeWorkflow.status.pendingSources')}：`);
+      lines.push('', `${t('knowledgeWorkflow.status.pendingSources')}:`);
       for (const source of status.pendingNewSources.slice(0, 10)) {
         lines.push(`- ${source.path}`);
       }
@@ -343,7 +338,7 @@ export default class CodexianPlugin extends Plugin {
   async initializeKnowledgeWorkflow(options: { silent?: boolean } = {}): Promise<void> {
     const initializer = new KnowledgeWorkflowInitializer(this.storage.getAdapter());
     try {
-      const result = await initializer.initialize();
+      const result = await initializer.initialize(getLocale());
       try {
         await ProviderWorkspaceRegistry.getCommandCatalog('codex')?.refresh();
       } catch (error) {
@@ -378,10 +373,12 @@ export default class CodexianPlugin extends Plugin {
       ...DEFAULT_CODEXIAN_SETTINGS,
       ...codexian,
     } as CodexianSettings;
-    this.settings.knowledgeWorkflow = {
-      ...DEFAULT_CODEXIAN_SETTINGS.knowledgeWorkflow,
-      ...this.settings.knowledgeWorkflow,
-    };
+    const resolvedLocale = resolveLocalePreference(this.settings.locale, getObsidianLocale(this.app));
+    const normalizedWorkflow = normalizeKnowledgeWorkflowSettingsForLocale(
+      this.settings.knowledgeWorkflow,
+      resolvedLocale,
+    );
+    this.settings.knowledgeWorkflow = normalizedWorkflow.settings;
 
     // Plan mode is ephemeral — normalize back to normal on load so the app
     // doesn't start stuck in plan mode after a restart (prePlanPermissionMode is lost)
@@ -427,7 +424,7 @@ export default class CodexianPlugin extends Plugin {
     }).sort(
       (a, b) => (b.lastResponseAt ?? b.updatedAt) - (a.lastResponseAt ?? a.updatedAt)
     );
-    setLocale(resolveLocalePreference(this.settings.locale, getObsidianLocale(this.app)));
+    setLocale(resolvedLocale);
 
     const backfilledConversations = this.backfillConversationResponseTimestamps();
 
@@ -437,7 +434,7 @@ export default class CodexianPlugin extends Plugin {
       this.settings as unknown as Record<string, unknown>,
     );
 
-    if (changed || didNormalizeModelVariants || didNormalizeProviderSelection) {
+    if (changed || didNormalizeModelVariants || didNormalizeProviderSelection || normalizedWorkflow.changed) {
       await this.saveSettings();
     }
 
@@ -583,7 +580,7 @@ export default class CodexianPlugin extends Plugin {
         }
       }
       if (failedTabs > 0) {
-        new Notice(`Environment changes applied, but ${failedTabs} affected tab(s) failed to restart.`);
+        new Notice(t('notices.environmentTabsRestartFailed', { count: failedTabs }));
       }
     }
 
@@ -593,8 +590,8 @@ export default class CodexianPlugin extends Plugin {
     }
 
     const noticeText = changed
-      ? 'Environment variables applied. Sessions will be rebuilt on next message.'
-      : 'Environment variables applied.';
+      ? t('notices.environmentAppliedRebuild')
+      : t('notices.environmentApplied');
     new Notice(noticeText);
   }
 

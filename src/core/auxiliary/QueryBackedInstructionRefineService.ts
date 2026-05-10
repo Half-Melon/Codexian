@@ -1,4 +1,9 @@
-import { buildRefineSystemPrompt, parseInstructionRefineResponse } from '../prompt/instructionRefine';
+import type { Locale } from '../../i18n/types';
+import {
+  buildRefineInstructionPrompt,
+  buildRefineSystemPrompt,
+  parseInstructionRefineResponse,
+} from '../prompt/instructionRefine';
 import type {
   InstructionRefineService,
   RefineProgressCallback,
@@ -10,9 +15,17 @@ export class QueryBackedInstructionRefineService implements InstructionRefineSer
   private abortController: AbortController | null = null;
   private existingInstructions = '';
   private hasConversation = false;
+  private locale: Locale = 'en';
   private modelOverride: string | undefined;
+  private readonly resolveLocale?: () => Locale;
 
-  constructor(private readonly runner: AuxQueryRunner) {}
+  constructor(
+    private readonly runner: AuxQueryRunner,
+    options: { resolveLocale?: () => Locale } = {},
+  ) {
+    this.resolveLocale = options.resolveLocale;
+    this.locale = options.resolveLocale?.() ?? 'en';
+  }
 
   setModelOverride(model?: string): void {
     const trimmed = model?.trim();
@@ -31,7 +44,8 @@ export class QueryBackedInstructionRefineService implements InstructionRefineSer
   ): Promise<InstructionRefineResult> {
     this.resetConversation();
     this.existingInstructions = existingInstructions;
-    return this.sendMessage(`Please refine this instruction: "${rawInstruction}"`, onProgress);
+    this.locale = this.getLocale();
+    return this.sendMessage(buildRefineInstructionPrompt(rawInstruction, this.locale), onProgress);
   }
 
   async continueConversation(
@@ -62,7 +76,7 @@ export class QueryBackedInstructionRefineService implements InstructionRefineSer
         onTextChunk: onProgress
           ? (accumulatedText: string) => onProgress(parseInstructionRefineResponse(accumulatedText))
           : undefined,
-        systemPrompt: buildRefineSystemPrompt(this.existingInstructions),
+        systemPrompt: buildRefineSystemPrompt(this.existingInstructions, this.locale),
       }, prompt);
       this.hasConversation = true;
       return parseInstructionRefineResponse(text);
@@ -74,5 +88,9 @@ export class QueryBackedInstructionRefineService implements InstructionRefineSer
     } finally {
       this.abortController = null;
     }
+  }
+
+  private getLocale(): Locale {
+    return this.resolveLocale?.() ?? this.locale;
   }
 }

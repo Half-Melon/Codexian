@@ -1,6 +1,7 @@
 import { Notice } from 'obsidian';
 
 import { t } from '../../../i18n/i18n';
+import type { TranslationKey } from '../../../i18n/types';
 
 export interface BangBashModeCallbacks {
   onSubmit: (command: string) => Promise<void>;
@@ -103,7 +104,9 @@ export class BangBashModeManager {
       this.clear();
       await this.callbacks.onSubmit(rawCommand);
     } catch (e) {
-      new Notice(`Command failed: ${e instanceof Error ? e.message : String(e)}`);
+      new Notice(t('notices.commandFailed' as TranslationKey, {
+        message: e instanceof Error ? e.message : String(e),
+      }));
     } finally {
       this.isSubmitting = false;
     }

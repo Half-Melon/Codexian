@@ -1,7 +1,10 @@
 import type { App } from 'obsidian';
 import { Notice, PluginSettingTab, Setting } from 'obsidian';
 
-import { DEFAULT_KNOWLEDGE_WORKFLOW_SETTINGS } from '../../app/settings/defaultSettings';
+import {
+  getDefaultKnowledgeWorkflowSettings,
+  normalizeKnowledgeWorkflowSettingsForLocale,
+} from '../../app/settings/defaultSettings';
 import {
   getHiddenProviderCommands,
   normalizeHiddenCommandList,
@@ -11,6 +14,7 @@ import { ProviderWorkspaceRegistry } from '../../core/providers/ProviderWorkspac
 import type { ProviderId } from '../../core/providers/types';
 import type { ChatViewPlacement } from '../../core/types/settings';
 import { getUserLanguageOptions, resolveLocalePreference, setLocale, t } from '../../i18n/i18n';
+import { getObsidianLocale } from '../../i18n/obsidianLocale';
 import type { TranslationKey, UserLanguagePreference } from '../../i18n/types';
 import type CodexianPlugin from '../../main';
 import { formatContextLimit, parseContextLimit, parseEnvironmentVariables } from '../../utils/env';
@@ -80,12 +84,6 @@ function addHotkeySettingRow(
     item.createSpan({ cls: 'codexian-hotkey-badge', text: hotkey });
   }
   item.addEventListener('click', () => openHotkeySettings(app));
-}
-
-function getObsidianLocale(app: App): string | undefined {
-  const vault = app.vault as { getConfig?: (key: string) => unknown } | undefined;
-  const locale = vault?.getConfig?.('locale');
-  return typeof locale === 'string' ? locale : undefined;
 }
 
 export class CodexianSettingTab extends PluginSettingTab {
@@ -165,6 +163,10 @@ export class CodexianSettingTab extends PluginSettingTab {
   }
 
   private renderGeneralTab(container: HTMLElement): void {
+    const workflowDefaults = getDefaultKnowledgeWorkflowSettings(
+      resolveLocalePreference(this.plugin.settings.locale, getObsidianLocale(this.app)),
+    );
+
     new Setting(container)
       .setName(t('settings.language.name'))
       .setDesc(t('settings.language.desc'))
@@ -182,6 +184,10 @@ export class CodexianSettingTab extends PluginSettingTab {
               return;
             }
             this.plugin.settings.locale = preference;
+            this.plugin.settings.knowledgeWorkflow = normalizeKnowledgeWorkflowSettingsForLocale(
+              this.plugin.settings.knowledgeWorkflow,
+              locale,
+            ).settings;
             await this.plugin.saveSettings();
             this.display();
           });
@@ -208,11 +214,11 @@ export class CodexianSettingTab extends PluginSettingTab {
       .addSlider((slider) => {
         slider
           .setLimits(1, 20, 1)
-          .setValue(this.plugin.settings.knowledgeWorkflow?.batchSize ?? DEFAULT_KNOWLEDGE_WORKFLOW_SETTINGS.batchSize)
+          .setValue(this.plugin.settings.knowledgeWorkflow?.batchSize ?? workflowDefaults.batchSize)
           .setDynamicTooltip()
           .onChange(async (value) => {
             this.plugin.settings.knowledgeWorkflow = {
-              ...DEFAULT_KNOWLEDGE_WORKFLOW_SETTINGS,
+              ...workflowDefaults,
               ...this.plugin.settings.knowledgeWorkflow,
               batchSize: value,
             };
@@ -546,8 +552,8 @@ export class CodexianSettingTab extends PluginSettingTab {
       plugin: this.plugin,
       scope: 'shared',
       heading: t('settings.environment'),
-      name: 'Shared environment',
-      desc: 'Provider-neutral runtime variables shared across all providers. Use this for PATH, proxy, cert, and temp variables.',
+      name: t('codex.settings.environment.shared.name' as TranslationKey),
+      desc: t('codex.settings.environment.shared.desc' as TranslationKey),
       placeholder: 'PATH=/opt/homebrew/bin:/usr/local/bin\nHTTPS_PROXY=http://proxy.example.com:8080\nSSL_CERT_FILE=/path/to/cert.pem',
       renderCustomContextLimits: (target) => this.renderCustomContextLimits(target),
     });
@@ -556,16 +562,22 @@ export class CodexianSettingTab extends PluginSettingTab {
   private getKnowledgeWorkflowSetting(
     key: 'summaryTemplate' | 'conceptTemplate' | 'archiveRules' | 'archiveLogTemplate',
   ): string {
+    const defaults = getDefaultKnowledgeWorkflowSettings(
+      resolveLocalePreference(this.plugin.settings.locale, getObsidianLocale(this.app)),
+    );
     return this.plugin.settings.knowledgeWorkflow?.[key]
-      ?? DEFAULT_KNOWLEDGE_WORKFLOW_SETTINGS[key];
+      ?? defaults[key];
   }
 
   private async updateKnowledgeWorkflowSetting(
     key: 'summaryTemplate' | 'conceptTemplate' | 'archiveRules' | 'archiveLogTemplate',
     value: string,
   ): Promise<void> {
+    const defaults = getDefaultKnowledgeWorkflowSettings(
+      resolveLocalePreference(this.plugin.settings.locale, getObsidianLocale(this.app)),
+    );
     this.plugin.settings.knowledgeWorkflow = {
-      ...DEFAULT_KNOWLEDGE_WORKFLOW_SETTINGS,
+      ...defaults,
       ...this.plugin.settings.knowledgeWorkflow,
       [key]: value,
     };

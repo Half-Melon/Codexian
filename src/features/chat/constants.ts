@@ -1,5 +1,5 @@
 /** Random flavor words shown when response completes (e.g., "Baked for 1:23"). */
-export const COMPLETION_FLAVOR_WORDS = [
+const EN_COMPLETION_FLAVOR_WORDS = [
   'Baked',
   'Cooked',
   'Crunched',
@@ -24,8 +24,21 @@ export const COMPLETION_FLAVOR_WORDS = [
   'Cogitated',
 ] as const;
 
+const ZH_CN_COMPLETION_FLAVOR_WORDS = [
+  '完成',
+  '整理',
+  '处理',
+  '分析',
+  '生成',
+  '写好',
+  '归纳',
+  '推演',
+  '编排',
+  '打磨',
+] as const;
+
 /** Random flavor texts shown while Codex is thinking. */
-export const FLAVOR_TEXTS = [
+const EN_FLAVOR_TEXTS = [
   // Classic
   'Thinking...',
   'Pondering...',
@@ -111,4 +124,29 @@ export const FLAVOR_TEXTS = [
   'Working my magic...',
   'Almost there...',
   'Give me a moment...',
-];
+] as const;
+
+const ZH_CN_FLAVOR_TEXTS = [
+  '思考中...',
+  '处理中...',
+  '分析中...',
+  '整理上下文...',
+  '正在推理...',
+  '正在检查...',
+  '正在组织答案...',
+  '稍等一下...',
+  '正在执行...',
+  '正在汇总...',
+] as const;
+
+export function getCompletionFlavorWords(locale: string): readonly string[] {
+  return locale.toLowerCase().startsWith('zh')
+    ? ZH_CN_COMPLETION_FLAVOR_WORDS
+    : EN_COMPLETION_FLAVOR_WORDS;
+}
+
+export function getThinkingFlavorTexts(locale: string): readonly string[] {
+  return locale.toLowerCase().startsWith('zh')
+    ? ZH_CN_FLAVOR_TEXTS
+    : EN_FLAVOR_TEXTS;
+}

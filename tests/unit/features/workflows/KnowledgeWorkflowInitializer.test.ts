@@ -6,6 +6,8 @@ import {
 } from '@/features/workflows/knowledgeWorkflowCommands';
 import { KnowledgeWorkflowInitializer } from '@/features/workflows/KnowledgeWorkflowInitializer';
 
+const CJK_RE = /[\u3400-\u9fff]/;
+
 function createMockAdapter(existing: Record<string, string> = {}) {
   const files = { ...existing };
   const folders = new Set<string>();
@@ -102,24 +104,42 @@ describe('KnowledgeWorkflowInitializer', () => {
     expect(folders.has('raw/articles')).toBe(true);
     expect(folders.has('raw/inbox')).toBe(true);
     expect(folders.has('new')).toBe(true);
-    expect(files[KNOWLEDGE_WORKFLOW_AGENTS_PATH]).toContain('new/ 是新来源暂存区');
-    expect(files[KNOWLEDGE_WORKFLOW_AGENTS_PATH]).toContain('raw/ 是来源层');
+    expect(files[KNOWLEDGE_WORKFLOW_AGENTS_PATH]).toContain('new/ is the staging area for new sources');
+    expect(files[KNOWLEDGE_WORKFLOW_AGENTS_PATH]).toContain('raw/ is the source archive layer');
     expect(files[KNOWLEDGE_WORKFLOW_AGENTS_PATH]).toContain('raw/inbox/');
     expect(files[KNOWLEDGE_WORKFLOW_AGENTS_PATH]).toContain('wiki/maps/LLM Personal Knowledge Base Workflow.md');
     expect(files[KNOWLEDGE_WORKFLOW_AGENTS_PATH]).toContain('outputs/reports/YYYY-MM-DD-archive-log.md');
-    expect(files[KNOWLEDGE_WORKFLOW_MAP_PATH]).toContain('new/ 使用说明');
-    expect(files[KNOWLEDGE_WORKFLOW_MAP_PATH]).toContain('编译新来源');
+    expect(files[KNOWLEDGE_WORKFLOW_AGENTS_PATH]).not.toMatch(CJK_RE);
+    expect(files[KNOWLEDGE_WORKFLOW_MAP_PATH]).toContain('How to use new/');
+    expect(files[KNOWLEDGE_WORKFLOW_MAP_PATH]).toContain('Compile new sources');
+    expect(files[KNOWLEDGE_WORKFLOW_MAP_PATH]).not.toMatch(CJK_RE);
     expect(files[KNOWLEDGE_WORKFLOW_SOURCE_INDEX_PATH]).toContain('All Sources');
     expect(files[KNOWLEDGE_WORKFLOW_CONCEPT_INDEX_PATH]).toContain('All Concepts');
     expect(files['.codex/skills/compile-source/SKILL.md']).toContain('name: compile-source');
     expect(files['.codex/skills/compile-source/SKILL.md']).toContain('new/ folder');
+    expect(files['.codex/skills/compile-source/SKILL.md']).not.toMatch(CJK_RE);
     expect(files['.codex/skills/archive-source/SKILL.md']).toContain('name: archive-source');
     expect(files['.codex/skills/archive-source/SKILL.md']).toContain('raw/inbox');
-    expect(files['.codex/skills/archive-source/SKILL.md']).toContain('根据文档内容制定一个新的标题');
-    expect(files['.codex/skills/archive-source/SKILL.md']).toContain('如果目标文件已存在');
+    expect(files['.codex/skills/archive-source/SKILL.md']).toContain('Create a new title from the document content');
+    expect(files['.codex/skills/archive-source/SKILL.md']).toContain('If the target file already exists');
+    expect(files['.codex/skills/archive-source/SKILL.md']).not.toMatch(CJK_RE);
     expect(files['.codex/skills/repair-health/SKILL.md']).toContain('name: repair-health');
     expect(files['.codex/skills/undo-archive/SKILL.md']).toContain('name: undo-archive');
     expect(files['.codex/skills/workflow-acceptance/SKILL.md']).toContain('name: workflow-acceptance');
+  });
+
+  it('creates Simplified Chinese workflow files when requested', async () => {
+    const { adapter, files } = createMockAdapter();
+    const initializer = new KnowledgeWorkflowInitializer(adapter);
+
+    await initializer.initialize('zh-CN');
+
+    expect(files[KNOWLEDGE_WORKFLOW_AGENTS_PATH]).toContain('new/ 是新来源暂存区');
+    expect(files[KNOWLEDGE_WORKFLOW_AGENTS_PATH]).toContain('raw/ 是来源层');
+    expect(files[KNOWLEDGE_WORKFLOW_MAP_PATH]).toContain('new/ 使用说明');
+    expect(files[KNOWLEDGE_WORKFLOW_MAP_PATH]).toContain('编译新来源');
+    expect(files['.codex/skills/archive-source/SKILL.md']).toContain('根据文档内容制定一个新的标题');
+    expect(files['.codex/skills/archive-source/SKILL.md']).toContain('如果目标文件已存在');
   });
 
   it('does not overwrite existing user files or report existing folders as created', async () => {

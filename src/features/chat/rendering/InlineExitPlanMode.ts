@@ -1,9 +1,8 @@
 import * as nodePath from 'path';
 
 import type { ExitPlanModeDecision } from '../../../core/types/tools';
+import { t } from '../../../i18n/i18n';
 import type { RenderContentFn } from './MessageRenderer';
-
-const HINTS_TEXT = 'Arrow keys to navigate \u00B7 Enter to select \u00B7 Esc to cancel';
 
 export class InlineExitPlanMode {
   private containerEl: HTMLElement;
@@ -45,7 +44,7 @@ export class InlineExitPlanMode {
     this.rootEl = this.containerEl.createDiv({ cls: 'codexian-plan-approval-inline' });
 
     const titleEl = this.rootEl.createDiv({ cls: 'codexian-plan-inline-title' });
-    titleEl.setText('Plan complete');
+    titleEl.setText(t('chat.plan.complete'));
 
     this.planContent = this.readPlanContent();
     if (this.planContent) {
@@ -58,14 +57,14 @@ export class InlineExitPlanMode {
     } else if (this.planReadError) {
       this.rootEl.createDiv({
         cls: 'codexian-plan-content-preview codexian-plan-read-error',
-        text: `Could not read plan file: ${this.planReadError}. "Approve (new session)" will not include plan details.`,
+        text: t('chat.plan.readFailed', { message: this.planReadError }),
       });
     }
 
     const allowedPrompts = this.input.allowedPrompts as Array<{ tool: string; prompt: string }> | undefined;
     if (allowedPrompts && Array.isArray(allowedPrompts) && allowedPrompts.length > 0) {
       const permEl = this.rootEl.createDiv({ cls: 'codexian-plan-permissions' });
-      permEl.createDiv({ text: 'Requested permissions:', cls: 'codexian-plan-permissions-label' });
+      permEl.createDiv({ text: t('chat.plan.requestedPermissions'), cls: 'codexian-plan-permissions-label' });
       const listEl = permEl.createEl('ul', { cls: 'codexian-plan-permissions-list' });
       for (const perm of allowedPrompts) {
         listEl.createEl('li', { text: perm.prompt });
@@ -78,7 +77,7 @@ export class InlineExitPlanMode {
     newSessionRow.addClass('is-focused');
     newSessionRow.createSpan({ text: '\u203A', cls: 'codexian-ask-cursor' });
     newSessionRow.createSpan({ text: '1. ', cls: 'codexian-ask-item-num' });
-    newSessionRow.createSpan({ text: 'Approve (new session)', cls: 'codexian-ask-item-label' });
+    newSessionRow.createSpan({ text: t('chat.plan.approveNewSession'), cls: 'codexian-ask-item-label' });
     newSessionRow.addEventListener('click', () => {
       this.focusedIndex = 0;
       this.updateFocus();
@@ -92,7 +91,7 @@ export class InlineExitPlanMode {
     const approveRow = actionsEl.createDiv({ cls: 'codexian-ask-item' });
     approveRow.createSpan({ text: '\u00A0', cls: 'codexian-ask-cursor' });
     approveRow.createSpan({ text: '2. ', cls: 'codexian-ask-item-num' });
-    approveRow.createSpan({ text: 'Approve (current session)', cls: 'codexian-ask-item-label' });
+    approveRow.createSpan({ text: t('chat.plan.approveCurrentSession'), cls: 'codexian-ask-item-label' });
     approveRow.addEventListener('click', () => {
       this.focusedIndex = 1;
       this.updateFocus();
@@ -106,7 +105,7 @@ export class InlineExitPlanMode {
     this.feedbackInput = feedbackRow.createEl('input', {
       type: 'text',
       cls: 'codexian-ask-custom-text',
-      placeholder: 'Enter feedback to continue planning...',
+      placeholder: t('chat.plan.continuePlanningPlaceholder'),
     });
     this.feedbackInput.addEventListener('focus', () => { this.isInputFocused = true; });
     this.feedbackInput.addEventListener('blur', () => { this.isInputFocused = false; });
@@ -116,7 +115,7 @@ export class InlineExitPlanMode {
     });
     this.items.push(feedbackRow);
 
-    this.rootEl.createDiv({ text: HINTS_TEXT, cls: 'codexian-ask-hints' });
+    this.rootEl.createDiv({ text: t('chat.plan.hints'), cls: 'codexian-ask-hints' });
 
     this.rootEl.setAttribute('tabindex', '0');
     this.rootEl.addEventListener('keydown', this.boundKeyDown);
@@ -159,9 +158,9 @@ export class InlineExitPlanMode {
 
   private extractPlanContent(): string {
     if (this.planContent) {
-      return `Implement this plan:\n\n${this.planContent}`;
+      return t('chat.plan.implementThisPlan', { plan: this.planContent });
     }
-    return 'Implement the approved plan.';
+    return t('chat.plan.implementApprovedPlan');
   }
 
   private handleKeyDown(e: KeyboardEvent): void {
