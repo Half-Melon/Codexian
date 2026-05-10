@@ -1,5 +1,5 @@
 import { getDefaultHiddenProviderCommands } from '../../core/providers/commands/hiddenCommands';
-import { type CodexidianSettings } from '../../core/types/settings';
+import { type CodexianSettings } from '../../core/types/settings';
 import { DEFAULT_CODEX_PRIMARY_MODEL } from '../../providers/codex/types/models';
 import { getBuiltInProviderDefaultConfigs } from '../../providers/defaultProviderConfigs';
 
@@ -69,7 +69,7 @@ export const DEFAULT_KNOWLEDGE_WORKFLOW_SETTINGS = {
   ].join('\n'),
 };
 
-export const DEFAULT_CODEXIDIAN_SETTINGS: CodexidianSettings = {
+export const DEFAULT_CODEXIAN_SETTINGS: CodexianSettings = {
   userName: '',
 
   permissionMode: 'yolo',

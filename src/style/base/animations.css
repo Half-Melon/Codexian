@@ -18,15 +18,15 @@
 @keyframes external-context-glow {
   0%,
   100% {
-    filter: drop-shadow(0 0 2px rgba(var(--codexidian-brand-rgb), 0.4));
+    filter: drop-shadow(0 0 2px rgba(var(--codexian-brand-rgb), 0.4));
   }
 
   50% {
-    filter: drop-shadow(0 0 6px rgba(var(--codexidian-brand-rgb), 0.8));
+    filter: drop-shadow(0 0 6px rgba(var(--codexian-brand-rgb), 0.8));
   }
 }
 
-@keyframes codexidian-spin {
+@keyframes codexian-spin {
   to {
     transform: rotate(360deg);
   }

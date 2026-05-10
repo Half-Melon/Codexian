@@ -1,7 +1,7 @@
 /* Image Context - Preview & Attachments */
 
 /* Image preview container (in input area) */
-.codexidian-image-preview {
+.codexian-image-preview {
   display: none;
   flex-wrap: wrap;
   gap: 8px;
@@ -10,7 +10,7 @@
 }
 
 /* Individual image preview chip */
-.codexidian-image-chip {
+.codexian-image-chip {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -21,12 +21,12 @@
   max-width: 200px;
 }
 
-.codexidian-image-chip:hover {
+.codexian-image-chip:hover {
   border-color: var(--interactive-accent);
 }
 
 /* Image thumbnail */
-.codexidian-image-thumb {
+.codexian-image-thumb {
   width: 40px;
   height: 40px;
   border-radius: 4px;
@@ -35,21 +35,21 @@
   cursor: pointer;
 }
 
-.codexidian-image-thumb img {
+.codexian-image-thumb img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
 /* Image info */
-.codexidian-image-info {
+.codexian-image-info {
   display: flex;
   flex-direction: column;
   min-width: 0;
   flex: 1;
 }
 
-.codexidian-image-name {
+.codexian-image-name {
   font-size: 12px;
   color: var(--text-normal);
   overflow: hidden;
@@ -57,13 +57,13 @@
   white-space: nowrap;
 }
 
-.codexidian-image-size {
+.codexian-image-size {
   font-size: 10px;
   color: var(--text-muted);
 }
 
 /* Remove button */
-.codexidian-image-remove {
+.codexian-image-remove {
   position: relative;
   width: 20px;
   height: 20px;
@@ -74,8 +74,8 @@
   font-size: 0; /* Hide text character */
 }
 
-.codexidian-image-remove::before,
-.codexidian-image-remove::after {
+.codexian-image-remove::before,
+.codexian-image-remove::after {
   content: '';
   position: absolute;
   top: 50%;
@@ -87,32 +87,32 @@
   transition: background 0.15s ease;
 }
 
-.codexidian-image-remove::before {
+.codexian-image-remove::before {
   transform: translate(-50%, -50%) rotate(45deg);
 }
 
-.codexidian-image-remove::after {
+.codexian-image-remove::after {
   transform: translate(-50%, -50%) rotate(-45deg);
 }
 
-.codexidian-image-remove:hover {
+.codexian-image-remove:hover {
   background: var(--background-modifier-error);
 }
 
-.codexidian-image-remove:hover::before,
-.codexidian-image-remove:hover::after {
+.codexian-image-remove:hover::before,
+.codexian-image-remove:hover::after {
   background: var(--text-on-accent);
 }
 
 /* Drop overlay - inside input wrapper */
-.codexidian-drop-overlay {
+.codexian-drop-overlay {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(var(--codexidian-brand-rgb), 0.08);
-  border: 2px dashed var(--codexidian-brand);
+  background: rgba(var(--codexian-brand-rgb), 0.08);
+  border: 2px dashed var(--codexian-brand);
   border-radius: 6px;
   display: none;
   align-items: center;
@@ -121,23 +121,23 @@
   pointer-events: none;
 }
 
-.codexidian-drop-overlay.visible {
+.codexian-drop-overlay.visible {
   display: flex;
 }
 
-.codexidian-drop-content {
+.codexian-drop-content {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 4px;
-  color: var(--codexidian-brand);
+  color: var(--codexian-brand);
 }
 
-.codexidian-drop-content svg {
+.codexian-drop-content svg {
   opacity: 0.7;
 }
 
-.codexidian-drop-content span {
+.codexian-drop-content span {
   font-size: 12px;
   font-weight: 500;
 }
@@ -145,7 +145,7 @@
 /* Images in Messages (displayed above user bubble) */
 
 /* Images container - right-aligned above user message */
-.codexidian-message-images {
+.codexian-message-images {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
@@ -155,7 +155,7 @@
 }
 
 /* Individual image in message - standardized size */
-.codexidian-message-image {
+.codexian-message-image {
   width: 120px;
   height: 120px;
   border-radius: 8px;
@@ -166,12 +166,12 @@
   border: 1px solid var(--background-modifier-border);
 }
 
-.codexidian-message-image:hover {
+.codexian-message-image:hover {
   transform: scale(1.03);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-.codexidian-message-image img {
+.codexian-message-image img {
   width: 100%;
   height: 100%;
   object-fit: cover;

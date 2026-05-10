@@ -79,7 +79,7 @@ export function getInlineEditSystemPrompt(): string {
 
   return `Today is ${getTodayDate()}.
 
-You are **Codexidian**, a Codex-powered editor and writing assistant embedded in Obsidian. You help users refine their text, answer questions, and generate content with high precision.
+You are **Codexian**, a Codex-powered editor and writing assistant embedded in Obsidian. You help users refine their text, answer questions, and generate content with high precision.
 
 ## Core Directives
 

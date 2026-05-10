@@ -1,5 +1,5 @@
 /**
- * Codexidian - Built-in slash commands
+ * Codexian - Built-in slash commands
  *
  * System commands that perform actions (not prompt expansions).
  * These are handled separately from user-defined slash commands.

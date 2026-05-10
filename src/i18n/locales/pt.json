@@ -65,7 +65,7 @@
     }
   },
   "settings": {
-    "title": "Configurações do Codexidian",
+    "title": "Codexian settings",
     "tabs": {
       "general": "Geral",
       "codex": "Codex"
@@ -78,7 +78,7 @@
     "models": "Modelos",
     "experimental": "Experimental",
     "userName": {
-      "name": "Como o Codexidian deve chamá-lo?",
+      "name": "What should Codexian call you?",
       "desc": "Seu nome para saudações personalizadas (deixe vazio para saudações genéricas)"
     },
     "excludedTags": {
@@ -157,7 +157,7 @@
     },
     "plugins": {
       "name": "Codex Plugins",
-      "desc": "Codexidian is Codex-only and does not manage third-party provider plugins."
+      "desc": "Codexian is Codex-only and does not manage third-party provider plugins."
     },
     "subagents": {
       "name": "Subagentes",
@@ -200,7 +200,7 @@
     "safety": "Segurança",
     "loadUserSettings": {
       "name": "Load user Codex settings",
-      "desc": "Codex reads its own CLI configuration. Codexidian keeps provider settings under this vault."
+      "desc": "Codex reads its own CLI configuration. Codexian keeps provider settings under this vault."
     },
     "codexSafeMode": {
       "name": "Safe mode",
@@ -242,7 +242,7 @@
     },
     "enableChrome": {
       "name": "Browser integration",
-      "desc": "Browser integration is provider-specific. Codexidian does not manage a separate Chrome extension here."
+      "desc": "Browser integration is provider-specific. Codexian does not manage a separate Chrome extension here."
     },
     "enableBangBash": {
       "name": "Ativar modo bash (!)",
@@ -271,7 +271,7 @@
       "desc": "Mostrar LaTeX bruto enquanto a resposta é transmitida e renderizar a matemática uma vez quando cada bloco de texto terminar."
     },
     "chatViewPlacement": {
-      "name": "Abrir Codexidian em",
+      "name": "Open Codexian in",
       "desc": "Escolha onde o painel de chat abre quando é criado",
       "rightSidebar": "Barra lateral direita",
       "leftSidebar": "Barra lateral esquerda",
@@ -320,9 +320,9 @@
     }
   },
   "knowledgeWorkflow": {
-    "notReady": "Codexidian is not ready yet. Open the chat panel and try again.",
+    "notReady": "Codexian is not ready yet. Open the chat panel and try again.",
     "status": {
-      "title": "Codexidian knowledge-base status",
+      "title": "Codexian knowledge-base status",
       "pendingNewSources": "Pending new/ sources",
       "latestArchiveLog": "Latest archive log",
       "latestHealthCheck": "Latest health check",
@@ -331,9 +331,9 @@
       "moreFiles": "{count} more file(s)"
     },
     "initialized": {
-      "ready": "Codexidian knowledge-base workflow is ready. No new files were needed.",
-      "created": "Codexidian knowledge-base workflow initialized: created {folders} folder(s) and {files} file(s).",
-      "failed": "Failed to initialize Codexidian knowledge-base workflow: {message}"
+      "ready": "Codexian knowledge-base workflow is ready. No new files were needed.",
+      "created": "Codexian knowledge-base workflow initialized: created {folders} folder(s) and {files} file(s).",
+      "failed": "Failed to initialize Codexian knowledge-base workflow: {message}"
     },
     "commands": {
       "initialize": {

@@ -1,4 +1,4 @@
-import type CodexidianPlugin from '../../main';
+import type CodexianPlugin from '../../main';
 import type { CursorContext } from '../../utils/editor';
 import type { SharedAppStorage } from '../bootstrap/storage';
 import type { ChatRuntime } from '../runtime/ChatRuntime';
@@ -37,7 +37,7 @@ export interface ProviderCapabilities {
 export const DEFAULT_CHAT_PROVIDER_ID = 'codex' as const satisfies ProviderId;
 
 export interface CreateChatRuntimeOptions {
-  plugin: CodexidianPlugin;
+  plugin: CodexianPlugin;
   providerId?: ProviderId;
 }
 
@@ -58,9 +58,9 @@ export interface ProviderRegistration {
   chatUIConfig: ProviderChatUIConfig;
   settingsReconciler: ProviderSettingsReconciler;
   createRuntime: (options: Omit<CreateChatRuntimeOptions, 'providerId'>) => ChatRuntime;
-  createTitleGenerationService: (plugin: CodexidianPlugin) => TitleGenerationService;
-  createInstructionRefineService: (plugin: CodexidianPlugin) => InstructionRefineService;
-  createInlineEditService: (plugin: CodexidianPlugin) => InlineEditService;
+  createTitleGenerationService: (plugin: CodexianPlugin) => TitleGenerationService;
+  createInstructionRefineService: (plugin: CodexianPlugin) => InstructionRefineService;
+  createInlineEditService: (plugin: CodexianPlugin) => InlineEditService;
   historyService: ProviderConversationHistoryService;
   subagentLifecycleAdapter?: ProviderSubagentLifecycleAdapter;
 }
@@ -288,7 +288,7 @@ export interface ProviderRuntimeCommandLoaderContext {
   allowSessionCreation?: boolean;
   conversation: Conversation | null;
   externalContextPaths: string[];
-  plugin: CodexidianPlugin;
+  plugin: CodexianPlugin;
   runtime: ChatRuntime | null;
 }
 
@@ -306,7 +306,7 @@ export type ProviderTabWarmupLifecycleState = 'blank' | 'bound_cold' | 'bound_ac
 export interface ProviderTabWarmupContext {
   conversation: Conversation | null;
   externalContextPaths: string[];
-  plugin: CodexidianPlugin;
+  plugin: CodexianPlugin;
   runtime: ChatRuntime | null;
   tab: {
     conversationId: string | null;
@@ -331,7 +331,7 @@ export interface ProviderWorkspaceServices {
 }
 
 export interface ProviderSettingsTabRendererContext {
-  plugin: CodexidianPlugin;
+  plugin: CodexianPlugin;
   renderHiddenProviderCommandSetting(
     container: HTMLElement,
     providerId: ProviderId,
@@ -346,7 +346,7 @@ export interface ProviderSettingsTabRenderer {
 }
 
 export interface ProviderWorkspaceInitContext {
-  plugin: CodexidianPlugin;
+  plugin: CodexianPlugin;
   storage: SharedAppStorage;
   vaultAdapter: VaultFileAdapter;
   homeAdapter: HomeFileAdapter;

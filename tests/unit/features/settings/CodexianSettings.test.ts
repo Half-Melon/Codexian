@@ -307,7 +307,7 @@ jest.mock('@/i18n/i18n', () => ({
   }[key] ?? key),
 }));
 
-import { CodexidianSettingTab } from '@/features/settings/CodexidianSettings';
+import { CodexianSettingTab } from '@/features/settings/CodexianSettings';
 
 function createPlugin() {
   return {
@@ -344,7 +344,7 @@ function createPlugin() {
   };
 }
 
-describe('CodexidianSettingTab', () => {
+describe('CodexianSettingTab', () => {
   beforeEach(() => {
     createdSettings.length = 0;
     jest.clearAllMocks();
@@ -352,7 +352,7 @@ describe('CodexidianSettingTab', () => {
 
   it('renders the knowledge workflow initializer in settings', async () => {
     const plugin = createPlugin();
-    const tab = new CodexidianSettingTab({} as any, plugin as any);
+    const tab = new CodexianSettingTab({} as any, plugin as any);
 
     tab.display();
 
@@ -370,7 +370,7 @@ describe('CodexidianSettingTab', () => {
   it('renders auto, English, and Simplified Chinese language choices', async () => {
     const plugin = createPlugin();
     plugin.settings.locale = 'auto';
-    const tab = new CodexidianSettingTab({ vault: { getConfig: jest.fn(() => 'zh-CN') } } as any, plugin as any);
+    const tab = new CodexianSettingTab({ vault: { getConfig: jest.fn(() => 'zh-CN') } } as any, plugin as any);
 
     tab.display();
 
@@ -393,7 +393,7 @@ describe('CodexidianSettingTab', () => {
 
   it('renders configurable knowledge workflow templates', async () => {
     const plugin = createPlugin();
-    const tab = new CodexidianSettingTab({} as any, plugin as any);
+    const tab = new CodexianSettingTab({} as any, plugin as any);
 
     tab.display();
 
@@ -415,7 +415,7 @@ describe('CodexidianSettingTab', () => {
 
   it('renders configurable knowledge workflow batch size', async () => {
     const plugin = createPlugin();
-    const tab = new CodexidianSettingTab({} as any, plugin as any);
+    const tab = new CodexianSettingTab({} as any, plugin as any);
 
     tab.display();
 

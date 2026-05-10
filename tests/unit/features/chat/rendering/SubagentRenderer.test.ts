@@ -106,7 +106,7 @@ describe('Sync Subagent Renderer', () => {
     it('should not show a tool count badge in the header', () => {
       const state = createSubagentBlock(parentEl as any, 'task-1', { description: 'Test task' });
 
-      expect(getTextByClass(state.wrapperEl as any, 'codexidian-subagent-count')).toEqual([]);
+      expect(getTextByClass(state.wrapperEl as any, 'codexian-subagent-count')).toEqual([]);
     });
   });
 
@@ -273,7 +273,7 @@ describe('addSubagentToolCall', () => {
     addSubagentToolCall(state, toolCall);
 
     expect(state.info.toolCalls).toHaveLength(1);
-    expect(getTextByClass(state.wrapperEl as any, 'codexidian-subagent-count')).toEqual([]);
+    expect(getTextByClass(state.wrapperEl as any, 'codexian-subagent-count')).toEqual([]);
   });
 
   it('clears previous content and renders new tool item', () => {
@@ -298,7 +298,7 @@ describe('addSubagentToolCall', () => {
     addSubagentToolCall(state, toolCall2);
 
     expect(state.info.toolCalls).toHaveLength(2);
-    expect(getTextByClass(state.wrapperEl as any, 'codexidian-subagent-count')).toEqual([]);
+    expect(getTextByClass(state.wrapperEl as any, 'codexian-subagent-count')).toEqual([]);
   });
 
   it('merges repeated tool IDs instead of duplicating tool rows', () => {
@@ -327,9 +327,9 @@ describe('addSubagentToolCall', () => {
         input: { file_path: 'notes.md' },
       })
     );
-    expect(getTextByClass(state.wrapperEl as any, 'codexidian-subagent-count')).toEqual([]);
-    expect(getTextByClass(state.toolsContainerEl as any, 'codexidian-subagent-tool-name')).toEqual(['Write']);
-    expect(getTextByClass(state.toolsContainerEl as any, 'codexidian-subagent-tool-summary')).toEqual(['notes.md']);
+    expect(getTextByClass(state.wrapperEl as any, 'codexian-subagent-count')).toEqual([]);
+    expect(getTextByClass(state.toolsContainerEl as any, 'codexian-subagent-tool-name')).toEqual(['Write']);
+    expect(getTextByClass(state.toolsContainerEl as any, 'codexian-subagent-tool-summary')).toEqual(['notes.md']);
   });
 });
 
@@ -427,7 +427,7 @@ describe('finalizeSubagentBlock', () => {
 
     finalizeSubagentBlock(state, 'Done', false);
 
-    const doneText = getTextByClass(state.contentEl as any, 'codexidian-subagent-result-output')[0];
+    const doneText = getTextByClass(state.contentEl as any, 'codexian-subagent-result-output')[0];
     expect(doneText).toBe('Done');
   });
 
@@ -436,7 +436,7 @@ describe('finalizeSubagentBlock', () => {
 
     finalizeSubagentBlock(state, 'Error occurred', true);
 
-    const errorText = getTextByClass(state.contentEl as any, 'codexidian-subagent-result-output')[0];
+    const errorText = getTextByClass(state.contentEl as any, 'codexian-subagent-result-output')[0];
     expect(errorText).toBe('Error occurred');
   });
 
@@ -460,7 +460,7 @@ describe('finalizeSubagentBlock', () => {
 
     finalizeSubagentBlock(state, 'Done', false);
 
-    expect(getTextByClass(state.wrapperEl as any, 'codexidian-subagent-count')).toEqual([]);
+    expect(getTextByClass(state.wrapperEl as any, 'codexian-subagent-count')).toEqual([]);
   });
 });
 
@@ -486,7 +486,7 @@ describe('renderStoredSubagent status variants', () => {
 
     expect((wrapperEl as any).hasClass('done')).toBe(true);
     expect(setIcon).toHaveBeenCalledWith(expect.anything(), 'check');
-    const doneText = getTextByClass(wrapperEl as any, 'codexidian-subagent-result-output')[0];
+    const doneText = getTextByClass(wrapperEl as any, 'codexian-subagent-result-output')[0];
     expect(doneText).toBe('DONE');
   });
 
@@ -504,7 +504,7 @@ describe('renderStoredSubagent status variants', () => {
 
     expect((wrapperEl as any).hasClass('error')).toBe(true);
     expect(setIcon).toHaveBeenCalledWith(expect.anything(), 'x');
-    const errorText = getTextByClass(wrapperEl as any, 'codexidian-subagent-result-output')[0];
+    const errorText = getTextByClass(wrapperEl as any, 'codexian-subagent-result-output')[0];
     expect(errorText).toBe('ERROR');
   });
 
@@ -549,7 +549,7 @@ describe('renderStoredSubagent status variants', () => {
     const contentEl = (wrapperEl as any).children[1]; // content area
 
     // Should show result text
-    const resultTexts = getTextByClass(contentEl, 'codexidian-tool-line');
+    const resultTexts = getTextByClass(contentEl, 'codexian-tool-line');
     expect(resultTexts.length).toBe(1);
     expect(resultTexts[0]).toContain('File contents here');
   });
@@ -569,7 +569,7 @@ describe('renderStoredSubagent status variants', () => {
 
     const wrapperEl = renderStoredSubagent(parentEl as any, subagent);
 
-    expect(getTextByClass(wrapperEl as any, 'codexidian-subagent-count')).toEqual([]);
+    expect(getTextByClass(wrapperEl as any, 'codexian-subagent-count')).toEqual([]);
   });
 
   it('truncates long descriptions', () => {
@@ -584,7 +584,7 @@ describe('renderStoredSubagent status variants', () => {
 
     const wrapperEl = renderStoredSubagent(parentEl as any, subagent);
 
-    const labelTexts = getTextByClass(wrapperEl as any, 'codexidian-subagent-label');
+    const labelTexts = getTextByClass(wrapperEl as any, 'codexian-subagent-label');
     expect(labelTexts[0]).toBe('A'.repeat(40) + '...');
   });
 });

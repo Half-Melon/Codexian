@@ -1,5 +1,5 @@
 /**
- * Codexidian - Editor Context Utilities
+ * Codexian - Editor Context Utilities
  *
  * Editor cursor and selection context for inline editing.
  */

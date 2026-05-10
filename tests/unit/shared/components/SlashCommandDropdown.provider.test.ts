@@ -44,13 +44,13 @@ function createMockCallbacks(overrides: Partial<SlashCommandDropdownCallbacks> =
 
 function getRenderedItems(containerEl: any): { name: string; description: string }[] {
   const dropdownEl = containerEl.children.find(
-    (c: any) => c.hasClass('codexidian-slash-dropdown')
+    (c: any) => c.hasClass('codexian-slash-dropdown')
   );
   if (!dropdownEl) return [];
-  const items = dropdownEl.querySelectorAll('.codexidian-slash-item');
+  const items = dropdownEl.querySelectorAll('.codexian-slash-item');
   return items.map((item: any) => {
-    const nameSpan = item.children.find((c: any) => c.hasClass('codexidian-slash-name'));
-    const descDiv = item.children.find((c: any) => c.hasClass('codexidian-slash-desc'));
+    const nameSpan = item.children.find((c: any) => c.hasClass('codexian-slash-name'));
+    const descDiv = item.children.find((c: any) => c.hasClass('codexian-slash-desc'));
     return {
       name: nameSpan?.textContent ?? '',
       description: descDiv?.textContent ?? '',
@@ -101,7 +101,7 @@ const CODEX_ENTRIES: ProviderCommandEntry[] = [
 
 const CODEX_WORKFLOW_ENTRIES: ProviderCommandEntry[] = [
   {
-    id: 'codexidian-workflow-health-check',
+    id: 'codexian-workflow-health-check',
     providerId: 'codex',
     kind: 'command',
     name: 'kb-health-check',
@@ -245,7 +245,7 @@ describe('SlashCommandDropdown - provider catalog', () => {
       dropdown.destroy();
     });
 
-    it('inserts full prompt content for Codexidian knowledge workflow commands', async () => {
+    it('inserts full prompt content for Codexian knowledge workflow commands', async () => {
       const getProviderEntries = jest.fn().mockResolvedValue(CODEX_WORKFLOW_ENTRIES);
       const dropdown = new SlashCommandDropdown(
         containerEl, inputEl, callbacks, { providerConfig: CODEX_CONFIG, getProviderEntries }

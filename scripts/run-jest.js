@@ -3,7 +3,7 @@ const os = require('os');
 const path = require('path');
 
 const jestPath = require.resolve('jest/bin/jest');
-const localStorageFile = path.join(os.tmpdir(), 'codexidian-localstorage');
+const localStorageFile = path.join(os.tmpdir(), 'codexian-localstorage');
 
 const result = spawnSync(
   process.execPath,

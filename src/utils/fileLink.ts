@@ -1,5 +1,5 @@
 /**
- * Codexidian - File Link Utilities
+ * Codexian - File Link Utilities
  *
  * Detects Obsidian wikilinks [[path/to/file]] in rendered content and makes
  * them clickable to open the file in Obsidian.
@@ -112,7 +112,7 @@ function createWikilink(
   displayText: string
 ): HTMLElement {
   const link = document.createElement('a');
-  link.className = 'codexidian-file-link internal-link';
+  link.className = 'codexian-file-link internal-link';
   link.textContent = displayText;
   link.setAttribute('data-href', linkTarget);
   link.setAttribute('href', linkTarget);
@@ -128,7 +128,7 @@ function repairEmptyInternalLink(app: App, link: HTMLAnchorElement): void {
   const linkPath = extractLinkPathFromTarget(linkTarget);
   if (!linkPath || !fileExistsInVault(app, linkPath)) return;
 
-  link.classList.add('codexidian-file-link');
+  link.classList.add('codexian-file-link');
   if (!link.dataset.href) {
     link.setAttribute('data-href', linkTarget);
   }
@@ -138,7 +138,7 @@ function repairEmptyInternalLink(app: App, link: HTMLAnchorElement): void {
 /**
  * Registers a delegated click handler for file links on a container.
  * Should be called once on the messages container.
- * Handles both our custom .codexidian-file-link and Obsidian's .internal-link.
+ * Handles both our custom .codexian-file-link and Obsidian's .internal-link.
  */
 export function registerFileLinkHandler(
   app: App,
@@ -148,7 +148,7 @@ export function registerFileLinkHandler(
   component.registerDomEvent(container, 'click', (event: MouseEvent) => {
     const target = event.target as HTMLElement;
     // Handle both our links and Obsidian's internal links
-    const link = target.closest('.codexidian-file-link, .internal-link') as HTMLAnchorElement;
+    const link = target.closest('.codexian-file-link, .internal-link') as HTMLAnchorElement;
 
     if (link) {
       event.preventDefault();
@@ -238,7 +238,7 @@ export function processFileLinks(app: App, container: HTMLElement): void {
           return NodeFilter.FILTER_REJECT;
         }
 
-        if (parent.closest('pre, code, a, .codexidian-file-link, .internal-link')) {
+        if (parent.closest('pre, code, a, .codexian-file-link, .internal-link')) {
           return NodeFilter.FILTER_REJECT;
         }
 

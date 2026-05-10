@@ -316,27 +316,27 @@ export class SlashCommandDropdown {
     this.dropdownEl.empty();
 
     if (this.filteredItems.length === 0) {
-      const emptyEl = this.dropdownEl.createDiv({ cls: 'codexidian-slash-empty' });
+      const emptyEl = this.dropdownEl.createDiv({ cls: 'codexian-slash-empty' });
       emptyEl.setText('No matching commands');
     } else {
       for (let i = 0; i < this.filteredItems.length; i++) {
         const item = this.filteredItems[i];
-        const itemEl = this.dropdownEl.createDiv({ cls: 'codexidian-slash-item' });
+        const itemEl = this.dropdownEl.createDiv({ cls: 'codexian-slash-item' });
 
         if (i === this.selectedIndex) {
           itemEl.addClass('selected');
         }
 
-        const nameEl = itemEl.createSpan({ cls: 'codexidian-slash-name' });
+        const nameEl = itemEl.createSpan({ cls: 'codexian-slash-name' });
         nameEl.setText(`${item.displayPrefix}${item.name}`);
 
         if (item.argumentHint) {
-          const hintEl = itemEl.createSpan({ cls: 'codexidian-slash-hint' });
+          const hintEl = itemEl.createSpan({ cls: 'codexian-slash-hint' });
           hintEl.setText(normalizeArgumentHint(item.argumentHint));
         }
 
         if (item.description) {
-          const descEl = itemEl.createDiv({ cls: 'codexidian-slash-desc' });
+          const descEl = itemEl.createDiv({ cls: 'codexian-slash-desc' });
           descEl.setText(item.description);
         }
 
@@ -362,10 +362,10 @@ export class SlashCommandDropdown {
   private createDropdownElement(): HTMLElement {
     if (this.isFixed) {
       return this.containerEl.createDiv({
-        cls: 'codexidian-slash-dropdown codexidian-slash-dropdown-fixed',
+        cls: 'codexian-slash-dropdown codexian-slash-dropdown-fixed',
       });
     } else {
-      return this.containerEl.createDiv({ cls: 'codexidian-slash-dropdown' });
+      return this.containerEl.createDiv({ cls: 'codexian-slash-dropdown' });
     }
   }
 
@@ -388,7 +388,7 @@ export class SlashCommandDropdown {
   }
 
   private updateSelection(): void {
-    const items = this.dropdownEl?.querySelectorAll('.codexidian-slash-item');
+    const items = this.dropdownEl?.querySelectorAll('.codexian-slash-item');
     items?.forEach((item, index) => {
       if (index === this.selectedIndex) {
         item.addClass('selected');

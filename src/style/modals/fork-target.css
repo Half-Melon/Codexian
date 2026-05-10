@@ -1,14 +1,14 @@
 /* Fork Target Modal */
-.codexidian-fork-target-modal {
+.codexian-fork-target-modal {
   max-width: 340px;
 }
 
-.codexidian-fork-target-list {
+.codexian-fork-target-list {
   display: flex;
   flex-direction: column;
 }
 
-.codexidian-fork-target-option {
+.codexian-fork-target-option {
   padding: 10px 12px;
   border-radius: 6px;
   cursor: pointer;
@@ -16,6 +16,6 @@
   font-size: 14px;
 }
 
-.codexidian-fork-target-option:hover {
+.codexian-fork-target-option:hover {
   background: var(--background-modifier-hover);
 }

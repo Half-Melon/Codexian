@@ -10,14 +10,14 @@ export {
   type SessionMetadata,
   type StreamChunk,
   type UsageInfo,
-  VIEW_TYPE_CODEXIDIAN,
+  VIEW_TYPE_CODEXIAN,
 } from './chat';
 export { type ProviderId } from './provider';
 
 // Settings and command types
 export {
   type ApprovalDecision,
-  type CodexidianSettings,
+  type CodexianSettings,
   type EnvironmentScope,
   type EnvSnippet,
   type HostnameCliPaths,

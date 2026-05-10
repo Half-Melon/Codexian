@@ -69,10 +69,10 @@ function createMockEventTarget() {
 
 function createMockContextRow() {
   const elements: Record<string, any> = {
-    '.codexidian-selection-indicator': { style: { display: 'none' } },
-    '.codexidian-canvas-indicator': { style: { display: 'none' } },
-    '.codexidian-file-indicator': null,
-    '.codexidian-image-preview': null,
+    '.codexian-selection-indicator': { style: { display: 'none' } },
+    '.codexian-canvas-indicator': { style: { display: 'none' } },
+    '.codexian-file-indicator': null,
+    '.codexian-image-preview': null,
   };
 
   return {
@@ -345,7 +345,7 @@ describe('SelectionController', () => {
 
       expect(showSelectionHighlight).not.toHaveBeenCalled();
       expect(mockHighlights.set).toHaveBeenCalledWith(
-        'codexidian-selection',
+        'codexian-selection',
         expect.any(Object),
       );
     });
@@ -369,7 +369,7 @@ describe('SelectionController', () => {
       controller.showHighlight();
 
       expect(mockHighlights.set).toHaveBeenCalledWith(
-        'codexidian-selection',
+        'codexian-selection',
         expect.any(Object),
       );
     });
@@ -460,7 +460,7 @@ describe('SelectionController', () => {
       );
       jest.advanceTimersByTime(250);
 
-      expect(mockHighlights.delete).toHaveBeenCalledWith('codexidian-selection');
+      expect(mockHighlights.delete).toHaveBeenCalledWith('codexian-selection');
     });
 
     it('skips CSS highlight for disconnected DOM ranges', () => {
@@ -515,7 +515,7 @@ describe('SelectionController', () => {
       controller.showHighlight();
 
       expect(mockHighlights.set).toHaveBeenCalledWith(
-        'codexidian-selection',
+        'codexian-selection',
         { ranges: [secondRange] },
       );
     });
@@ -587,7 +587,7 @@ describe('SelectionController', () => {
   it('keeps context row visible when canvas selection indicator is visible', () => {
     const canvasIndicator = { style: { display: 'block' } };
     contextRowEl.querySelector.mockImplementation((selector: string) => {
-      if (selector === '.codexidian-canvas-indicator') return canvasIndicator;
+      if (selector === '.codexian-canvas-indicator') return canvasIndicator;
       return null;
     });
 

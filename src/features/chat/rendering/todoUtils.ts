@@ -17,13 +17,13 @@ export function renderTodoItems(
   container.empty();
 
   for (const todo of todos) {
-    const item = container.createDiv({ cls: `codexidian-todo-item codexidian-todo-${todo.status}` });
+    const item = container.createDiv({ cls: `codexian-todo-item codexian-todo-${todo.status}` });
 
-    const icon = item.createSpan({ cls: 'codexidian-todo-status-icon' });
+    const icon = item.createSpan({ cls: 'codexian-todo-status-icon' });
     icon.setAttribute('aria-hidden', 'true');
     setIcon(icon, getTodoStatusIcon(todo.status));
 
-    const text = item.createSpan({ cls: 'codexidian-todo-text' });
+    const text = item.createSpan({ cls: 'codexian-todo-text' });
     text.setText(getTodoDisplayText(todo));
   }
 }

@@ -84,7 +84,7 @@ jobs:
       - name: Upload Obsidian plugin artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: codexidian-plugin
+          name: codexian-plugin
           path: |
             main.js
             manifest.json

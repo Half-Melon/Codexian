@@ -1227,9 +1227,9 @@ describe('StreamController - Text Content', () => {
       // Manually set up a rendered tool element with name + summary children
       // (the mock renderToolCall doesn't actually populate toolCallElements)
       const toolEl = createMockEl();
-      const nameChild = toolEl.createDiv({ cls: 'codexidian-tool-name' });
+      const nameChild = toolEl.createDiv({ cls: 'codexian-tool-name' });
       nameChild.setText('Read');
-      const summaryChild = toolEl.createDiv({ cls: 'codexidian-tool-summary' });
+      const summaryChild = toolEl.createDiv({ cls: 'codexian-tool-summary' });
       summaryChild.setText('test.md');
       deps.state.toolCallElements.set('read-1', toolEl);
 

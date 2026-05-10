@@ -1,12 +1,12 @@
 /* Code block wrapper - contains pre + button outside scroll area */
-.codexidian-code-wrapper {
+.codexian-code-wrapper {
   position: relative;
   margin: 8px 0;
 }
 
 /* Code blocks in chat messages */
-.codexidian-code-wrapper pre,
-.codexidian-message-content pre {
+.codexian-code-wrapper pre,
+.codexian-message-content pre {
   background: rgba(0, 0, 0, 0.2);
   padding: 8px 12px;
   border-radius: 6px;
@@ -15,30 +15,30 @@
 }
 
 /* Light mode: use a lighter background so hljs comment colors stay readable */
-body.theme-light .codexidian-code-wrapper pre,
-body.theme-light .codexidian-message-content pre {
+body.theme-light .codexian-code-wrapper pre,
+body.theme-light .codexian-message-content pre {
   background: rgba(0, 0, 0, 0.08);
 }
 
 /* Code blocks without language - wrap content */
-.codexidian-code-wrapper:not(.has-language) pre {
+.codexian-code-wrapper:not(.has-language) pre {
   white-space: pre-wrap;
   word-wrap: break-word;
   overflow-x: hidden;
 }
 
 /* Unwrapped pre still needs margin */
-.codexidian-message-content>pre {
+.codexian-message-content>pre {
   margin: 8px 0;
 }
 
-.codexidian-message-content code {
+.codexian-message-content code {
   font-family: var(--font-monospace);
   font-size: 13px;
 }
 
 /* Clickable language label - positioned outside scroll area */
-.codexidian-code-wrapper .codexidian-code-lang-label {
+.codexian-code-wrapper .codexian-code-lang-label {
   position: absolute;
   top: 6px;
   inset-inline-end: 6px;
@@ -53,18 +53,18 @@ body.theme-light .codexidian-message-content pre {
   transition: color 0.15s ease, background 0.15s ease;
 }
 
-.codexidian-code-wrapper .codexidian-code-lang-label:hover {
+.codexian-code-wrapper .codexian-code-lang-label:hover {
   color: var(--text-normal);
   background: var(--background-modifier-hover);
 }
 
 /* Hide default copy button when language label exists */
-.codexidian-code-wrapper.has-language .copy-code-button {
+.codexian-code-wrapper.has-language .copy-code-button {
   display: none;
 }
 
 /* Copy button - positioned outside scroll area */
-.codexidian-code-wrapper .copy-code-button {
+.codexian-code-wrapper .copy-code-button {
   position: absolute;
   top: 6px;
   inset-inline-end: 6px;
@@ -81,17 +81,17 @@ body.theme-light .codexidian-message-content pre {
 }
 
 /* If copy button uses an icon (svg) */
-.codexidian-code-wrapper .copy-code-button svg {
+.codexian-code-wrapper .copy-code-button svg {
   width: 14px;
   height: 14px;
 }
 
 /* Show copy button on hover */
-.codexidian-code-wrapper:not(.has-language):hover .copy-code-button {
+.codexian-code-wrapper:not(.has-language):hover .copy-code-button {
   opacity: 1;
 }
 
-.codexidian-code-wrapper .copy-code-button:hover {
+.codexian-code-wrapper .copy-code-button:hover {
   background: var(--background-modifier-hover);
   color: var(--text-normal);
 }

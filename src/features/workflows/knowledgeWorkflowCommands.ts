@@ -205,7 +205,7 @@ export function getKnowledgeWorkflowDefinition(kind: KnowledgeWorkflowKind): Kno
 
 export function getKnowledgeWorkflowCommandEntries(): ProviderCommandEntry[] {
   return getKnowledgeWorkflowDefinitions().map((workflow) => ({
-    id: `codexidian-${workflow.commandId}`,
+    id: `codexian-${workflow.commandId}`,
     providerId: 'codex',
     kind: 'command',
     name: workflow.dropdownName,
@@ -275,20 +275,20 @@ export function registerKnowledgeWorkflowRibbonIcons(host: KnowledgeWorkflowRibb
   for (const workflow of getKnowledgeWorkflowDefinitions()) {
     host.addRibbonIcon(
       workflow.ribbonIcon,
-      `Codexidian: ${workflow.commandName}`,
+      `Codexian: ${workflow.commandName}`,
       () => host.runKnowledgeWorkflow(workflow.kind),
     );
   }
 
   host.addRibbonIcon(
     'list-checks',
-    `Codexidian: ${t('knowledgeWorkflow.commands.openStatus.name')}`,
+    `Codexian: ${t('knowledgeWorkflow.commands.openStatus.name')}`,
     () => host.openKnowledgeWorkflowStatus(),
   );
 
   host.addRibbonIcon(
     'map',
-    `Codexidian: ${t('knowledgeWorkflow.commands.openMap.name')}`,
+    `Codexian: ${t('knowledgeWorkflow.commands.openMap.name')}`,
     () => host.openKnowledgeWorkflowMap(),
   );
 }

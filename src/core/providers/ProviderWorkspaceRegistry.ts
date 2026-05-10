@@ -1,4 +1,4 @@
-import type CodexidianPlugin from '../../main';
+import type CodexianPlugin from '../../main';
 import { HomeFileAdapter } from '../storage/HomeFileAdapter';
 import type { ProviderCommandCatalog } from './commands/ProviderCommandCatalog';
 import type {
@@ -37,7 +37,7 @@ export class ProviderWorkspaceRegistry {
     return registration;
   }
 
-  static async initializeAll(plugin: CodexidianPlugin): Promise<void> {
+  static async initializeAll(plugin: CodexianPlugin): Promise<void> {
     const providerIds = Object.keys(this.registrations) as ProviderId[];
     const storage = plugin.storage;
     const vaultAdapter = storage.getAdapter();

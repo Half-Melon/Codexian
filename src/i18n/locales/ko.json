@@ -65,7 +65,7 @@
     }
   },
   "settings": {
-    "title": "Codexidian 설정",
+    "title": "Codexian settings",
     "tabs": {
       "general": "일반",
       "codex": "Codex"
@@ -78,7 +78,7 @@
     "models": "모델",
     "experimental": "실험적 기능",
     "userName": {
-      "name": "Codexidian이 당신을 어떻게 불러야 합니까?",
+      "name": "What should Codexian call you?",
       "desc": "개인화된 인사에 사용할 이름 (비워두면 일반 인사)"
     },
     "excludedTags": {
@@ -157,7 +157,7 @@
     },
     "plugins": {
       "name": "Codex Plugins",
-      "desc": "Codexidian is Codex-only and does not manage third-party provider plugins."
+      "desc": "Codexian is Codex-only and does not manage third-party provider plugins."
     },
     "subagents": {
       "name": "서브에이전트",
@@ -200,7 +200,7 @@
     "safety": "보안",
     "loadUserSettings": {
       "name": "Load user Codex settings",
-      "desc": "Codex reads its own CLI configuration. Codexidian keeps provider settings under this vault."
+      "desc": "Codex reads its own CLI configuration. Codexian keeps provider settings under this vault."
     },
     "codexSafeMode": {
       "name": "Safe mode",
@@ -242,7 +242,7 @@
     },
     "enableChrome": {
       "name": "Browser integration",
-      "desc": "Browser integration is provider-specific. Codexidian does not manage a separate Chrome extension here."
+      "desc": "Browser integration is provider-specific. Codexian does not manage a separate Chrome extension here."
     },
     "enableBangBash": {
       "name": "bash 모드 (!) 활성화",
@@ -271,7 +271,7 @@
       "desc": "응답이 스트리밍되는 동안 원본 LaTeX를 표시하고 각 텍스트 블록이 완료되면 수식을 한 번 렌더링합니다."
     },
     "chatViewPlacement": {
-      "name": "Codexidian 열 위치",
+      "name": "Open Codexian in",
       "desc": "채팅 패널이 생성될 때 열릴 위치를 선택합니다",
       "rightSidebar": "오른쪽 사이드바",
       "leftSidebar": "왼쪽 사이드바",
@@ -320,9 +320,9 @@
     }
   },
   "knowledgeWorkflow": {
-    "notReady": "Codexidian is not ready yet. Open the chat panel and try again.",
+    "notReady": "Codexian is not ready yet. Open the chat panel and try again.",
     "status": {
-      "title": "Codexidian knowledge-base status",
+      "title": "Codexian knowledge-base status",
       "pendingNewSources": "Pending new/ sources",
       "latestArchiveLog": "Latest archive log",
       "latestHealthCheck": "Latest health check",
@@ -331,9 +331,9 @@
       "moreFiles": "{count} more file(s)"
     },
     "initialized": {
-      "ready": "Codexidian knowledge-base workflow is ready. No new files were needed.",
-      "created": "Codexidian knowledge-base workflow initialized: created {folders} folder(s) and {files} file(s).",
-      "failed": "Failed to initialize Codexidian knowledge-base workflow: {message}"
+      "ready": "Codexian knowledge-base workflow is ready. No new files were needed.",
+      "created": "Codexian knowledge-base workflow initialized: created {folders} folder(s) and {files} file(s).",
+      "failed": "Failed to initialize Codexian knowledge-base workflow: {message}"
     },
     "commands": {
       "initialize": {

@@ -1,9 +1,9 @@
 {
-  "id": "codexidian",
-  "name": "Codexidian",
+  "id": "codexian",
+  "name": "Codexian",
   "version": "1.0.0",
   "minAppVersion": "1.4.5",
-  "description": "Embeds Codex in Obsidian for vault-aware chat, inline editing, file mentions, commands, and structured knowledge-base workflows.",
+  "description": "Use Codex for vault-aware chat, inline editing, file mentions, commands, and structured knowledge-base workflows.",
   "author": "HalfMelon",
   "authorUrl": "https://github.com/Half-Melon",
   "isDesktopOnly": true

@@ -1,9 +1,9 @@
 /* Context Limits Styles */
-.codexidian-context-limits-container {
+.codexian-context-limits-container {
   margin-top: 16px;
 }
 
-.codexidian-context-limits-header {
+.codexian-context-limits-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -12,27 +12,27 @@
   padding: 0 12px;
 }
 
-.codexidian-context-limits-label {
+.codexian-context-limits-label {
   font-size: var(--font-ui-small);
   color: var(--text-muted);
   font-weight: var(--font-medium);
 }
 
-.codexidian-context-limits-desc {
+.codexian-context-limits-desc {
   font-size: var(--font-ui-smaller);
   color: var(--text-muted);
   padding: 0 12px;
   margin-bottom: 8px;
 }
 
-.codexidian-context-limits-list {
+.codexian-context-limits-list {
   display: flex;
   flex-direction: column;
   gap: 8px;
   margin-top: 8px;
 }
 
-.codexidian-context-limits-item {
+.codexian-context-limits-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -42,11 +42,11 @@
   transition: background-color 0.2s;
 }
 
-.codexidian-context-limits-item:hover {
+.codexian-context-limits-item:hover {
   background: var(--background-modifier-hover);
 }
 
-.codexidian-context-limits-model {
+.codexian-context-limits-model {
   font-family: var(--font-monospace);
   font-size: var(--font-ui-small);
   color: var(--text-normal);
@@ -55,7 +55,7 @@
   word-break: break-all;
 }
 
-.codexidian-context-limits-input-wrapper {
+.codexian-context-limits-input-wrapper {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
@@ -63,7 +63,7 @@
   flex-shrink: 0;
 }
 
-.codexidian-context-limits-input {
+.codexian-context-limits-input {
   width: 80px;
   padding: 4px 8px;
   font-size: var(--font-ui-small);
@@ -73,16 +73,16 @@
   color: var(--text-normal);
 }
 
-.codexidian-context-limits-input:focus {
+.codexian-context-limits-input:focus {
   border-color: var(--interactive-accent);
   outline: none;
 }
 
-.codexidian-context-limits-input.codexidian-input-error {
+.codexian-context-limits-input.codexian-input-error {
   border-color: var(--text-error);
 }
 
-.codexidian-context-limit-validation {
+.codexian-context-limit-validation {
   display: none;
   font-size: var(--font-ui-smaller);
   color: var(--text-error);
@@ -90,11 +90,11 @@
 }
 
 /* Environment Snippets Styles */
-.codexidian-env-snippets-container {
+.codexian-env-snippets-container {
   margin-top: 16px;
 }
 
-.codexidian-snippet-header {
+.codexian-snippet-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -103,13 +103,13 @@
   padding: 0 12px;
 }
 
-.codexidian-snippet-label {
+.codexian-snippet-label {
   font-size: var(--font-ui-small);
   color: var(--text-muted);
   font-weight: var(--font-medium);
 }
 
-.codexidian-save-env-btn {
+.codexian-save-env-btn {
   padding: 6px 16px;
   font-size: 13px;
   background: var(--interactive-accent);
@@ -120,11 +120,11 @@
   transition: opacity 0.2s;
 }
 
-.codexidian-save-env-btn:hover {
+.codexian-save-env-btn:hover {
   opacity: 0.9;
 }
 
-.codexidian-snippet-empty {
+.codexian-snippet-empty {
   padding: 20px;
   text-align: center;
   color: var(--text-muted);
@@ -133,14 +133,14 @@
   margin-top: 8px;
 }
 
-.codexidian-snippet-list {
+.codexian-snippet-list {
   display: flex;
   flex-direction: column;
   gap: 8px;
   margin-top: 8px;
 }
 
-.codexidian-snippet-item {
+.codexian-snippet-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -150,34 +150,34 @@
   transition: background-color 0.2s;
 }
 
-.codexidian-snippet-item:hover {
+.codexian-snippet-item:hover {
   background: var(--background-modifier-hover);
 }
 
-.codexidian-snippet-info {
+.codexian-snippet-info {
   flex: 1;
   min-width: 0;
 }
 
-.codexidian-snippet-name {
+.codexian-snippet-name {
   font-weight: 600;
   margin-bottom: 4px;
   word-break: break-word;
 }
 
-.codexidian-snippet-description {
+.codexian-snippet-description {
   font-size: 13px;
   color: var(--text-muted);
 }
 
-.codexidian-snippet-actions {
+.codexian-snippet-actions {
   display: flex;
   gap: 4px;
   margin-left: 16px;
   flex-shrink: 0;
 }
 
-.codexidian-restore-snippet-btn {
+.codexian-restore-snippet-btn {
   padding: 4px 12px;
   font-size: 12px;
   background: var(--interactive-accent);
@@ -187,11 +187,11 @@
   cursor: pointer;
 }
 
-.codexidian-restore-snippet-btn:hover {
+.codexian-restore-snippet-btn:hover {
   opacity: 0.9;
 }
 
-.codexidian-edit-snippet-btn {
+.codexian-edit-snippet-btn {
   padding: 4px 12px;
   font-size: 12px;
   background: var(--background-modifier-border);
@@ -201,11 +201,11 @@
   cursor: pointer;
 }
 
-.codexidian-edit-snippet-btn:hover {
+.codexian-edit-snippet-btn:hover {
   background: var(--background-modifier-border-hover);
 }
 
-.codexidian-delete-snippet-btn {
+.codexian-delete-snippet-btn {
   padding: 4px 12px;
   font-size: 12px;
   background: var(--background-modifier-error);
@@ -215,46 +215,46 @@
   cursor: pointer;
 }
 
-.codexidian-delete-snippet-btn:hover {
+.codexian-delete-snippet-btn:hover {
   opacity: 0.9;
 }
 
 /* Env Snippet Modal */
-.codexidian-env-snippet-modal .modal-content {
+.codexian-env-snippet-modal .modal-content {
   max-width: 550px;
   width: 550px;
   padding: 16px;
 }
 
-.codexidian-env-snippet-modal h2 {
+.codexian-env-snippet-modal h2 {
   margin: 0 0 16px 0;
 }
 
-.codexidian-env-snippet-modal .setting-item {
+.codexian-env-snippet-modal .setting-item {
   padding: 8px 0;
   margin: 0;
 }
 
-.codexidian-env-snippet-modal .setting-item-info {
+.codexian-env-snippet-modal .setting-item-info {
   margin-bottom: 4px;
 }
 
 /* Full-width env vars textarea setting */
-.codexidian-env-snippet-setting {
+.codexian-env-snippet-setting {
   flex-direction: column;
   align-items: flex-start;
 }
 
-.codexidian-env-snippet-setting .setting-item-info {
+.codexian-env-snippet-setting .setting-item-info {
   width: 100%;
   margin-bottom: 8px;
 }
 
-.codexidian-env-snippet-control {
+.codexian-env-snippet-control {
   width: 100%;
 }
 
-.codexidian-env-snippet-control textarea {
+.codexian-env-snippet-control textarea {
   width: 100%;
   min-width: 100%;
   font-family: var(--font-monospace);
@@ -262,14 +262,14 @@
   resize: vertical;
 }
 
-.codexidian-snippet-preview {
+.codexian-snippet-preview {
   margin: 8px 0;
   padding: 6px;
   background: var(--background-secondary);
   border-radius: 6px;
 }
 
-.codexidian-env-preview {
+.codexian-env-preview {
   background: var(--background-primary);
   padding: 6px;
   border-radius: 4px;
@@ -284,15 +284,15 @@
   margin: 0;
 }
 
-.codexidian-snippet-buttons {
+.codexian-snippet-buttons {
   display: flex;
   gap: 8px;
   margin-top: 16px;
   justify-content: flex-end;
 }
 
-.codexidian-cancel-btn,
-.codexidian-save-btn {
+.codexian-cancel-btn,
+.codexian-save-btn {
   padding: 6px 16px;
   font-size: 13px;
   border: none;
@@ -300,49 +300,49 @@
   cursor: pointer;
 }
 
-.codexidian-cancel-btn {
+.codexian-cancel-btn {
   background: var(--background-modifier-border);
   color: var(--text-normal);
 }
 
-.codexidian-cancel-btn:hover {
+.codexian-cancel-btn:hover {
   background: var(--background-modifier-border-hover);
 }
 
-.codexidian-save-btn {
+.codexian-save-btn {
   background: var(--interactive-accent);
   color: var(--text-on-accent);
 }
 
-.codexidian-save-btn:hover {
+.codexian-save-btn:hover {
   opacity: 0.9;
 }
 
 /* Context limits section in snippet modal */
-.codexidian-snippet-context-limits {
+.codexian-snippet-context-limits {
   margin-top: 1em;
 }
 
-.codexidian-snippet-context-limits .setting-item-description {
+.codexian-snippet-context-limits .setting-item-description {
   margin-bottom: 0.5em;
 }
 
-.codexidian-snippet-limit-row {
+.codexian-snippet-limit-row {
   display: flex;
   align-items: center;
   gap: 0.5em;
   margin-bottom: 0.25em;
 }
 
-.codexidian-snippet-limit-model {
+.codexian-snippet-limit-model {
   font-family: var(--font-monospace);
   font-size: var(--font-ui-small);
 }
 
-.codexidian-snippet-limit-spacer {
+.codexian-snippet-limit-spacer {
   flex: 1;
 }
 
-.codexidian-snippet-limit-input {
+.codexian-snippet-limit-input {
   width: 80px;
 }

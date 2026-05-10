@@ -43,7 +43,7 @@ export default defineConfig([
   },
   {
     files: [
-      'src/CodexidianService.ts',
+      'src/CodexianService.ts',
       'src/InlineEditService.ts',
       'src/InstructionRefineService.ts',
       'src/images/**/*.ts',
@@ -62,7 +62,7 @@ export default defineConfig([
               message: 'Service and shared modules must not import UI modules.',
             },
             {
-              group: ['./CodexidianView', '../CodexidianView'],
+              group: ['./CodexianView', '../CodexianView'],
               message: 'Service and shared modules must not import the view.',
             },
           ],

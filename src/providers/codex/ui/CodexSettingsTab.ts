@@ -59,7 +59,7 @@ export const codexSettingsTabRenderer: ProviderSettingsTabRenderer = {
     if (isWindowsHost) {
       new Setting(container)
         .setName('Installation method')
-        .setDesc('How Codexidian should launch Codex on Windows. Native Windows uses a Windows executable path. WSL launches the Linux CLI inside a selected distro.')
+        .setDesc('How Codexian should launch Codex on Windows. Native Windows uses a Windows executable path. WSL launches the Linux CLI inside a selected distro.')
         .addDropdown((dropdown) => {
           dropdown
             .addOption('native-windows', 'Native Windows')
@@ -101,7 +101,7 @@ export const codexSettingsTabRenderer: ProviderSettingsTabRenderer = {
       .setName(`Codex CLI path (${hostnameKey})`)
       .setDesc(getCliPathCopy().desc);
 
-    const validationEl = container.createDiv({ cls: 'codexidian-cli-path-validation' });
+    const validationEl = container.createDiv({ cls: 'codexian-cli-path-validation' });
     validationEl.style.color = 'var(--text-error)';
     validationEl.style.fontSize = '0.85em';
     validationEl.style.marginTop = '-0.5em';
@@ -200,7 +200,7 @@ export const codexSettingsTabRenderer: ProviderSettingsTabRenderer = {
         .onChange(async (value) => {
           await persistCliPath(value);
         });
-      text.inputEl.addClass('codexidian-settings-cli-path-input');
+      text.inputEl.addClass('codexian-settings-cli-path-input');
       text.inputEl.style.width = '100%';
       cliPathInputEl = text.inputEl;
 
@@ -222,7 +222,7 @@ export const codexSettingsTabRenderer: ProviderSettingsTabRenderer = {
             await context.plugin.saveSettings();
           });
 
-        text.inputEl.addClass('codexidian-settings-cli-path-input');
+        text.inputEl.addClass('codexian-settings-cli-path-input');
         text.inputEl.style.width = '100%';
         text.inputEl.disabled = installationMethod !== 'wsl';
         wslDistroInputEl = text.inputEl;
@@ -376,13 +376,13 @@ export const codexSettingsTabRenderer: ProviderSettingsTabRenderer = {
     if (codexCatalog) {
       new Setting(container).setName('Codex Skills').setHeading();
 
-      const skillsDesc = container.createDiv({ cls: 'codexidian-sp-settings-desc' });
+      const skillsDesc = container.createDiv({ cls: 'codexian-sp-settings-desc' });
       skillsDesc.createEl('p', {
         cls: 'setting-item-description',
         text: 'Manage vault-level Codex skills stored in .codex/skills/ or .agents/skills/. Home-level skills are excluded here.',
       });
 
-      const skillsContainer = container.createDiv({ cls: 'codexidian-slash-commands-container' });
+      const skillsContainer = container.createDiv({ cls: 'codexian-slash-commands-container' });
       new CodexSkillSettings(skillsContainer, codexCatalog, context.plugin.app);
     }
 
@@ -396,13 +396,13 @@ export const codexSettingsTabRenderer: ProviderSettingsTabRenderer = {
 
     new Setting(container).setName('Codex Subagents').setHeading();
 
-    const subagentDesc = container.createDiv({ cls: 'codexidian-sp-settings-desc' });
+    const subagentDesc = container.createDiv({ cls: 'codexian-sp-settings-desc' });
     subagentDesc.createEl('p', {
       cls: 'setting-item-description',
       text: 'Manage vault-level Codex subagents stored in .codex/agents/. Each TOML file defines one custom agent.',
     });
 
-    const subagentContainer = container.createDiv({ cls: 'codexidian-slash-commands-container' });
+    const subagentContainer = container.createDiv({ cls: 'codexian-slash-commands-container' });
     new CodexSubagentSettings(subagentContainer, codexWorkspace.subagentStorage, context.plugin.app, () => {
       void codexWorkspace.refreshAgentMentions?.();
     });
@@ -410,11 +410,11 @@ export const codexSettingsTabRenderer: ProviderSettingsTabRenderer = {
     // --- MCP Servers ---
 
     new Setting(container).setName(t('settings.mcpServers.name')).setHeading();
-    const mcpNotice = container.createDiv({ cls: 'codexidian-mcp-settings-desc' });
+    const mcpNotice = container.createDiv({ cls: 'codexian-mcp-settings-desc' });
     const mcpDesc = mcpNotice.createEl('p', { cls: 'setting-item-description' });
     mcpDesc.appendText('Codex manages MCP servers via its own CLI. Configure with ');
     mcpDesc.createEl('code', { text: 'codex mcp' });
-    mcpDesc.appendText(' and they will be available in Codexidian. ');
+    mcpDesc.appendText(' and they will be available in Codexian. ');
     mcpDesc.createEl('a', {
       text: 'Learn more',
       href: 'https://developers.openai.com/codex/mcp',

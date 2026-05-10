@@ -42,7 +42,7 @@ export class NavigationController {
 
     // Make messages panel focusable (focus style handled in CSS)
     messagesEl.setAttribute('tabindex', '0');
-    messagesEl.addClass('codexidian-messages-focusable');
+    messagesEl.addClass('codexian-messages-focusable');
 
     // Attach event listeners
     messagesEl.addEventListener('keydown', this.boundMessagesKeydown);
@@ -67,7 +67,7 @@ export class NavigationController {
     // Element cleanup - may already be destroyed during view teardown
     const messagesEl = this.deps.getMessagesEl();
     messagesEl?.removeEventListener('keydown', this.boundMessagesKeydown);
-    messagesEl?.removeClass('codexidian-messages-focusable');
+    messagesEl?.removeClass('codexian-messages-focusable');
 
     const inputEl = this.deps.getInputEl();
     inputEl?.removeEventListener('keydown', this.boundInputKeydown, { capture: true });

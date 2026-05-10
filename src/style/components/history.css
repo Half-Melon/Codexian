@@ -1,9 +1,9 @@
-.codexidian-history-container {
+.codexian-history-container {
   position: static;
 }
 
 /* History dropup menu (opens upward since it's at bottom of view) */
-.codexidian-history-menu {
+.codexian-history-menu {
   display: none;
   position: absolute;
   bottom: 100%;
@@ -21,12 +21,12 @@
   inset-inline-end: 0;
 }
 
-.codexidian-history-menu.visible {
+.codexian-history-menu.visible {
   display: block;
 }
 
 /* Header mode: dropdown instead of dropup */
-.codexidian-container--header-mode .codexidian-history-menu {
+.codexian-container--header-mode .codexian-history-menu {
   bottom: auto;
   top: 100%;
   margin-bottom: 0;
@@ -34,7 +34,7 @@
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
 }
 
-.codexidian-history-header {
+.codexian-history-header {
   padding: 8px 12px;
   font-size: 12px;
   font-weight: 600;
@@ -44,19 +44,19 @@
   border-bottom: 1px solid var(--background-modifier-border);
 }
 
-.codexidian-history-list {
+.codexian-history-list {
   max-height: 350px;
   overflow-y: auto;
 }
 
-.codexidian-history-empty {
+.codexian-history-empty {
   padding: 16px;
   text-align: center;
   color: var(--text-muted);
   font-size: 13px;
 }
 
-.codexidian-history-item {
+.codexian-history-item {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -65,51 +65,51 @@
   transition: background 0.15s ease;
 }
 
-.codexidian-history-item-icon {
+.codexian-history-item-icon {
   display: flex;
   align-items: center;
   color: var(--text-muted);
   flex-shrink: 0;
 }
 
-.codexidian-history-item-icon svg {
+.codexian-history-item-icon svg {
   width: 16px;
   height: 16px;
 }
 
-.codexidian-history-item:last-child {
+.codexian-history-item:last-child {
   border-bottom: none;
 }
 
-.codexidian-history-item:hover {
+.codexian-history-item:hover {
   background: var(--background-modifier-hover);
 }
 
-.codexidian-history-item.active {
+.codexian-history-item.active {
   background: var(--background-secondary);
   border-inline-start: 2px solid var(--interactive-accent);
   padding-inline-start: 10px;
 }
 
-.codexidian-history-item.active .codexidian-history-item-icon {
+.codexian-history-item.active .codexian-history-item-icon {
   color: var(--interactive-accent);
 }
 
-.codexidian-history-item.active .codexidian-history-item-content {
+.codexian-history-item.active .codexian-history-item-content {
   cursor: default;
 }
 
-.codexidian-history-item.active .codexidian-history-item-date {
+.codexian-history-item.active .codexian-history-item-date {
   color: var(--text-faint);
 }
 
-.codexidian-history-item-content {
+.codexian-history-item-content {
   flex: 1;
   min-width: 0;
   cursor: pointer;
 }
 
-.codexidian-history-item-title {
+.codexian-history-item-title {
   font-size: 13px;
   font-weight: 500;
   color: var(--text-normal);
@@ -118,13 +118,13 @@
   text-overflow: ellipsis;
 }
 
-.codexidian-history-item-date {
+.codexian-history-item-date {
   font-size: 11px;
   color: var(--text-faint);
   margin-top: 2px;
 }
 
-.codexidian-history-item-actions {
+.codexian-history-item-actions {
   display: flex;
   gap: 4px;
   margin-inline-start: 8px;
@@ -132,11 +132,11 @@
   transition: opacity 0.15s ease;
 }
 
-.codexidian-history-item:hover .codexidian-history-item-actions {
+.codexian-history-item:hover .codexian-history-item-actions {
   opacity: 1;
 }
 
-.codexidian-action-btn {
+.codexian-action-btn {
   background: transparent;
   border: none;
   cursor: pointer;
@@ -146,21 +146,21 @@
   transition: background 0.15s ease, color 0.15s ease;
 }
 
-.codexidian-action-btn:hover {
+.codexian-action-btn:hover {
   background: var(--background-modifier-hover);
   color: var(--text-normal);
 }
 
-.codexidian-action-btn svg {
+.codexian-action-btn svg {
   width: 14px;
   height: 14px;
 }
 
-.codexidian-delete-btn:hover {
+.codexian-delete-btn:hover {
   color: var(--color-red);
 }
 
-.codexidian-rename-input {
+.codexian-rename-input {
   width: 100%;
   padding: 2px 4px;
   font-size: 13px;
@@ -171,13 +171,13 @@
   color: var(--text-normal);
 }
 
-.codexidian-rename-input:focus {
+.codexian-rename-input:focus {
   outline: none;
   box-shadow: 0 0 0 2px var(--interactive-accent-hover);
 }
 
 /* Loading indicator for title generation */
-.codexidian-action-loading {
+.codexian-action-loading {
   display: flex;
   align-items: center;
   justify-content: center;

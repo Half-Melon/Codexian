@@ -63,9 +63,9 @@ export const TEXTAREA_MIN_MAX_HEIGHT = 150;
 export const TEXTAREA_MAX_HEIGHT_PERCENT = 0.55;
 
 /**
- * Minimal interface for the CodexidianView methods used by TabManager and Tab.
+ * Minimal interface for the CodexianView methods used by TabManager and Tab.
  * Extends Component for Obsidian integration (event handling, cleanup).
- * Avoids circular dependency by not importing CodexidianView directly.
+ * Avoids circular dependency by not importing CodexianView directly.
  */
 export interface TabManagerViewHost extends Component {
   /** Reference to the workspace leaf for revealing the view. */

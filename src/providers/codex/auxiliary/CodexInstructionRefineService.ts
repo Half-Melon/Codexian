@@ -1,9 +1,9 @@
 import { QueryBackedInstructionRefineService } from '../../../core/auxiliary/QueryBackedInstructionRefineService';
-import type CodexidianPlugin from '../../../main';
+import type CodexianPlugin from '../../../main';
 import { CodexAuxQueryRunner } from '../runtime/CodexAuxQueryRunner';
 
 export class CodexInstructionRefineService extends QueryBackedInstructionRefineService {
-  constructor(plugin: CodexidianPlugin) {
+  constructor(plugin: CodexianPlugin) {
     super(new CodexAuxQueryRunner(plugin));
   }
 }

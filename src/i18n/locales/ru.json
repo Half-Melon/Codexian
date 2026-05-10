@@ -65,7 +65,7 @@
     }
   },
   "settings": {
-    "title": "Настройки Codexidian",
+    "title": "Codexian settings",
     "tabs": {
       "general": "Общие",
       "codex": "Codex"
@@ -78,7 +78,7 @@
     "models": "Модели",
     "experimental": "Экспериментальное",
     "userName": {
-      "name": "Как Codexidian должен обращаться к вам?",
+      "name": "What should Codexian call you?",
       "desc": "Ваше имя для персонализированных приветствий (оставьте пустым для общих приветствий)"
     },
     "excludedTags": {
@@ -157,7 +157,7 @@
     },
     "plugins": {
       "name": "Codex Plugins",
-      "desc": "Codexidian is Codex-only and does not manage third-party provider plugins."
+      "desc": "Codexian is Codex-only and does not manage third-party provider plugins."
     },
     "subagents": {
       "name": "Субагенты",
@@ -200,7 +200,7 @@
     "safety": "Безопасность",
     "loadUserSettings": {
       "name": "Load user Codex settings",
-      "desc": "Codex reads its own CLI configuration. Codexidian keeps provider settings under this vault."
+      "desc": "Codex reads its own CLI configuration. Codexian keeps provider settings under this vault."
     },
     "codexSafeMode": {
       "name": "Safe mode",
@@ -242,7 +242,7 @@
     },
     "enableChrome": {
       "name": "Browser integration",
-      "desc": "Browser integration is provider-specific. Codexidian does not manage a separate Chrome extension here."
+      "desc": "Browser integration is provider-specific. Codexian does not manage a separate Chrome extension here."
     },
     "enableBangBash": {
       "name": "Включить режим bash (!)",
@@ -271,7 +271,7 @@
       "desc": "Показывать исходный LaTeX во время потоковой передачи и рендерить формулы один раз после завершения каждого текстового блока."
     },
     "chatViewPlacement": {
-      "name": "Открывать Codexidian в",
+      "name": "Open Codexian in",
       "desc": "Выберите, где открывается панель чата при создании",
       "rightSidebar": "Правая боковая панель",
       "leftSidebar": "Левая боковая панель",
@@ -320,9 +320,9 @@
     }
   },
   "knowledgeWorkflow": {
-    "notReady": "Codexidian is not ready yet. Open the chat panel and try again.",
+    "notReady": "Codexian is not ready yet. Open the chat panel and try again.",
     "status": {
-      "title": "Codexidian knowledge-base status",
+      "title": "Codexian knowledge-base status",
       "pendingNewSources": "Pending new/ sources",
       "latestArchiveLog": "Latest archive log",
       "latestHealthCheck": "Latest health check",
@@ -331,9 +331,9 @@
       "moreFiles": "{count} more file(s)"
     },
     "initialized": {
-      "ready": "Codexidian knowledge-base workflow is ready. No new files were needed.",
-      "created": "Codexidian knowledge-base workflow initialized: created {folders} folder(s) and {files} file(s).",
-      "failed": "Failed to initialize Codexidian knowledge-base workflow: {message}"
+      "ready": "Codexian knowledge-base workflow is ready. No new files were needed.",
+      "created": "Codexian knowledge-base workflow initialized: created {folders} folder(s) and {files} file(s).",
+      "failed": "Failed to initialize Codexian knowledge-base workflow: {message}"
     },
     "commands": {
       "initialize": {

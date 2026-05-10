@@ -1,19 +1,19 @@
 /* Write/Edit Diff Block - Subagent style */
-.codexidian-write-edit-block {
+.codexian-write-edit-block {
   margin: 4px 0;
   background: transparent;
   overflow: hidden;
 }
 
-.codexidian-text-block+.codexidian-write-edit-block {
+.codexian-text-block+.codexian-write-edit-block {
   margin-top: 8px;
 }
 
-.codexidian-write-edit-block+.codexidian-text-block {
+.codexian-write-edit-block+.codexian-text-block {
   margin-top: 8px;
 }
 
-.codexidian-write-edit-header {
+.codexian-write-edit-header {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -24,20 +24,20 @@
   overflow: hidden;
 }
 
-.codexidian-write-edit-icon {
+.codexian-write-edit-icon {
   width: 16px;
   height: 16px;
   color: var(--text-accent);
   flex-shrink: 0;
 }
 
-.codexidian-write-edit-icon svg {
+.codexian-write-edit-icon svg {
   width: 16px;
   height: 16px;
 }
 
 /* Two-part header: name (fixed) + summary (flexible) */
-.codexidian-write-edit-name {
+.codexian-write-edit-name {
   font-family: var(--font-monospace);
   font-size: 13px;
   font-weight: 400;
@@ -46,7 +46,7 @@
   flex-shrink: 0;
 }
 
-.codexidian-write-edit-summary {
+.codexian-write-edit-summary {
   font-family: var(--font-monospace);
   font-size: 13px;
   color: var(--text-muted);
@@ -57,57 +57,57 @@
   min-width: 0;
 }
 
-.codexidian-write-edit-stats {
+.codexian-write-edit-stats {
   font-family: var(--font-monospace);
   font-size: 11px;
   flex-shrink: 0;
 }
 
-.codexidian-write-edit-stats .added {
+.codexian-write-edit-stats .added {
   color: var(--color-green);
 }
 
-.codexidian-write-edit-stats .removed {
+.codexian-write-edit-stats .removed {
   color: var(--color-red);
   margin-left: 4px;
 }
 
-.codexidian-write-edit-status {
+.codexian-write-edit-status {
   width: 16px;
   height: 16px;
   flex-shrink: 0;
 }
 
 /* Hide empty status on successful completion so stats align to right edge */
-.codexidian-write-edit-block.done .codexidian-write-edit-status:empty {
+.codexian-write-edit-block.done .codexian-write-edit-status:empty {
   display: none;
 }
 
-.codexidian-write-edit-status svg {
+.codexian-write-edit-status svg {
   width: 16px;
   height: 16px;
 }
 
-.codexidian-write-edit-status.status-completed {
+.codexian-write-edit-status.status-completed {
   color: var(--color-green);
 }
 
-.codexidian-write-edit-status.status-error,
-.codexidian-write-edit-status.status-blocked {
+.codexian-write-edit-status.status-error,
+.codexian-write-edit-status.status-blocked {
   color: var(--color-red);
 }
 
-.codexidian-write-edit-content {
+.codexian-write-edit-content {
   padding: 0;
   background: transparent;
   overflow: hidden;
 }
 
-.codexidian-write-edit-diff-row {
+.codexian-write-edit-diff-row {
   display: flex;
 }
 
-.codexidian-write-edit-diff {
+.codexian-write-edit-diff {
   flex: 1;
   font-family: var(--font-monospace);
   font-size: 12px;
@@ -118,31 +118,31 @@
   overflow-x: auto;
 }
 
-.codexidian-write-edit-loading,
-.codexidian-write-edit-binary,
-.codexidian-write-edit-error,
-.codexidian-write-edit-done-text {
+.codexian-write-edit-loading,
+.codexian-write-edit-binary,
+.codexian-write-edit-error,
+.codexian-write-edit-done-text {
   font-family: var(--font-monospace);
   font-size: 12px;
   color: var(--text-muted);
 }
 
-.codexidian-write-edit-error {
+.codexian-write-edit-error {
   color: var(--color-red);
 }
 
 /* Diff line styling */
-.codexidian-diff-hunk {
+.codexian-diff-hunk {
   margin-bottom: 4px;
 }
 
-.codexidian-diff-line {
+.codexian-diff-line {
   display: flex;
   white-space: pre-wrap;
   word-break: break-all;
 }
 
-.codexidian-diff-prefix {
+.codexian-diff-prefix {
   flex-shrink: 0;
   width: 16px;
   text-align: center;
@@ -150,36 +150,36 @@
   user-select: none;
 }
 
-.codexidian-diff-text {
+.codexian-diff-text {
   flex: 1;
   min-width: 0;
 }
 
 /* Diff colors - NO strikethrough for Write/Edit blocks */
-.codexidian-diff-equal {
+.codexian-diff-equal {
   color: var(--text-muted);
 }
 
-.codexidian-diff-delete {
+.codexian-diff-delete {
   background: rgba(255, 80, 80, 0.25);
   color: var(--text-normal);
 }
 
-.codexidian-diff-delete .codexidian-diff-prefix {
+.codexian-diff-delete .codexian-diff-prefix {
   color: var(--color-red);
 }
 
-.codexidian-diff-insert {
+.codexian-diff-insert {
   background: rgba(80, 200, 80, 0.25);
   color: var(--text-normal);
 }
 
-.codexidian-diff-insert .codexidian-diff-prefix {
+.codexian-diff-insert .codexian-diff-prefix {
   color: var(--color-green);
 }
 
 /* Hunk separator */
-.codexidian-diff-separator {
+.codexian-diff-separator {
   color: var(--text-muted);
   text-align: center;
   padding: 4px 0;
@@ -190,7 +190,7 @@
   font-size: 11px;
 }
 
-.codexidian-diff-no-changes {
+.codexian-diff-no-changes {
   color: var(--text-muted);
   font-style: italic;
   padding: 8px;

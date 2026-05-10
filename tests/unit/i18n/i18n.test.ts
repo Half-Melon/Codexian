@@ -46,7 +46,7 @@ describe('i18n', () => {
 
     it('handles nested keys correctly', () => {
       const result = t('settings.userName.name' as TranslationKey);
-      expect(result).toBe('What should Codexidian call you?');
+      expect(result).toBe('What should Codexian call you?');
     });
 
     it('handles deeply nested keys', () => {

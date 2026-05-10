@@ -1,4 +1,4 @@
-import { CODEXIDIAN_SETTINGS_PATH } from '../../core/bootstrap/StoragePaths';
+import { CODEXIAN_SETTINGS_PATH } from '../../core/bootstrap/StoragePaths';
 import { normalizeHiddenProviderCommands } from '../../core/providers/commands/hiddenCommands';
 import {
   getSharedEnvironmentVariables,
@@ -9,7 +9,7 @@ import type { VaultFileAdapter } from '../../core/storage/VaultFileAdapter';
 import {
   CHAT_VIEW_PLACEMENTS,
   type ChatViewPlacement,
-  type CodexidianSettings,
+  type CodexianSettings,
   type EnvironmentScope,
   type EnvSnippet,
   type ProviderConfigMap,
@@ -19,13 +19,13 @@ import {
   getCodexProviderSettings,
   updateCodexProviderSettings,
 } from '../../providers/codex/settings';
-import { DEFAULT_CODEXIDIAN_SETTINGS } from './defaultSettings';
+import { DEFAULT_CODEXIAN_SETTINGS } from './defaultSettings';
 
 export {
-  CODEXIDIAN_SETTINGS_PATH,
+  CODEXIAN_SETTINGS_PATH,
 };
 
-export type StoredCodexidianSettings = CodexidianSettings;
+export type StoredCodexianSettings = CodexianSettings;
 
 function isChatViewPlacement(value: unknown): value is ChatViewPlacement {
   return typeof value === 'string'
@@ -37,7 +37,7 @@ function normalizeChatViewPlacement(value: unknown): ChatViewPlacement {
     return value;
   }
 
-  return DEFAULT_CODEXIDIAN_SETTINGS.chatViewPlacement;
+  return DEFAULT_CODEXIAN_SETTINGS.chatViewPlacement;
 }
 
 function normalizeProviderConfigs(value: unknown): ProviderConfigMap {
@@ -112,15 +112,15 @@ function normalizeEnvSnippets(value: unknown): EnvSnippet[] {
   return snippets;
 }
 
-export class CodexidianSettingsStorage {
+export class CodexianSettingsStorage {
   constructor(private adapter: VaultFileAdapter) {}
 
-  async load(): Promise<StoredCodexidianSettings> {
-    if (!(await this.adapter.exists(CODEXIDIAN_SETTINGS_PATH))) {
+  async load(): Promise<StoredCodexianSettings> {
+    if (!(await this.adapter.exists(CODEXIAN_SETTINGS_PATH))) {
       return this.getDefaults();
     }
 
-    const content = await this.adapter.read(CODEXIDIAN_SETTINGS_PATH);
+    const content = await this.adapter.read(CODEXIAN_SETTINGS_PATH);
     const stored = JSON.parse(content) as Record<string, unknown>;
     const hiddenProviderCommands = normalizeHiddenProviderCommands(stored.hiddenProviderCommands);
     const envSnippets = normalizeEnvSnippets(stored.envSnippets);
@@ -140,7 +140,7 @@ export class CodexidianSettingsStorage {
     const merged = {
       ...this.getDefaults(),
       ...normalizedSettings,
-    } as StoredCodexidianSettings;
+    } as StoredCodexianSettings;
 
     updateCodexProviderSettings(
       merged as unknown as Record<string, unknown>,
@@ -158,20 +158,20 @@ export class CodexidianSettingsStorage {
     return merged;
   }
 
-  async save(settings: StoredCodexidianSettings): Promise<void> {
+  async save(settings: StoredCodexianSettings): Promise<void> {
     const content = JSON.stringify(
       settings,
       null,
       2,
     );
-    await this.adapter.write(CODEXIDIAN_SETTINGS_PATH, content);
+    await this.adapter.write(CODEXIAN_SETTINGS_PATH, content);
   }
 
   async exists(): Promise<boolean> {
-    return this.adapter.exists(CODEXIDIAN_SETTINGS_PATH);
+    return this.adapter.exists(CODEXIAN_SETTINGS_PATH);
   }
 
-  async update(updates: Partial<StoredCodexidianSettings>): Promise<void> {
+  async update(updates: Partial<StoredCodexianSettings>): Promise<void> {
     const current = await this.load();
     await this.save({ ...current, ...updates });
   }
@@ -202,7 +202,7 @@ export class CodexidianSettingsStorage {
     await this.save(current);
   }
 
-  private getDefaults(): StoredCodexidianSettings {
-    return DEFAULT_CODEXIDIAN_SETTINGS;
+  private getDefaults(): StoredCodexianSettings {
+    return DEFAULT_CODEXIAN_SETTINGS;
   }
 }

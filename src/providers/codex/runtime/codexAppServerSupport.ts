@@ -1,5 +1,5 @@
 import type { ProviderId } from '../../../core/providers/types';
-import type CodexidianPlugin from '../../../main';
+import type CodexianPlugin from '../../../main';
 import { getEnhancedPath, parseEnvironmentVariables } from '../../../utils/env';
 import { getVaultPath } from '../../../utils/path';
 import type { InitializeResult } from './codexAppServerTypes';
@@ -8,16 +8,16 @@ import type { CodexLaunchSpec } from './codexLaunchTypes';
 import type { CodexRpcTransport } from './CodexRpcTransport';
 
 const CODEX_APP_SERVER_CLIENT_INFO = Object.freeze({
-  name: 'codexidian',
+  name: 'codexian',
   version: '1.0.0',
 });
 
-export function getCodexAppServerWorkingDirectory(plugin: CodexidianPlugin): string {
+export function getCodexAppServerWorkingDirectory(plugin: CodexianPlugin): string {
   return getVaultPath(plugin.app) ?? process.cwd();
 }
 
 export function buildCodexAppServerEnvironment(
-  plugin: CodexidianPlugin,
+  plugin: CodexianPlugin,
   providerId: ProviderId = 'codex',
 ): Record<string, string> {
   const customEnv = parseEnvironmentVariables(plugin.getActiveEnvironmentVariables(providerId));
@@ -34,7 +34,7 @@ export function buildCodexAppServerEnvironment(
 }
 
 export function resolveCodexAppServerLaunchSpec(
-  plugin: CodexidianPlugin,
+  plugin: CodexianPlugin,
   providerId: ProviderId = 'codex',
 ): CodexLaunchSpec {
   return buildCodexLaunchSpec({

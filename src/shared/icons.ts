@@ -25,7 +25,7 @@ export function createProviderIconSvg(
   svg.setAttribute('viewBox', icon.viewBox);
   svg.setAttribute('fill', 'none');
   svg.setAttribute('aria-hidden', 'true');
-  svg.classList.add('codexidian-provider-icon');
+  svg.classList.add('codexian-provider-icon');
 
   if (options.width !== undefined) {
     svg.setAttribute('width', String(options.width));

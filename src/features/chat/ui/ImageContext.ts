@@ -39,8 +39,8 @@ export class ImageContextManager {
     this.callbacks = callbacks;
 
     // Create image preview in previewContainerEl, before file indicator if present
-    const fileIndicator = this.previewContainerEl.querySelector('.codexidian-file-indicator');
-    this.imagePreviewEl = this.previewContainerEl.createDiv({ cls: 'codexidian-image-preview' });
+    const fileIndicator = this.previewContainerEl.querySelector('.codexian-file-indicator');
+    this.imagePreviewEl = this.previewContainerEl.createDiv({ cls: 'codexian-image-preview' });
     if (fileIndicator && fileIndicator.parentElement === this.previewContainerEl) {
       this.previewContainerEl.insertBefore(this.imagePreviewEl, fileIndicator);
     }
@@ -81,11 +81,11 @@ export class ImageContextManager {
   }
 
   private setupDragAndDrop() {
-    const inputWrapper = this.containerEl.querySelector('.codexidian-input-wrapper') as HTMLElement;
+    const inputWrapper = this.containerEl.querySelector('.codexian-input-wrapper') as HTMLElement;
     if (!inputWrapper) return;
 
-    this.dropOverlay = inputWrapper.createDiv({ cls: 'codexidian-drop-overlay' });
-    const dropContent = this.dropOverlay.createDiv({ cls: 'codexidian-drop-content' });
+    this.dropOverlay = inputWrapper.createDiv({ cls: 'codexian-drop-overlay' });
+    const dropContent = this.dropOverlay.createDiv({ cls: 'codexian-drop-content' });
     const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     svg.setAttribute('viewBox', '0 0 24 24');
     svg.setAttribute('width', '32');
@@ -134,7 +134,7 @@ export class ImageContextManager {
     e.preventDefault();
     e.stopPropagation();
 
-    const inputWrapper = this.containerEl.querySelector('.codexidian-input-wrapper');
+    const inputWrapper = this.containerEl.querySelector('.codexian-input-wrapper');
     if (!inputWrapper) {
       this.dropOverlay?.removeClass('visible');
       return;
@@ -260,9 +260,9 @@ export class ImageContextManager {
   }
 
   private renderImagePreview(id: string, image: ImageAttachment) {
-    const previewEl = this.imagePreviewEl.createDiv({ cls: 'codexidian-image-chip' });
+    const previewEl = this.imagePreviewEl.createDiv({ cls: 'codexian-image-chip' });
 
-    const thumbEl = previewEl.createDiv({ cls: 'codexidian-image-thumb' });
+    const thumbEl = previewEl.createDiv({ cls: 'codexian-image-thumb' });
     thumbEl.createEl('img', {
       attr: {
         src: `data:${image.mediaType};base64,${image.data}`,
@@ -270,15 +270,15 @@ export class ImageContextManager {
       },
     });
 
-    const infoEl = previewEl.createDiv({ cls: 'codexidian-image-info' });
-    const nameEl = infoEl.createSpan({ cls: 'codexidian-image-name' });
+    const infoEl = previewEl.createDiv({ cls: 'codexian-image-info' });
+    const nameEl = infoEl.createSpan({ cls: 'codexian-image-name' });
     nameEl.setText(this.truncateName(image.name, 20));
     nameEl.setAttribute('title', image.name);
 
-    const sizeEl = infoEl.createSpan({ cls: 'codexidian-image-size' });
+    const sizeEl = infoEl.createSpan({ cls: 'codexian-image-size' });
     sizeEl.setText(this.formatSize(image.size));
 
-    const removeEl = previewEl.createSpan({ cls: 'codexidian-image-remove' });
+    const removeEl = previewEl.createSpan({ cls: 'codexian-image-remove' });
     removeEl.setText('\u00D7');
     removeEl.setAttribute('aria-label', 'Remove image');
 
@@ -295,8 +295,8 @@ export class ImageContextManager {
   }
 
   private showFullImage(image: ImageAttachment) {
-    const overlay = document.body.createDiv({ cls: 'codexidian-image-modal-overlay' });
-    const modal = overlay.createDiv({ cls: 'codexidian-image-modal' });
+    const overlay = document.body.createDiv({ cls: 'codexian-image-modal-overlay' });
+    const modal = overlay.createDiv({ cls: 'codexian-image-modal' });
 
     modal.createEl('img', {
       attr: {
@@ -305,7 +305,7 @@ export class ImageContextManager {
       },
     });
 
-    const closeBtn = modal.createDiv({ cls: 'codexidian-image-modal-close' });
+    const closeBtn = modal.createDiv({ cls: 'codexian-image-modal-close' });
     closeBtn.setText('\u00D7');
 
     const handleEsc = (e: KeyboardEvent) => {

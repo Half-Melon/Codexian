@@ -302,15 +302,15 @@ function getWebSearchLabel(input: Record<string, unknown>, maxLength: number): s
 }
 
 function appendToolLink(parent: HTMLElement, title: string, url: string): void {
-  const linkEl = parent.createEl('a', { cls: 'codexidian-tool-link' });
+  const linkEl = parent.createEl('a', { cls: 'codexian-tool-link' });
   linkEl.setAttribute('href', url);
   linkEl.setAttribute('target', '_blank');
   linkEl.setAttribute('rel', 'noopener noreferrer');
 
-  const iconEl = linkEl.createSpan({ cls: 'codexidian-tool-link-icon' });
+  const iconEl = linkEl.createSpan({ cls: 'codexian-tool-link-icon' });
   setIcon(iconEl, 'external-link');
 
-  linkEl.createSpan({ cls: 'codexidian-tool-link-title', text: title });
+  linkEl.createSpan({ cls: 'codexian-tool-link-title', text: title });
 }
 
 function isPlaceholderWebSearchResult(result: string | undefined): boolean {
@@ -342,27 +342,27 @@ function renderWebSearchActionExpanded(container: HTMLElement, input: Record<str
     return false;
   }
 
-  const linesEl = container.createDiv({ cls: 'codexidian-tool-lines' });
+  const linesEl = container.createDiv({ cls: 'codexian-tool-lines' });
 
   switch (data.actionType) {
     case 'open_page':
-      linesEl.createDiv({ cls: 'codexidian-tool-line', text: 'Open page' });
+      linesEl.createDiv({ cls: 'codexian-tool-line', text: 'Open page' });
       if (data.url) {
         appendToolLink(linesEl, data.url, data.url);
       } else {
-        linesEl.createDiv({ cls: 'codexidian-tool-line', text: 'URL unavailable' });
+        linesEl.createDiv({ cls: 'codexian-tool-line', text: 'URL unavailable' });
       }
       return true;
 
     case 'find_in_page':
-      linesEl.createDiv({ cls: 'codexidian-tool-line', text: 'Find in page' });
+      linesEl.createDiv({ cls: 'codexian-tool-line', text: 'Find in page' });
       if (data.url) {
         appendToolLink(linesEl, data.url, data.url);
       } else {
-        linesEl.createDiv({ cls: 'codexidian-tool-line', text: 'URL unavailable' });
+        linesEl.createDiv({ cls: 'codexian-tool-line', text: 'URL unavailable' });
       }
       if (data.pattern) {
-        linesEl.createDiv({ cls: 'codexidian-tool-line', text: `Pattern: ${data.pattern}` });
+        linesEl.createDiv({ cls: 'codexian-tool-line', text: `Pattern: ${data.pattern}` });
       }
       return true;
 
@@ -370,17 +370,17 @@ function renderWebSearchActionExpanded(container: HTMLElement, input: Record<str
     default: {
       const primaryQuery = data.query || data.queries[0];
       linesEl.createDiv({
-        cls: 'codexidian-tool-line',
+        cls: 'codexian-tool-line',
         text: primaryQuery ? `Query: ${primaryQuery}` : 'Search web',
       });
 
       const alternateQueries = data.queries.filter(query => query !== primaryQuery);
       for (const query of alternateQueries.slice(0, 4)) {
-        linesEl.createDiv({ cls: 'codexidian-tool-line', text: `Alt query: ${query}` });
+        linesEl.createDiv({ cls: 'codexian-tool-line', text: `Alt query: ${query}` });
       }
       if (alternateQueries.length > 4) {
         linesEl.createDiv({
-          cls: 'codexidian-tool-truncated',
+          cls: 'codexian-tool-truncated',
           text: `... ${alternateQueries.length - 4} more queries`,
         });
       }
@@ -396,13 +396,13 @@ function renderWebSearchExpanded(
 ): void {
   const parsed = result ? parseWebSearchResult(result) : null;
   if (parsed && parsed.links.length > 0) {
-    const linksEl = container.createDiv({ cls: 'codexidian-tool-lines' });
+    const linksEl = container.createDiv({ cls: 'codexian-tool-lines' });
     for (const link of parsed.links) {
       appendToolLink(linksEl, link.title, link.url);
     }
 
     if (parsed.summary) {
-      const summaryEl = container.createDiv({ cls: 'codexidian-tool-web-summary' });
+      const summaryEl = container.createDiv({ cls: 'codexian-tool-web-summary' });
       summaryEl.setText(parsed.summary.length > 800 ? parsed.summary.slice(0, 800) + '...' : parsed.summary);
     }
     return;
@@ -431,13 +431,13 @@ function renderWebSearchExpanded(
     return;
   }
 
-  container.createDiv({ cls: 'codexidian-tool-empty', text: 'No result' });
+  container.createDiv({ cls: 'codexian-tool-empty', text: 'No result' });
 }
 
 function renderFileSearchExpanded(container: HTMLElement, result: string): void {
   const lines = result.split(/\r?\n/).filter(line => line.trim());
   if (lines.length === 0) {
-    container.createDiv({ cls: 'codexidian-tool-empty', text: 'No matches found' });
+    container.createDiv({ cls: 'codexian-tool-empty', text: 'No matches found' });
     return;
   }
   renderLinesExpanded(container, result, 15, true);
@@ -453,17 +453,17 @@ function renderLinesExpanded(
   const truncated = lines.length > maxLines;
   const displayLines = truncated ? lines.slice(0, maxLines) : lines;
 
-  const linesEl = container.createDiv({ cls: 'codexidian-tool-lines' });
+  const linesEl = container.createDiv({ cls: 'codexian-tool-lines' });
   for (const line of displayLines) {
     const stripped = line.replace(/^\s*\d+→/, '');
-    const lineEl = linesEl.createDiv({ cls: 'codexidian-tool-line' });
+    const lineEl = linesEl.createDiv({ cls: 'codexian-tool-line' });
     if (hoverable) lineEl.addClass('hoverable');
     lineEl.setText(stripped || ' ');
   }
 
   if (truncated) {
     linesEl.createDiv({
-      cls: 'codexidian-tool-truncated',
+      cls: 'codexian-tool-truncated',
       text: `... ${lines.length - maxLines} more lines`,
     });
   }
@@ -488,8 +488,8 @@ function renderToolSearchExpanded(container: HTMLElement, result: string): void 
   }
 
   for (const name of toolNames) {
-    const lineEl = container.createDiv({ cls: 'codexidian-tool-search-item' });
-    const iconEl = lineEl.createSpan({ cls: 'codexidian-tool-search-icon' });
+    const lineEl = container.createDiv({ cls: 'codexian-tool-search-item' });
+    const iconEl = lineEl.createSpan({ cls: 'codexian-tool-search-icon' });
     setToolIcon(iconEl, name);
     lineEl.createSpan({ text: name });
   }
@@ -497,15 +497,15 @@ function renderToolSearchExpanded(container: HTMLElement, result: string): void 
 
 function renderWebFetchExpanded(container: HTMLElement, result: string): void {
   const maxChars = 500;
-  const linesEl = container.createDiv({ cls: 'codexidian-tool-lines' });
-  const lineEl = linesEl.createDiv({ cls: 'codexidian-tool-line' });
+  const linesEl = container.createDiv({ cls: 'codexian-tool-lines' });
+  const lineEl = linesEl.createDiv({ cls: 'codexian-tool-line' });
   lineEl.style.whiteSpace = 'pre-wrap';
   lineEl.style.wordBreak = 'break-word';
 
   if (result.length > maxChars) {
     lineEl.setText(result.slice(0, maxChars));
     linesEl.createDiv({
-      cls: 'codexidian-tool-truncated',
+      cls: 'codexian-tool-truncated',
       text: `... ${result.length - maxChars} more characters`,
     });
   } else {
@@ -527,7 +527,7 @@ function renderApplyPatchExpanded(
 
   if (parsedDiffs.length > 0) {
     for (const fileDiff of parsedDiffs) {
-      const sectionEl = container.createDiv({ cls: 'codexidian-tool-patch-section' });
+      const sectionEl = container.createDiv({ cls: 'codexian-tool-patch-section' });
       const statsSuffix = fileDiff.stats.added || fileDiff.stats.removed
         ? ` (+${fileDiff.stats.added} -${fileDiff.stats.removed})`
         : '';
@@ -535,22 +535,22 @@ function renderApplyPatchExpanded(
         ? `${fileDiff.filePath} -> ${fileDiff.movedTo}`
         : fileDiff.filePath;
       sectionEl.createDiv({
-        cls: 'codexidian-tool-patch-header',
+        cls: 'codexian-tool-patch-header',
         text: `${fileDiff.operation}: ${pathText}${statsSuffix}`,
       });
 
       if (fileDiff.operation === 'delete' && fileDiff.diffLines.length === 0) {
-        sectionEl.createDiv({ cls: 'codexidian-tool-empty', text: 'File deleted' });
+        sectionEl.createDiv({ cls: 'codexian-tool-empty', text: 'File deleted' });
         continue;
       }
 
       if (fileDiff.diffLines.length === 0) {
-        sectionEl.createDiv({ cls: 'codexidian-tool-empty', text: 'No textual diff available' });
+        sectionEl.createDiv({ cls: 'codexian-tool-empty', text: 'No textual diff available' });
         continue;
       }
 
-      const diffRow = sectionEl.createDiv({ cls: 'codexidian-write-edit-diff-row' });
-      const diffEl = diffRow.createDiv({ cls: 'codexidian-write-edit-diff' });
+      const diffRow = sectionEl.createDiv({ cls: 'codexian-write-edit-diff-row' });
+      const diffEl = diffRow.createDiv({ cls: 'codexian-write-edit-diff' });
       renderDiffContent(diffEl, fileDiff.diffLines);
     }
     return;
@@ -558,13 +558,13 @@ function renderApplyPatchExpanded(
 
   const changes = Array.isArray(input.changes) ? input.changes : [];
   if (changes.length > 0) {
-    const linesEl = container.createDiv({ cls: 'codexidian-tool-lines' });
+    const linesEl = container.createDiv({ cls: 'codexian-tool-lines' });
     for (const change of changes) {
       if (!change || typeof change !== 'object') continue;
       const path = typeof change.path === 'string' ? change.path : '';
       const kind = typeof change.kind === 'string' ? change.kind : 'change';
       if (!path) continue;
-      linesEl.createDiv({ cls: 'codexidian-tool-line', text: `${kind}: ${path}` });
+      linesEl.createDiv({ cls: 'codexian-tool-line', text: `${kind}: ${path}` });
     }
     return;
   }
@@ -577,11 +577,11 @@ function renderApplyPatchExpanded(
   if (result) {
     const fileMatches = [...result.matchAll(/(?:update|add|delete|create|modify|Applied:\s*)(?:\w+:\s*)?([^\n,]+)/gi)];
     if (fileMatches.length > 0) {
-      const linesEl = container.createDiv({ cls: 'codexidian-tool-lines' });
+      const linesEl = container.createDiv({ cls: 'codexian-tool-lines' });
       for (const match of fileMatches) {
         const filePath = match[1]?.trim();
         if (filePath) {
-          const lineEl = linesEl.createDiv({ cls: 'codexidian-tool-line' });
+          const lineEl = linesEl.createDiv({ cls: 'codexian-tool-line' });
           lineEl.setText(filePath);
         }
       }
@@ -591,7 +591,7 @@ function renderApplyPatchExpanded(
     return;
   }
 
-  container.createDiv({ cls: 'codexidian-tool-empty', text: 'No result' });
+  container.createDiv({ cls: 'codexian-tool-empty', text: 'No result' });
 }
 
 function renderAgentLifecycleExpanded(container: HTMLElement, result: string): void {
@@ -600,9 +600,9 @@ function renderAgentLifecycleExpanded(container: HTMLElement, result: string): v
   if (trimmed.startsWith('{')) {
     try {
       const parsed = JSON.parse(trimmed) as Record<string, unknown>;
-      const linesEl = container.createDiv({ cls: 'codexidian-tool-lines' });
+      const linesEl = container.createDiv({ cls: 'codexian-tool-lines' });
       for (const [key, value] of Object.entries(parsed)) {
-        const lineEl = linesEl.createDiv({ cls: 'codexidian-tool-line' });
+        const lineEl = linesEl.createDiv({ cls: 'codexian-tool-line' });
         const displayValue = typeof value === 'object' ? JSON.stringify(value) : String(value);
         lineEl.setText(`${key}: ${displayValue}`);
       }
@@ -619,7 +619,7 @@ export function renderExpandedContent(
   input: Record<string, unknown> = {},
 ): void {
   if (!result && toolName !== TOOL_WEB_SEARCH && toolName !== TOOL_BASH) {
-    container.createDiv({ cls: 'codexidian-tool-empty', text: 'No result' });
+    container.createDiv({ cls: 'codexian-tool-empty', text: 'No result' });
     return;
   }
 
@@ -682,7 +682,7 @@ function areAllTodosCompleted(input: Record<string, unknown>): boolean {
 }
 
 function resetStatusElement(statusEl: HTMLElement, statusClass: string, ariaLabel: string): void {
-  statusEl.className = 'codexidian-tool-status';
+  statusEl.className = 'codexian-tool-status';
   statusEl.empty();
   statusEl.addClass(statusClass);
   statusEl.setAttribute('aria-label', ariaLabel);
@@ -713,12 +713,12 @@ export function renderTodoWriteResult(
   input: Record<string, unknown>
 ): void {
   container.empty();
-  container.addClass('codexidian-todo-panel-content');
-  container.addClass('codexidian-todo-list-container');
+  container.addClass('codexian-todo-panel-content');
+  container.addClass('codexian-todo-list-container');
 
   const todos = input.todos as TodoItem[] | undefined;
   if (!todos || !Array.isArray(todos)) {
-    const item = container.createSpan({ cls: 'codexidian-tool-result-item' });
+    const item = container.createSpan({ cls: 'codexian-tool-result-item' });
     item.setText('Tasks updated');
     return;
   }
@@ -751,32 +751,32 @@ function createToolElementStructure(
   parentEl: HTMLElement,
   toolCall: ToolCallInfo
 ): ToolElementStructure {
-  const toolEl = parentEl.createDiv({ cls: 'codexidian-tool-call' });
+  const toolEl = parentEl.createDiv({ cls: 'codexian-tool-call' });
   if (toolCall.name === TOOL_BASH) {
-    toolEl.addClass('codexidian-tool-call-bash');
+    toolEl.addClass('codexian-tool-call-bash');
   }
 
-  const header = toolEl.createDiv({ cls: 'codexidian-tool-header' });
+  const header = toolEl.createDiv({ cls: 'codexian-tool-header' });
   header.setAttribute('tabindex', '0');
   header.setAttribute('role', 'button');
 
-  const iconEl = header.createSpan({ cls: 'codexidian-tool-icon' });
+  const iconEl = header.createSpan({ cls: 'codexian-tool-icon' });
   iconEl.setAttribute('aria-hidden', 'true');
   setToolIcon(iconEl, toolCall.name);
 
-  const nameEl = header.createSpan({ cls: 'codexidian-tool-name' });
+  const nameEl = header.createSpan({ cls: 'codexian-tool-name' });
   nameEl.setText(getToolName(toolCall.name, toolCall.input));
 
-  const summaryEl = header.createSpan({ cls: 'codexidian-tool-summary' });
+  const summaryEl = header.createSpan({ cls: 'codexian-tool-summary' });
   summaryEl.setText(getToolSummary(toolCall.name, toolCall.input));
 
   const currentTaskEl = toolCall.name === TOOL_TODO_WRITE
     ? createCurrentTaskPreview(header, toolCall.input)
     : null;
 
-  const statusEl = header.createSpan({ cls: 'codexidian-tool-status' });
+  const statusEl = header.createSpan({ cls: 'codexian-tool-status' });
 
-  const content = toolEl.createDiv({ cls: 'codexidian-tool-content' });
+  const content = toolEl.createDiv({ cls: 'codexian-tool-content' });
 
   return { toolEl, header, iconEl, nameEl, summaryEl, statusEl, content, currentTaskEl };
 }
@@ -805,19 +805,19 @@ function renderAskUserQuestionResult(container: HTMLElement, toolCall: ToolCallI
   const answers = resolveAskUserAnswers(toolCall);
   if (!questions || !Array.isArray(questions) || !answers) return false;
 
-  const reviewEl = container.createDiv({ cls: 'codexidian-ask-review' });
+  const reviewEl = container.createDiv({ cls: 'codexian-ask-review' });
   for (let i = 0; i < questions.length; i++) {
     const q = questions[i];
     const answer = formatAnswer(
       (q.id ? answers[q.id] : undefined) ?? answers[q.question]
     );
-    const pairEl = reviewEl.createDiv({ cls: 'codexidian-ask-review-pair' });
-    pairEl.createDiv({ text: `${i + 1}.`, cls: 'codexidian-ask-review-num' });
-    const bodyEl = pairEl.createDiv({ cls: 'codexidian-ask-review-body' });
-    bodyEl.createDiv({ text: q.question, cls: 'codexidian-ask-review-q-text' });
+    const pairEl = reviewEl.createDiv({ cls: 'codexian-ask-review-pair' });
+    pairEl.createDiv({ text: `${i + 1}.`, cls: 'codexian-ask-review-num' });
+    const bodyEl = pairEl.createDiv({ cls: 'codexian-ask-review-body' });
+    bodyEl.createDiv({ text: q.question, cls: 'codexian-ask-review-q-text' });
     bodyEl.createDiv({
       text: answer || 'Not answered',
-      cls: answer ? 'codexidian-ask-review-a-text' : 'codexidian-ask-review-empty',
+      cls: answer ? 'codexian-ask-review-a-text' : 'codexian-ask-review-empty',
     });
   }
 
@@ -838,25 +838,25 @@ function renderAskUserQuestionFallback(container: HTMLElement, toolCall: ToolCal
 
   if (initialText || toolCall.result) {
     container.createDiv({
-      cls: 'codexidian-ask-review-prompt',
+      cls: 'codexian-ask-review-prompt',
       text: initialText || toolCall.result || 'Waiting for answer...',
     });
   }
 
   for (let questionIndex = 0; questionIndex < questions.length; questionIndex++) {
     const question = questions[questionIndex];
-    const reviewEl = container.createDiv({ cls: 'codexidian-ask-review' });
-    const pairEl = reviewEl.createDiv({ cls: 'codexidian-ask-review-pair' });
-    pairEl.createDiv({ text: `${questionIndex + 1}.`, cls: 'codexidian-ask-review-num' });
-    const bodyEl = pairEl.createDiv({ cls: 'codexidian-ask-review-body' });
-    bodyEl.createDiv({ text: question.question, cls: 'codexidian-ask-review-q-text' });
+    const reviewEl = container.createDiv({ cls: 'codexian-ask-review' });
+    const pairEl = reviewEl.createDiv({ cls: 'codexian-ask-review-pair' });
+    pairEl.createDiv({ text: `${questionIndex + 1}.`, cls: 'codexian-ask-review-num' });
+    const bodyEl = pairEl.createDiv({ cls: 'codexian-ask-review-body' });
+    bodyEl.createDiv({ text: question.question, cls: 'codexian-ask-review-q-text' });
 
     if (!Array.isArray(question.options) || question.options.length === 0) {
-      bodyEl.createDiv({ cls: 'codexidian-ask-review-empty', text: 'No options recorded' });
+      bodyEl.createDiv({ cls: 'codexian-ask-review-empty', text: 'No options recorded' });
       continue;
     }
 
-    const listEl = bodyEl.createDiv({ cls: 'codexidian-ask-list' });
+    const listEl = bodyEl.createDiv({ cls: 'codexian-ask-list' });
     question.options.forEach((option, optionIndex) => {
       renderAskUserQuestionOption(listEl, option, optionIndex, question.multiSelect === true);
     });
@@ -869,26 +869,26 @@ function renderAskUserQuestionOption(
   optionIndex: number,
   isMultiSelect: boolean,
 ): void {
-  const itemEl = parentEl.createDiv({ cls: 'codexidian-ask-item is-disabled' });
+  const itemEl = parentEl.createDiv({ cls: 'codexian-ask-item is-disabled' });
 
   if (isMultiSelect) {
-    itemEl.createDiv({ cls: 'codexidian-ask-check', text: '[ ] ' });
+    itemEl.createDiv({ cls: 'codexian-ask-check', text: '[ ] ' });
   } else {
-    itemEl.createDiv({ cls: 'codexidian-ask-item-num', text: `${optionIndex + 1}. ` });
+    itemEl.createDiv({ cls: 'codexian-ask-item-num', text: `${optionIndex + 1}. ` });
   }
 
-  const contentEl = itemEl.createDiv({ cls: 'codexidian-ask-item-content' });
-  const labelRowEl = contentEl.createDiv({ cls: 'codexidian-ask-label-row' });
-  labelRowEl.createDiv({ cls: 'codexidian-ask-item-label', text: option.label });
+  const contentEl = itemEl.createDiv({ cls: 'codexian-ask-item-content' });
+  const labelRowEl = contentEl.createDiv({ cls: 'codexian-ask-label-row' });
+  labelRowEl.createDiv({ cls: 'codexian-ask-item-label', text: option.label });
 
   if (option.description) {
-    contentEl.createDiv({ cls: 'codexidian-ask-item-desc', text: option.description });
+    contentEl.createDiv({ cls: 'codexian-ask-item-desc', text: option.description });
   }
 }
 
 function contentFallback(container: HTMLElement, text: string): void {
-  const resultRow = container.createDiv({ cls: 'codexidian-tool-result-row' });
-  const resultText = resultRow.createSpan({ cls: 'codexidian-tool-result-text' });
+  const resultRow = container.createDiv({ cls: 'codexian-tool-result-row' });
+  const resultText = resultRow.createSpan({ cls: 'codexian-tool-result-text' });
   resultText.setText(text);
 }
 
@@ -900,7 +900,7 @@ function renderBashContent(
 ): void {
   const command = (input.command as string) || '';
   if (command) {
-    const cmdEl = container.createDiv({ cls: 'codexidian-tool-bash-command' });
+    const cmdEl = container.createDiv({ cls: 'codexian-tool-bash-command' });
     cmdEl.setText(`$ ${command}`);
   }
   if (initialText) {
@@ -908,7 +908,7 @@ function renderBashContent(
   } else if (result) {
     renderLinesExpanded(container, result, 20);
   } else {
-    container.createDiv({ cls: 'codexidian-tool-empty', text: 'No result' });
+    container.createDiv({ cls: 'codexian-tool-empty', text: 'No result' });
   }
 }
 
@@ -916,7 +916,7 @@ function createCurrentTaskPreview(
   header: HTMLElement,
   input: Record<string, unknown>
 ): HTMLElement {
-  const currentTaskEl = header.createSpan({ cls: 'codexidian-tool-current' });
+  const currentTaskEl = header.createSpan({ cls: 'codexian-tool-current' });
   const currentTask = getCurrentTask(input);
   if (currentTask) {
     currentTaskEl.setText(currentTask.activeForm);
@@ -946,10 +946,10 @@ function renderToolContent(
   initialText?: string
 ): void {
   if (toolCall.name === TOOL_TODO_WRITE) {
-    content.addClass('codexidian-tool-content-todo');
+    content.addClass('codexian-tool-content-todo');
     renderTodoWriteResult(content, toolCall.input);
   } else if (toolCall.name === TOOL_ASK_USER_QUESTION) {
-    content.addClass('codexidian-tool-content-ask');
+    content.addClass('codexian-tool-content-ask');
     if (initialText) {
       renderAskUserQuestionFallback(content, toolCall, 'Waiting for answer...');
     } else if (!renderAskUserQuestionResult(content, toolCall)) {
@@ -1003,19 +1003,19 @@ export function updateToolCallResult(
   if (!toolEl) return;
 
   if (toolCall.name === TOOL_TODO_WRITE) {
-    const statusEl = toolEl.querySelector('.codexidian-tool-status') as HTMLElement;
+    const statusEl = toolEl.querySelector('.codexian-tool-status') as HTMLElement;
     if (statusEl) {
       setTodoWriteStatus(statusEl, toolCall.input);
     }
-    const content = toolEl.querySelector('.codexidian-tool-content') as HTMLElement;
+    const content = toolEl.querySelector('.codexian-tool-content') as HTMLElement;
     if (content) {
       renderTodoWriteResult(content, toolCall.input);
     }
-    const nameEl = toolEl.querySelector('.codexidian-tool-name') as HTMLElement;
+    const nameEl = toolEl.querySelector('.codexian-tool-name') as HTMLElement;
     if (nameEl) {
       nameEl.setText(getToolName(toolCall.name, toolCall.input));
     }
-    const currentTaskEl = toolEl.querySelector('.codexidian-tool-current') as HTMLElement;
+    const currentTaskEl = toolEl.querySelector('.codexian-tool-current') as HTMLElement;
     if (currentTaskEl) {
       const currentTask = getCurrentTask(toolCall.input);
       currentTaskEl.setText(currentTask ? currentTask.activeForm : '');
@@ -1023,15 +1023,15 @@ export function updateToolCallResult(
     return;
   }
 
-  const statusEl = toolEl.querySelector('.codexidian-tool-status') as HTMLElement;
+  const statusEl = toolEl.querySelector('.codexian-tool-status') as HTMLElement;
   if (statusEl) {
     setToolStatus(statusEl, toolCall.status);
   }
 
   if (toolCall.name === TOOL_ASK_USER_QUESTION) {
-    const content = toolEl.querySelector('.codexidian-tool-content') as HTMLElement;
+    const content = toolEl.querySelector('.codexian-tool-content') as HTMLElement;
     if (content) {
-      content.addClass('codexidian-tool-content-ask');
+      content.addClass('codexian-tool-content-ask');
       if (!renderAskUserQuestionResult(content, toolCall)) {
         renderAskUserQuestionFallback(content, toolCall);
       }
@@ -1039,7 +1039,7 @@ export function updateToolCallResult(
     return;
   }
 
-  const content = toolEl.querySelector('.codexidian-tool-content') as HTMLElement;
+  const content = toolEl.querySelector('.codexian-tool-content') as HTMLElement;
   if (content) {
     content.empty();
     renderExpandedContent(content, toolCall.name, toolCall.result, toolCall.input);

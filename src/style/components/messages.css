@@ -1,5 +1,5 @@
 /* Messages wrapper (for scroll-to-bottom button positioning) */
-.codexidian-messages-wrapper {
+.codexian-messages-wrapper {
   position: relative;
   flex: 1;
   min-height: 0;
@@ -8,7 +8,7 @@
   overflow: hidden;
 }
 
-.codexidian-messages {
+.codexian-messages {
   flex: 1;
   overflow-y: auto;
   padding: 12px 0;
@@ -18,12 +18,12 @@
 }
 
 /* Focusable messages panel for vim-style navigation */
-.codexidian-messages-focusable:focus {
+.codexian-messages-focusable:focus {
   outline: none;
 }
 
 /* Welcome message */
-.codexidian-welcome {
+.codexian-welcome {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -34,7 +34,7 @@
   min-height: 200px;
 }
 
-.codexidian-welcome-greeting {
+.codexian-welcome-greeting {
   font-family: 'Copernicus', 'Tiempos Headline', 'Tiempos', Georgia, 'Times New Roman', serif;
   font-size: 28px;
   font-weight: 300;
@@ -42,14 +42,14 @@
   letter-spacing: -0.01em;
 }
 
-.codexidian-message {
+.codexian-message {
   padding: 10px 14px;
   border-radius: 8px;
   max-width: 95%;
   word-wrap: break-word;
 }
 
-.codexidian-message-user {
+.codexian-message-user {
   position: relative;
   background: rgba(0, 0, 0, 0.3);
   align-self: flex-end;
@@ -57,12 +57,12 @@
 }
 
 /* Text selection in user messages - visible highlight */
-.codexidian-message-user ::selection {
+.codexian-message-user ::selection {
   background: rgba(255, 255, 255, 0.35);
   color: inherit;
 }
 
-.codexidian-message-assistant {
+.codexian-message-assistant {
   background: transparent;
   align-self: stretch;
   width: 100%;
@@ -71,27 +71,27 @@
   text-align: start;
 }
 
-.codexidian-message-content {
+.codexian-message-content {
   line-height: 1.5;
   user-select: text;
   -webkit-user-select: text;
   unicode-bidi: plaintext; /* Proper BiDi text handling for mixed RTL/LTR */
 }
 
-.codexidian-interrupted {
+.codexian-interrupted {
   color: #d45d5d;
 }
 
-.codexidian-interrupted-hint {
+.codexian-interrupted-hint {
   color: var(--text-muted);
 }
 
-.codexidian-text-block {
+.codexian-text-block {
   position: relative;
   margin: 0;
 }
 
-.codexidian-text-copy-btn {
+.codexian-text-copy-btn {
   position: absolute;
   bottom: 0;
   inset-inline-end: 0;
@@ -106,93 +106,93 @@
   gap: 4px;
 }
 
-.codexidian-text-copy-btn svg {
+.codexian-text-copy-btn svg {
   width: 16px;
   height: 16px;
 }
 
-.codexidian-text-block:hover .codexidian-text-copy-btn {
+.codexian-text-block:hover .codexian-text-copy-btn {
   opacity: 1;
 }
 
-.codexidian-text-copy-btn:hover {
+.codexian-text-copy-btn:hover {
   color: var(--text-normal);
 }
 
-.codexidian-text-copy-btn.copied {
+.codexian-text-copy-btn.copied {
   color: var(--text-accent);
   font-size: 11px;
   font-family: var(--font-monospace);
 }
 
-.codexidian-text-block+.codexidian-tool-call {
+.codexian-text-block+.codexian-tool-call {
   margin-top: 8px;
 }
 
-.codexidian-tool-call+.codexidian-text-block {
+.codexian-tool-call+.codexian-text-block {
   margin-top: 8px;
 }
 
-.codexidian-message-content p {
+.codexian-message-content p {
   margin: 0 0 8px 0;
 }
 
-.codexidian-message-content p:last-child {
+.codexian-message-content p:last-child {
   margin-bottom: 0;
 }
 
-.codexidian-message-content ul,
-.codexidian-message-content ol {
+.codexian-message-content ul,
+.codexian-message-content ol {
   margin: 8px 0;
   padding-inline-start: 20px;
 }
 
 /* Full-width tables */
-.codexidian-message-content table {
+.codexian-message-content table {
   width: 100%;
   border-collapse: collapse;
   margin: 8px 0;
 }
 
-.codexidian-message-content th,
-.codexidian-message-content td {
+.codexian-message-content th,
+.codexian-message-content td {
   border: 1px solid var(--background-modifier-border);
   padding: 6px 10px;
   text-align: start;
 }
 
-.codexidian-message-content th {
+.codexian-message-content th {
   background: var(--background-secondary);
   font-weight: 600;
 }
 
-.codexidian-message-content tr:hover {
+.codexian-message-content tr:hover {
   background: var(--background-secondary-alt);
 }
 
-.codexidian-messages::-webkit-scrollbar {
+.codexian-messages::-webkit-scrollbar {
   width: 6px;
 }
 
-.codexidian-messages::-webkit-scrollbar-track {
+.codexian-messages::-webkit-scrollbar-track {
   background: transparent;
 }
 
-.codexidian-messages::-webkit-scrollbar-thumb {
+.codexian-messages::-webkit-scrollbar-thumb {
   background: var(--background-modifier-border);
   border-radius: 3px;
 }
 
-.codexidian-messages::-webkit-scrollbar-thumb:hover {
+.codexian-messages::-webkit-scrollbar-thumb:hover {
   background: var(--background-modifier-border-hover);
 }
 
 /* Response duration footer - styled as another line of content */
-.codexidian-response-footer {
+.codexian-response-footer {
   margin-top: 8px;
 }
 
-.codexidian-baked-duration {
+.codexian-baked-duration {
   color: var(--text-muted);
   font-size: 12px;
   font-weight: 500;
@@ -200,7 +200,7 @@
 }
 
 /* Action buttons toolbar below user messages */
-.codexidian-user-msg-actions {
+.codexian-user-msg-actions {
   position: absolute;
   bottom: -20px;
   right: 0;
@@ -211,11 +211,11 @@
   z-index: 1;
 }
 
-.codexidian-message-user:hover .codexidian-user-msg-actions {
+.codexian-message-user:hover .codexian-user-msg-actions {
   opacity: 1;
 }
 
-.codexidian-user-msg-actions span {
+.codexian-user-msg-actions span {
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -224,38 +224,38 @@
   transition: color 0.15s;
 }
 
-.codexidian-user-msg-actions span svg {
+.codexian-user-msg-actions span svg {
   width: 16px;
   height: 16px;
 }
 
-.codexidian-user-msg-actions span:hover {
+.codexian-user-msg-actions span:hover {
   color: var(--text-normal);
 }
 
-.codexidian-user-msg-actions span.copied {
+.codexian-user-msg-actions span.copied {
   color: var(--text-accent);
   font-size: 11px;
   font-family: var(--font-monospace);
 }
 
 /* Compact boundary indicator */
-.codexidian-compact-boundary {
+.codexian-compact-boundary {
   display: flex;
   align-items: center;
   gap: 10px;
   margin: 12px 0;
 }
 
-.codexidian-compact-boundary::before,
-.codexidian-compact-boundary::after {
+.codexian-compact-boundary::before,
+.codexian-compact-boundary::after {
   content: '';
   flex: 1;
   height: 1px;
   background: var(--background-modifier-border);
 }
 
-.codexidian-compact-boundary-label {
+.codexian-compact-boundary-label {
   color: var(--text-muted);
   font-size: 11px;
   white-space: nowrap;

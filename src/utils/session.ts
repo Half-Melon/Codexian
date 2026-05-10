@@ -1,5 +1,5 @@
 /**
- * Codexidian - Session Utilities
+ * Codexian - Session Utilities
  *
  * Session recovery and history reconstruction.
  */

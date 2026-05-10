@@ -1,5 +1,5 @@
 /**
- * Codexidian - Markdown Utilities
+ * Codexian - Markdown Utilities
  *
  * Markdown manipulation helpers.
  */

@@ -61,10 +61,10 @@ export const CHAT_VIEW_PLACEMENTS = [
   'main-tab',
 ] as const;
 
-/** Workspace location used when opening the Codexidian chat view. */
+/** Workspace location used when opening the Codexian chat view. */
 export type ChatViewPlacement = typeof CHAT_VIEW_PLACEMENTS[number];
 
-/** Codexidian knowledge workflow prompt and runtime preferences. */
+/** Codexian knowledge workflow prompt and runtime preferences. */
 export interface KnowledgeWorkflowSettings {
   batchSize: number;
   summaryTemplate: string;
@@ -94,13 +94,13 @@ export type HostnameCliPaths = Record<string, string>;
 export type ProviderConfigMap = Partial<Record<string, Record<string, unknown>>>;
 
 /**
- * Application settings stored in .codexidian/codexidian-settings.json.
+ * Application settings stored in .codexian/codexian-settings.json.
  *
  * Provider-specific fields (model, thinkingBudget, effortLevel, serviceTier, etc.) use
  * `string` here.  The active provider casts internally when it needs
  * narrower types.
  */
-export interface CodexidianSettings {
+export interface CodexianSettings {
   // User preferences
   userName: string;
 

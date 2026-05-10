@@ -21,7 +21,7 @@ import {
 import { extractToolResultContent } from '../../../core/tools/toolResultContent';
 import type { ChatMessage, StreamChunk, ToolCallInfo } from '../../../core/types';
 import type { SDKToolUseResult } from '../../../core/types/diff';
-import type CodexidianPlugin from '../../../main';
+import type CodexianPlugin from '../../../main';
 import {
   cancelScheduledAnimationFrame,
   scheduleAnimationFrame,
@@ -60,7 +60,7 @@ import type { ChatState } from '../state/ChatState';
 import type { FileContextManager } from '../ui/FileContext';
 
 export interface StreamControllerDeps {
-  plugin: CodexidianPlugin;
+  plugin: CodexianPlugin;
   state: ChatState;
   renderer: MessageRenderer;
   subagentStateTracker: SubagentStateTracker;
@@ -255,13 +255,13 @@ export class StreamController {
         // If already rendered, update the header name + summary
         const toolEl = state.toolCallElements.get(chunk.id);
         if (toolEl) {
-          const nameEl = toolEl.querySelector('.codexidian-tool-name') as HTMLElement | null
-            ?? toolEl.querySelector('.codexidian-write-edit-name') as HTMLElement | null;
+          const nameEl = toolEl.querySelector('.codexian-tool-name') as HTMLElement | null
+            ?? toolEl.querySelector('.codexian-write-edit-name') as HTMLElement | null;
           if (nameEl) {
             nameEl.setText(getToolName(existingToolCall.name, existingToolCall.input));
           }
-          const summaryEl = toolEl.querySelector('.codexidian-tool-summary') as HTMLElement | null
-            ?? toolEl.querySelector('.codexidian-write-edit-summary') as HTMLElement | null;
+          const summaryEl = toolEl.querySelector('.codexian-tool-summary') as HTMLElement | null
+            ?? toolEl.querySelector('.codexian-write-edit-summary') as HTMLElement | null;
           if (summaryEl) {
             summaryEl.setText(getToolSummary(existingToolCall.name, existingToolCall.input));
           }
@@ -629,7 +629,7 @@ export class StreamController {
     this.hideThinkingIndicator();
 
     if (!state.currentTextEl) {
-      state.currentTextEl = state.currentContentEl.createDiv({ cls: 'codexidian-text-block' });
+      state.currentTextEl = state.currentContentEl.createDiv({ cls: 'codexian-text-block' });
       state.currentTextContent = '';
     }
 
@@ -934,14 +934,14 @@ export class StreamController {
       if (!state.currentContentEl || state.thinkingEl || state.currentThinkingState) return;
 
       const cls = overrideCls
-        ? `codexidian-thinking ${overrideCls}`
-        : 'codexidian-thinking';
+        ? `codexian-thinking ${overrideCls}`
+        : 'codexian-thinking';
       state.thinkingEl = state.currentContentEl.createDiv({ cls });
       const text = overrideText || FLAVOR_TEXTS[Math.floor(Math.random() * FLAVOR_TEXTS.length)];
       state.thinkingEl.createSpan({ text });
 
       // Create timer span with initial value
-      const timerSpan = state.thinkingEl.createSpan({ cls: 'codexidian-thinking-hint' });
+      const timerSpan = state.thinkingEl.createSpan({ cls: 'codexian-thinking-hint' });
       const updateTimer = () => {
         if (!state.responseStartTime) return;
         // Check if element is still connected to DOM (prevents orphaned interval updates)
@@ -993,8 +993,8 @@ export class StreamController {
     const { state } = this.deps;
     if (!state.currentContentEl) return;
     this.hideThinkingIndicator();
-    const el = state.currentContentEl.createDiv({ cls: 'codexidian-compact-boundary' });
-    el.createSpan({ cls: 'codexidian-compact-boundary-label', text: 'Conversation compacted' });
+    const el = state.currentContentEl.createDiv({ cls: 'codexian-compact-boundary' });
+    el.createSpan({ cls: 'codexian-compact-boundary-label', text: 'Conversation compacted' });
   }
 
   // ============================================

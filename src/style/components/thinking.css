@@ -1,42 +1,42 @@
-.codexidian-thinking {
-  color: var(--codexidian-brand);
+.codexian-thinking {
+  color: var(--codexian-brand);
   font-style: italic;
   padding: 4px 0;
   text-align: start;
   animation: thinking-pulse 1.5s ease-in-out infinite;
 }
 
-.codexidian-thinking.codexidian-thinking--compact {
-  color: var(--codexidian-compact);
+.codexian-thinking.codexian-thinking--compact {
+  color: var(--codexian-compact);
 }
 
-.codexidian-thinking-hint {
+.codexian-thinking-hint {
   color: var(--text-muted);
   font-style: normal;
   font-variant-numeric: tabular-nums;
 }
 
-.codexidian-thinking-block {
+.codexian-thinking-block {
   margin: 8px 0;
 }
 
-.codexidian-text-block+.codexidian-thinking-block {
+.codexian-text-block+.codexian-thinking-block {
   margin-top: 8px;
 }
 
-.codexidian-thinking-block+.codexidian-text-block {
+.codexian-thinking-block+.codexian-text-block {
   margin-top: 8px;
 }
 
-.codexidian-thinking-block+.codexidian-tool-call {
+.codexian-thinking-block+.codexian-tool-call {
   margin-top: 8px;
 }
 
-.codexidian-tool-call+.codexidian-thinking-block {
+.codexian-tool-call+.codexian-thinking-block {
   margin-top: 8px;
 }
 
-.codexidian-thinking-header {
+.codexian-thinking-header {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -45,15 +45,15 @@
   overflow: hidden;
 }
 
-.codexidian-thinking-label {
+.codexian-thinking-label {
   flex: 1;
   font-size: 13px;
   font-weight: 500;
-  color: var(--codexidian-brand);
+  color: var(--codexian-brand);
 }
 
 /* Thinking block content - tree-branch style */
-.codexidian-thinking-content {
+.codexian-thinking-content {
   padding: 4px 0;
   padding-inline-start: 24px;
   font-size: 13px;
@@ -65,24 +65,24 @@
   margin-inline-start: 7px;
 }
 
-.codexidian-thinking-content p {
+.codexian-thinking-content p {
   margin: 0 0 8px 0;
 }
 
-.codexidian-thinking-content p:last-child {
+.codexian-thinking-content p:last-child {
   margin-bottom: 0;
 }
 
-.codexidian-thinking-content .codexidian-code-wrapper {
+.codexian-thinking-content .codexian-code-wrapper {
   margin: 8px 0;
 }
 
-.codexidian-thinking-content .codexidian-code-wrapper pre {
+.codexian-thinking-content .codexian-code-wrapper pre {
   padding: 8px 10px;
   border-radius: 4px;
 }
 
-.codexidian-thinking-content code {
+.codexian-thinking-content code {
   font-family: var(--font-monospace);
   font-size: 12px;
 }

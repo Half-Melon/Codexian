@@ -21,7 +21,7 @@ import type {
 } from '../../../core/runtime/types';
 import { TOOL_EXIT_PLAN_MODE } from '../../../core/tools/toolNames';
 import type { ApprovalDecision, ChatMessage, ExitPlanModeDecision, StreamChunk } from '../../../core/types';
-import type CodexidianPlugin from '../../../main';
+import type CodexianPlugin from '../../../main';
 import { ResumeSessionDropdown } from '../../../shared/components/ResumeSessionDropdown';
 import { InstructionModal } from '../../../shared/modals/InstructionConfirmModal';
 import type { BrowserSelectionContext } from '../../../utils/browser';
@@ -63,7 +63,7 @@ const DEFAULT_APPROVAL_DECISION_OPTIONS: ApprovalDecisionOption[] =
   }));
 
 export interface InputControllerDeps {
-  plugin: CodexidianPlugin;
+  plugin: CodexianPlugin;
   state: ChatState;
   renderer: MessageRenderer;
   streamController: StreamController;
@@ -316,7 +316,7 @@ export class InputController {
 
     streamController.showThinkingIndicator(
       isCompact ? 'Compacting...' : undefined,
-      isCompact ? 'codexidian-thinking--compact' : undefined,
+      isCompact ? 'codexian-thinking--compact' : undefined,
     );
     state.responseStartTime = performance.now();
 
@@ -410,7 +410,7 @@ export class InputController {
       if (!wasInvalidated && state.streamGeneration === streamGeneration) {
         const didCancelThisTurn = wasInterrupted || state.cancelRequested;
         if (didCancelThisTurn && !state.pendingNewSessionPlan) {
-          await streamController.appendText('\n\n<span class="codexidian-interrupted">Interrupted</span> <span class="codexidian-interrupted-hint">· What should Codexidian do instead?</span>');
+          await streamController.appendText('\n\n<span class="codexian-interrupted">Interrupted</span> <span class="codexian-interrupted-hint">· What should Codexian do instead?</span>');
         }
         streamController.hideThinkingIndicator();
         state.isStreaming = false;
@@ -430,10 +430,10 @@ export class InputController {
             finalAssistantMsg.durationFlavorWord = flavorWord;
             // Add footer to live message in DOM
             if (state.currentContentEl) {
-              const footerEl = state.currentContentEl.createDiv({ cls: 'codexidian-response-footer' });
+              const footerEl = state.currentContentEl.createDiv({ cls: 'codexian-response-footer' });
               footerEl.createSpan({
                 text: `* ${flavorWord} for ${formatDurationMmSs(durationSeconds)}`,
-                cls: 'codexidian-baked-duration',
+                cls: 'codexian-baked-duration',
               });
             }
           }
@@ -545,13 +545,13 @@ export class InputController {
     if (visibleQueuedMessage) {
       const isPendingSteerOnly = !state.queuedMessage && !!this.pendingSteerMessage;
       indicatorEl.createSpan({
-        cls: 'codexidian-queue-indicator-text',
+        cls: 'codexian-queue-indicator-text',
         text: `${isPendingSteerOnly ? '⌙ Steering: ' : '⌙ Queued: '}${this.getQueuedMessageDisplay(visibleQueuedMessage)}`,
       });
 
       if (state.queuedMessage && this.canSteerQueuedMessage()) {
         const steerButton = indicatorEl.createEl('button', {
-          cls: 'codexidian-queue-indicator-action',
+          cls: 'codexian-queue-indicator-action',
           text: this.steerInFlight ? 'Steering...' : 'Steer Now',
         });
         steerButton.setAttribute('type', 'button');
@@ -849,7 +849,7 @@ export class InputController {
   private activateStreamingAssistantMessage(message: ChatMessage): void {
     const { state, renderer } = this.deps;
     const msgEl = renderer.addMessage(message);
-    const contentEl = msgEl.querySelector('.codexidian-message-content') as HTMLElement | null;
+    const contentEl = msgEl.querySelector('.codexian-message-content') as HTMLElement | null;
 
     if (!contentEl) {
       return;
@@ -1213,26 +1213,26 @@ export class InputController {
     }
 
     // Build header element, then detach — InlineAskUserQuestion will re-attach it
-    const headerEl = parentEl.createDiv({ cls: 'codexidian-ask-approval-info' });
+    const headerEl = parentEl.createDiv({ cls: 'codexian-ask-approval-info' });
     headerEl.remove();
 
-    const toolEl = headerEl.createDiv({ cls: 'codexidian-ask-approval-tool' });
-    const iconEl = toolEl.createSpan({ cls: 'codexidian-ask-approval-icon' });
+    const toolEl = headerEl.createDiv({ cls: 'codexian-ask-approval-tool' });
+    const iconEl = toolEl.createSpan({ cls: 'codexian-ask-approval-icon' });
     iconEl.setAttribute('aria-hidden', 'true');
     setToolIcon(iconEl, toolName);
-    toolEl.createSpan({ text: toolName, cls: 'codexidian-ask-approval-tool-name' });
+    toolEl.createSpan({ text: toolName, cls: 'codexian-ask-approval-tool-name' });
 
     if (approvalOptions?.decisionReason) {
-      headerEl.createDiv({ text: approvalOptions.decisionReason, cls: 'codexidian-ask-approval-reason' });
+      headerEl.createDiv({ text: approvalOptions.decisionReason, cls: 'codexian-ask-approval-reason' });
     }
     if (approvalOptions?.blockedPath) {
-      headerEl.createDiv({ text: approvalOptions.blockedPath, cls: 'codexidian-ask-approval-blocked-path' });
+      headerEl.createDiv({ text: approvalOptions.blockedPath, cls: 'codexian-ask-approval-blocked-path' });
     }
     if (approvalOptions?.agentID) {
-      headerEl.createDiv({ text: `Agent: ${approvalOptions.agentID}`, cls: 'codexidian-ask-approval-agent' });
+      headerEl.createDiv({ text: `Agent: ${approvalOptions.agentID}`, cls: 'codexian-ask-approval-agent' });
     }
 
-    headerEl.createDiv({ text: description, cls: 'codexidian-ask-approval-desc' });
+    headerEl.createDiv({ text: description, cls: 'codexian-ask-approval-desc' });
 
     const decisionOptions = approvalOptions?.decisionOptions ?? DEFAULT_APPROVAL_DECISION_OPTIONS;
     const optionDecisionMap = new Map<string, ApprovalDecision>();

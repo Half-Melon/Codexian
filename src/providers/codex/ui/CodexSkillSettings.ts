@@ -44,7 +44,7 @@ export class CodexSkillModal extends Modal {
 
   onOpen() {
     this.setTitle(this.existing ? 'Edit Codex Skill' : 'Add Codex Skill');
-    this.modalEl.addClass('codexidian-sp-modal');
+    this.modalEl.addClass('codexian-sp-modal');
 
     const { contentEl } = this;
 
@@ -81,7 +81,7 @@ export class CodexSkillModal extends Modal {
       .setDesc('The skill instructions (SKILL.md content)');
 
     const contentArea = contentEl.createEl('textarea', {
-      cls: 'codexidian-sp-content-area',
+      cls: 'codexian-sp-content-area',
       attr: { rows: '10', placeholder: 'Analyze the code for...' },
     });
     contentArea.value = this.existing?.content || '';
@@ -130,17 +130,17 @@ export class CodexSkillModal extends Modal {
     };
     this._triggerSave = doSave;
 
-    const buttonContainer = contentEl.createDiv({ cls: 'codexidian-sp-modal-buttons' });
+    const buttonContainer = contentEl.createDiv({ cls: 'codexian-sp-modal-buttons' });
 
     const cancelBtn = buttonContainer.createEl('button', {
       text: 'Cancel',
-      cls: 'codexidian-cancel-btn',
+      cls: 'codexian-cancel-btn',
     });
     cancelBtn.addEventListener('click', () => this.close());
 
     const saveBtn = buttonContainer.createEl('button', {
       text: 'Save',
-      cls: 'codexidian-save-btn',
+      cls: 'codexian-save-btn',
     });
     saveBtn.addEventListener('click', doSave);
   }
@@ -182,55 +182,55 @@ export class CodexSkillSettings {
       this.entries = [];
     }
 
-    const headerEl = this.containerEl.createDiv({ cls: 'codexidian-sp-header' });
-    headerEl.createSpan({ text: 'Codex Skills', cls: 'codexidian-sp-label' });
+    const headerEl = this.containerEl.createDiv({ cls: 'codexian-sp-header' });
+    headerEl.createSpan({ text: 'Codex Skills', cls: 'codexian-sp-label' });
 
-    const actionsEl = headerEl.createDiv({ cls: 'codexidian-sp-header-actions' });
+    const actionsEl = headerEl.createDiv({ cls: 'codexian-sp-header-actions' });
     const refreshBtn = actionsEl.createEl('button', {
-      cls: 'codexidian-settings-action-btn',
+      cls: 'codexian-settings-action-btn',
       attr: { 'aria-label': 'Refresh' },
     });
     setIcon(refreshBtn, 'refresh-cw');
     refreshBtn.addEventListener('click', () => { void this.refresh(); });
 
     const addBtn = actionsEl.createEl('button', {
-      cls: 'codexidian-settings-action-btn',
+      cls: 'codexian-settings-action-btn',
       attr: { 'aria-label': 'Add' },
     });
     setIcon(addBtn, 'plus');
     addBtn.addEventListener('click', () => this.openModal(null));
 
     if (this.entries.length === 0) {
-      const emptyEl = this.containerEl.createDiv({ cls: 'codexidian-sp-empty-state' });
+      const emptyEl = this.containerEl.createDiv({ cls: 'codexian-sp-empty-state' });
       emptyEl.setText('No Codex skills in vault. Click + to create one.');
       return;
     }
 
-    const listEl = this.containerEl.createDiv({ cls: 'codexidian-sp-list' });
+    const listEl = this.containerEl.createDiv({ cls: 'codexian-sp-list' });
     for (const entry of this.entries) {
       this.renderItem(listEl, entry);
     }
   }
 
   private renderItem(listEl: HTMLElement, entry: ProviderCommandEntry): void {
-    const itemEl = listEl.createDiv({ cls: 'codexidian-sp-item' });
-    const infoEl = itemEl.createDiv({ cls: 'codexidian-sp-info' });
+    const itemEl = listEl.createDiv({ cls: 'codexian-sp-item' });
+    const infoEl = itemEl.createDiv({ cls: 'codexian-sp-info' });
 
-    const headerRow = infoEl.createDiv({ cls: 'codexidian-sp-item-header' });
-    const nameEl = headerRow.createSpan({ cls: 'codexidian-sp-item-name' });
+    const headerRow = infoEl.createDiv({ cls: 'codexian-sp-item-header' });
+    const nameEl = headerRow.createSpan({ cls: 'codexian-sp-item-name' });
     nameEl.setText(`$${entry.name}`);
-    headerRow.createSpan({ text: 'skill', cls: 'codexidian-slash-item-badge' });
+    headerRow.createSpan({ text: 'skill', cls: 'codexian-slash-item-badge' });
 
     if (entry.description) {
-      const descEl = infoEl.createDiv({ cls: 'codexidian-sp-item-desc' });
+      const descEl = infoEl.createDiv({ cls: 'codexian-sp-item-desc' });
       descEl.setText(entry.description);
     }
 
-    const actionsEl = itemEl.createDiv({ cls: 'codexidian-sp-item-actions' });
+    const actionsEl = itemEl.createDiv({ cls: 'codexian-sp-item-actions' });
 
     if (entry.isEditable) {
       const editBtn = actionsEl.createEl('button', {
-        cls: 'codexidian-settings-action-btn',
+        cls: 'codexian-settings-action-btn',
         attr: { 'aria-label': 'Edit' },
       });
       setIcon(editBtn, 'pencil');
@@ -239,7 +239,7 @@ export class CodexSkillSettings {
 
     if (entry.isDeletable) {
       const deleteBtn = actionsEl.createEl('button', {
-        cls: 'codexidian-settings-action-btn codexidian-settings-delete-btn',
+        cls: 'codexian-settings-action-btn codexian-settings-delete-btn',
         attr: { 'aria-label': 'Delete' },
       });
       setIcon(deleteBtn, 'trash-2');

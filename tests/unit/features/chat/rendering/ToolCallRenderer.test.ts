@@ -108,7 +108,7 @@ describe('ToolCallRenderer', () => {
       });
 
       const toolEl = renderStoredToolCall(parentEl, toolCall);
-      const answerEls = toolEl.querySelectorAll('.codexidian-ask-review-a-text');
+      const answerEls = toolEl.querySelectorAll('.codexian-ask-review-a-text');
 
       expect(answerEls).toHaveLength(1);
       expect(answerEls[0].textContent).toBe('Blue');
@@ -124,7 +124,7 @@ describe('ToolCallRenderer', () => {
       });
 
       const toolEl = renderStoredToolCall(parentEl, toolCall);
-      const answerEls = toolEl.querySelectorAll('.codexidian-ask-review-a-text');
+      const answerEls = toolEl.querySelectorAll('.codexian-ask-review-a-text');
 
       expect(answerEls).toHaveLength(1);
       expect(answerEls[0].textContent).toBe('Blue');
@@ -148,9 +148,9 @@ describe('ToolCallRenderer', () => {
       });
 
       const toolEl = renderStoredToolCall(parentEl, toolCall);
-      const labelEls = toolEl.querySelectorAll('.codexidian-ask-item-label');
-      const descEls = toolEl.querySelectorAll('.codexidian-ask-item-desc');
-      const checkEls = toolEl.querySelectorAll('.codexidian-ask-check');
+      const labelEls = toolEl.querySelectorAll('.codexian-ask-item-label');
+      const descEls = toolEl.querySelectorAll('.codexian-ask-item-desc');
+      const checkEls = toolEl.querySelectorAll('.codexian-ask-check');
 
       expect(Array.from(labelEls, el => el.textContent)).toEqual(['Non-blocking', 'Blocking']);
       expect(Array.from(descEls, el => el.textContent)).toEqual(['Generate title later.', 'Wait for title first.']);
@@ -171,7 +171,7 @@ describe('ToolCallRenderer', () => {
       toolCall.result = 'Success';
       updateToolCallResult('tool-1', toolCall, toolCallElements);
 
-      const statusEl = toolEl.querySelector('.codexidian-tool-status');
+      const statusEl = toolEl.querySelector('.codexian-tool-status');
       expect(statusEl?.hasClass('status-completed')).toBe(true);
     });
 
@@ -190,7 +190,7 @@ describe('ToolCallRenderer', () => {
 
       updateToolCallResult('ask-1', toolCall, toolCallElements);
 
-      const promptEl = toolEl.querySelector('.codexidian-ask-review-prompt');
+      const promptEl = toolEl.querySelector('.codexian-ask-review-prompt');
       expect(promptEl?.textContent).toBe('Answer submitted successfully.');
     });
   });
@@ -525,7 +525,7 @@ describe('ToolCallRenderer', () => {
       });
 
       const toolEl = renderStoredToolCall(parentEl, toolCall);
-      const lines = Array.from(toolEl.querySelectorAll('.codexidian-tool-line')).map(line => line.textContent);
+      const lines = Array.from(toolEl.querySelectorAll('.codexian-tool-line')).map(line => line.textContent);
 
       expect(lines).toContain('Query: obsidian plugin API');
       expect(lines).toContain('Alt query: obsidian docs');
@@ -545,13 +545,13 @@ describe('ToolCallRenderer', () => {
       });
 
       const toolEl = renderStoredToolCall(parentEl, toolCall);
-      const links = toolEl.querySelectorAll('.codexidian-tool-link');
-      const lines = Array.from(toolEl.querySelectorAll('.codexidian-tool-line')).map(line => line.textContent);
+      const links = toolEl.querySelectorAll('.codexian-tool-link');
+      const lines = Array.from(toolEl.querySelectorAll('.codexian-tool-line')).map(line => line.textContent);
 
       expect(lines).toContain('Open page');
       expect(links).toHaveLength(1);
       expect(links[0].getAttribute('href')).toBe('https://example.com/docs');
-      expect(links[0].querySelector('.codexidian-tool-link-title')?.textContent).toBe('https://example.com/docs');
+      expect(links[0].querySelector('.codexian-tool-link-title')?.textContent).toBe('https://example.com/docs');
     });
   });
 
@@ -575,8 +575,8 @@ describe('ToolCallRenderer', () => {
       });
 
       const toolEl = renderStoredToolCall(parentEl, toolCall);
-      const headers = Array.from(toolEl.querySelectorAll('.codexidian-tool-patch-header')).map(el => el.textContent);
-      const diffTexts = Array.from(toolEl.querySelectorAll('.codexidian-diff-text')).map(el => el.textContent);
+      const headers = Array.from(toolEl.querySelectorAll('.codexian-tool-patch-header')).map(el => el.textContent);
+      const diffTexts = Array.from(toolEl.querySelectorAll('.codexian-diff-text')).map(el => el.textContent);
 
       expect(headers).toContain('update: src/main.ts (+1 -1)');
       expect(diffTexts).toContain("import { Plugin } from 'obsidian';");
@@ -595,7 +595,7 @@ describe('ToolCallRenderer', () => {
       });
 
       const toolEl = renderStoredToolCall(parentEl, toolCall);
-      const lines = Array.from(toolEl.querySelectorAll('.codexidian-tool-line')).map(el => el.textContent);
+      const lines = Array.from(toolEl.querySelectorAll('.codexian-tool-line')).map(el => el.textContent);
 
       expect(lines).toContain('update: src/main.ts');
     });
@@ -638,8 +638,8 @@ describe('ToolCallRenderer', () => {
         ],
       };
       renderTodoWriteResult(container as unknown as HTMLElement, input);
-      expect(container.hasClass('codexidian-todo-panel-content')).toBe(true);
-      expect(container.hasClass('codexidian-todo-list-container')).toBe(true);
+      expect(container.hasClass('codexian-todo-panel-content')).toBe(true);
+      expect(container.hasClass('codexian-todo-list-container')).toBe(true);
     });
 
     it('should show fallback text when no todos array', () => {
@@ -679,7 +679,7 @@ describe('ToolCallRenderer', () => {
       };
       updateToolCallResult('todo-1', toolCall, toolCallElements);
 
-      const statusEl = parentEl.querySelector('.codexidian-tool-status');
+      const statusEl = parentEl.querySelector('.codexian-tool-status');
       expect(statusEl?.hasClass('status-completed')).toBe(true);
     });
 

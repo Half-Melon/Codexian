@@ -144,15 +144,15 @@ describe('ModelSelector', () => {
     const callbacks = createCallbacks();
     new ModelSelector(parentEl, callbacks as any);
 
-    expect(findByClass(parentEl, 'codexidian-model-label')?.textContent).toBe(DEFAULT_CODEX_PRIMARY_MODEL_LABEL);
+    expect(findByClass(parentEl, 'codexian-model-label')?.textContent).toBe(DEFAULT_CODEX_PRIMARY_MODEL_LABEL);
 
-    const options = findAllByClass(parentEl, 'codexidian-model-option');
+    const options = findAllByClass(parentEl, 'codexian-model-option');
     const customOption = options.find(option => option.children.some((child: any) => child.textContent === 'custom-codex-model'));
     customOption?.click();
     await Promise.resolve();
 
     expect(callbacks.onModelChange).toHaveBeenCalledWith('custom-codex-model');
-    expect(findByClass(parentEl, 'codexidian-model-label')?.textContent).toBe('custom-codex-model');
+    expect(findByClass(parentEl, 'codexian-model-label')?.textContent).toBe('custom-codex-model');
   });
 });
 
@@ -163,9 +163,9 @@ describe('ThinkingBudgetSelector', () => {
 
     new ThinkingBudgetSelector(parentEl, callbacks as any);
 
-    expect(findByClass(parentEl, 'codexidian-thinking-effort')?.style.display).toBe('');
-    expect(findByClass(parentEl, 'codexidian-thinking-budget')?.style.display).toBe('none');
-    expect(findByClass(parentEl, 'codexidian-thinking-current')?.textContent).toBe('Medium');
+    expect(findByClass(parentEl, 'codexian-thinking-effort')?.style.display).toBe('');
+    expect(findByClass(parentEl, 'codexian-thinking-budget')?.style.display).toBe('none');
+    expect(findByClass(parentEl, 'codexian-thinking-current')?.textContent).toBe('Medium');
   });
 
   it('hides reasoning controls when the provider exposes no reasoning control', () => {
@@ -176,8 +176,8 @@ describe('ThinkingBudgetSelector', () => {
 
     new ThinkingBudgetSelector(parentEl, callbacks as any);
 
-    expect(findByClass(parentEl, 'codexidian-thinking-effort')?.style.display).toBe('none');
-    expect(findByClass(parentEl, 'codexidian-thinking-budget')?.style.display).toBe('none');
+    expect(findByClass(parentEl, 'codexian-thinking-effort')?.style.display).toBe('none');
+    expect(findByClass(parentEl, 'codexian-thinking-budget')?.style.display).toBe('none');
   });
 });
 
@@ -187,13 +187,13 @@ describe('PermissionToggle', () => {
     const callbacks = createCallbacks();
     new PermissionToggle(parentEl, callbacks as any);
 
-    expect(findByClass(parentEl, 'codexidian-permission-label')?.textContent).toBe('Safe');
+    expect(findByClass(parentEl, 'codexian-permission-label')?.textContent).toBe('Safe');
 
-    findByClass(parentEl, 'codexidian-toggle-switch')?.click();
+    findByClass(parentEl, 'codexian-toggle-switch')?.click();
     await Promise.resolve();
 
     expect(callbacks.onPermissionModeChange).toHaveBeenCalledWith('yolo');
-    expect(findByClass(parentEl, 'codexidian-permission-label')?.textContent).toBe('YOLO');
+    expect(findByClass(parentEl, 'codexian-permission-label')?.textContent).toBe('YOLO');
   });
 
   it('renders plan mode as a label when plan mode is active', () => {
@@ -203,8 +203,8 @@ describe('PermissionToggle', () => {
 
     new PermissionToggle(parentEl, callbacks as any);
 
-    expect(findByClass(parentEl, 'codexidian-permission-label')?.textContent).toBe('Plan');
-    expect(findByClass(parentEl, 'codexidian-toggle-switch')?.style.display).toBe('none');
+    expect(findByClass(parentEl, 'codexian-permission-label')?.textContent).toBe('Plan');
+    expect(findByClass(parentEl, 'codexian-toggle-switch')?.style.display).toBe('none');
   });
 });
 
@@ -215,7 +215,7 @@ describe('ServiceTierToggle', () => {
 
     new ServiceTierToggle(parentEl, callbacks as any);
 
-    const button = findByClass(parentEl, 'codexidian-service-tier-button');
+    const button = findByClass(parentEl, 'codexian-service-tier-button');
     expect(button).toBeDefined();
     button?.click();
     await Promise.resolve();
@@ -230,7 +230,7 @@ describe('ServiceTierToggle', () => {
 
     new ServiceTierToggle(parentEl, callbacks as any);
 
-    expect(findByClass(parentEl, 'codexidian-service-tier-toggle')?.style.display).toBe('none');
+    expect(findByClass(parentEl, 'codexian-service-tier-toggle')?.style.display).toBe('none');
   });
 });
 
@@ -260,10 +260,10 @@ describe('ContextUsageMeter', () => {
 
     meter.update(makeUsage({ contextTokens: 180000, percentage: 90 }));
 
-    const container = findByClass(parentEl, 'codexidian-context-meter');
+    const container = findByClass(parentEl, 'codexian-context-meter');
     expect(container?.style.display).toBe('flex');
     expect(container?.hasClass('warning')).toBe(true);
-    expect(findByClass(parentEl, 'codexidian-context-meter-percent')?.textContent).toBe('90%');
+    expect(findByClass(parentEl, 'codexian-context-meter-percent')?.textContent).toBe('90%');
   });
 
   it('hides when usage is empty', () => {
@@ -272,7 +272,7 @@ describe('ContextUsageMeter', () => {
 
     meter.update(null);
 
-    expect(findByClass(parentEl, 'codexidian-context-meter')?.style.display).toBe('none');
+    expect(findByClass(parentEl, 'codexian-context-meter')?.style.display).toBe('none');
   });
 });
 

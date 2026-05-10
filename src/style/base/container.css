@@ -1,4 +1,4 @@
-.codexidian-container {
+.codexian-container {
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -7,14 +7,14 @@
   font-family: var(--font-text);
 }
 
-.codexidian-provider-icon-variant--dark {
+.codexian-provider-icon-variant--dark {
   display: none;
 }
 
-body.theme-dark .codexidian-provider-icon-variant--light {
+body.theme-dark .codexian-provider-icon-variant--light {
   display: none;
 }
 
-body.theme-dark .codexidian-provider-icon-variant--dark {
+body.theme-dark .codexian-provider-icon-variant--dark {
   display: inline;
 }

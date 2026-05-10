@@ -71,16 +71,16 @@ export function renderDiffContent(
   // New file creation: all lines are inserts — cap display to avoid large DOM
   const allInserts = diffLines.length > 0 && diffLines.every(l => l.type === 'insert');
   if (allInserts && diffLines.length > NEW_FILE_DISPLAY_CAP) {
-    const hunkEl = containerEl.createDiv({ cls: 'codexidian-diff-hunk' });
+    const hunkEl = containerEl.createDiv({ cls: 'codexian-diff-hunk' });
     for (const line of diffLines.slice(0, NEW_FILE_DISPLAY_CAP)) {
-      const lineEl = hunkEl.createDiv({ cls: 'codexidian-diff-line codexidian-diff-insert' });
-      const prefixEl = lineEl.createSpan({ cls: 'codexidian-diff-prefix' });
+      const lineEl = hunkEl.createDiv({ cls: 'codexian-diff-line codexian-diff-insert' });
+      const prefixEl = lineEl.createSpan({ cls: 'codexian-diff-prefix' });
       prefixEl.setText('+');
-      const contentEl = lineEl.createSpan({ cls: 'codexidian-diff-text' });
+      const contentEl = lineEl.createSpan({ cls: 'codexian-diff-text' });
       contentEl.setText(line.text || ' ');
     }
     const remaining = diffLines.length - NEW_FILE_DISPLAY_CAP;
-    const separator = containerEl.createDiv({ cls: 'codexidian-diff-separator' });
+    const separator = containerEl.createDiv({ cls: 'codexian-diff-separator' });
     separator.setText(`... ${remaining} more lines`);
     return;
   }
@@ -89,7 +89,7 @@ export function renderDiffContent(
 
   if (hunks.length === 0) {
     // No changes
-    const noChanges = containerEl.createDiv({ cls: 'codexidian-diff-no-changes' });
+    const noChanges = containerEl.createDiv({ cls: 'codexian-diff-no-changes' });
     noChanges.setText('No changes');
     return;
   }
@@ -97,23 +97,23 @@ export function renderDiffContent(
   hunks.forEach((hunk, hunkIndex) => {
     // Add separator between hunks
     if (hunkIndex > 0) {
-      const separator = containerEl.createDiv({ cls: 'codexidian-diff-separator' });
+      const separator = containerEl.createDiv({ cls: 'codexian-diff-separator' });
       separator.setText('...');
     }
 
     // Render hunk lines
-    const hunkEl = containerEl.createDiv({ cls: 'codexidian-diff-hunk' });
+    const hunkEl = containerEl.createDiv({ cls: 'codexian-diff-hunk' });
 
     for (const line of hunk.lines) {
-      const lineEl = hunkEl.createDiv({ cls: `codexidian-diff-line codexidian-diff-${line.type}` });
+      const lineEl = hunkEl.createDiv({ cls: `codexian-diff-line codexian-diff-${line.type}` });
 
       // Line prefix
       const prefix = line.type === 'insert' ? '+' : line.type === 'delete' ? '-' : ' ';
-      const prefixEl = lineEl.createSpan({ cls: 'codexidian-diff-prefix' });
+      const prefixEl = lineEl.createSpan({ cls: 'codexian-diff-prefix' });
       prefixEl.setText(prefix);
 
       // Line content
-      const contentEl = lineEl.createSpan({ cls: 'codexidian-diff-text' });
+      const contentEl = lineEl.createSpan({ cls: 'codexian-diff-text' });
       contentEl.setText(line.text || ' '); // Show space for empty lines
     }
   });

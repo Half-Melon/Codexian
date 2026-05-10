@@ -21,7 +21,7 @@ import type { ChatRuntime } from '../../../core/runtime/ChatRuntime';
 import type { AutoTurnResult } from '../../../core/runtime/types';
 import type { ChatMessage, Conversation } from '../../../core/types';
 import { t } from '../../../i18n/i18n';
-import type CodexidianPlugin from '../../../main';
+import type CodexianPlugin from '../../../main';
 import { SlashCommandDropdown } from '../../../shared/components/SlashCommandDropdown';
 import { getEnhancedPath } from '../../../utils/env';
 import { getVaultPath } from '../../../utils/path';
@@ -83,7 +83,7 @@ export function getBlankTabModelOptions(
  * settings-provider's model, which may belong to a different provider.
  */
 function resolveBlankTabModel(
-  plugin: CodexidianPlugin,
+  plugin: CodexianPlugin,
   providerId?: ProviderId,
 ): string {
   const settings = plugin.settings as unknown as Record<string, unknown>;
@@ -99,7 +99,7 @@ function resolveBlankTabModel(
 }
 
 export interface TabCreateOptions {
-  plugin: CodexidianPlugin;
+  plugin: CodexianPlugin;
 
   containerEl: HTMLElement;
   conversation?: Conversation;
@@ -118,7 +118,7 @@ export { getTabProviderId } from './providerResolution';
 
 function getTabCapabilities(
   tab: TabProviderContext,
-  plugin: CodexidianPlugin,
+  plugin: CodexianPlugin,
   conversation?: Conversation | null,
 ): ProviderCapabilities {
   const providerId = getTabProviderId(tab, plugin, conversation);
@@ -131,7 +131,7 @@ function getTabCapabilities(
 
 function getTabChatUIConfig(
   tab: TabProviderContext,
-  plugin: CodexidianPlugin,
+  plugin: CodexianPlugin,
   conversation?: Conversation | null,
 ): ProviderChatUIConfig {
   return ProviderRegistry.getChatUIConfig(getTabProviderId(tab, plugin, conversation));
@@ -139,7 +139,7 @@ function getTabChatUIConfig(
 
 function getTabSettingsSnapshot(
   tab: TabProviderContext,
-  plugin: CodexidianPlugin,
+  plugin: CodexianPlugin,
 ): TabProviderSettings {
   return ProviderSettingsCoordinator.getProviderSettingsSnapshot(
     plugin.settings as unknown as Record<string, unknown>,
@@ -149,7 +149,7 @@ function getTabSettingsSnapshot(
 
 function getTabPermissionMode(
   tab: TabProviderContext,
-  plugin: CodexidianPlugin,
+  plugin: CodexianPlugin,
 ): string {
   const permissionMode = getTabSettingsSnapshot(tab, plugin).permissionMode;
   return typeof permissionMode === 'string' && permissionMode
@@ -159,7 +159,7 @@ function getTabPermissionMode(
 
 function getTabHiddenCommands(
   tab: TabProviderContext,
-  plugin: CodexidianPlugin,
+  plugin: CodexianPlugin,
   conversation?: Conversation | null,
 ): Set<string> {
   return getHiddenProviderCommandSet(
@@ -187,7 +187,7 @@ function getRegistryProviderCatalogInfo(providerId: ProviderId): ProviderCatalog
 
 function syncSlashCommandDropdownForProvider(
   tab: TabData,
-  plugin: CodexidianPlugin,
+  plugin: CodexianPlugin,
   getProviderCatalogConfig?: () => ProviderCatalogInfo,
   conversation?: Conversation | null,
 ): void {
@@ -210,7 +210,7 @@ function syncSlashCommandDropdownForProvider(
 
 async function updateTabProviderSettings(
   tab: TabProviderContext,
-  plugin: CodexidianPlugin,
+  plugin: CodexianPlugin,
   update: (settings: TabProviderSettings) => void,
 ): Promise<TabProviderSettings> {
   const providerId = getTabProviderId(tab, plugin);
@@ -225,7 +225,7 @@ async function updateTabProviderSettings(
   return snapshot;
 }
 
-function refreshTabProviderUI(tab: TabData, plugin: CodexidianPlugin): void {
+function refreshTabProviderUI(tab: TabData, plugin: CodexianPlugin): void {
   const capabilities = getTabCapabilities(tab, plugin);
   const permissionMode = getTabPermissionMode(tab, plugin);
   tab.ui.modelSelector?.updateDisplay();
@@ -236,7 +236,7 @@ function refreshTabProviderUI(tab: TabData, plugin: CodexidianPlugin): void {
   tab.ui.permissionToggle?.updateDisplay();
   tab.ui.serviceTierToggle?.updateDisplay();
   tab.dom.inputWrapper.toggleClass(
-    'codexidian-input-plan-mode',
+    'codexian-input-plan-mode',
     permissionMode === 'plan' && capabilities.supportsPlanMode,
   );
 }
@@ -245,7 +245,7 @@ function refreshTabProviderUI(tab: TabData, plugin: CodexidianPlugin): void {
  * Hides or disables UI elements that the active provider does not support.
  * Called after toolbar initialization and on provider switches.
  */
-function applyProviderUIGating(tab: TabData, plugin: CodexidianPlugin): void {
+function applyProviderUIGating(tab: TabData, plugin: CodexianPlugin): void {
   const capabilities = getTabCapabilities(tab, plugin);
   const uiConfig = getTabChatUIConfig(tab, plugin);
   const hasPermissionToggle = Boolean(uiConfig.getPermissionModeToggle?.());
@@ -262,7 +262,7 @@ function applyProviderUIGating(tab: TabData, plugin: CodexidianPlugin): void {
 
 function syncTabProviderServices(
   tab: TabData,
-  plugin: CodexidianPlugin,
+  plugin: CodexianPlugin,
 ): void {
   tab.services.instructionRefineService?.cancel();
   tab.services.instructionRefineService?.resetConversation();
@@ -284,7 +284,7 @@ function cleanupTabRuntime(tab: TabData): void {
  * that is now disabled, it falls back to the first enabled provider's default
  * blank-tab model. Refreshes model selector options for all blank tabs.
  */
-export function onProviderAvailabilityChanged(tab: TabData, plugin: CodexidianPlugin): void {
+export function onProviderAvailabilityChanged(tab: TabData, plugin: CodexianPlugin): void {
   if (tab.lifecycleState !== 'blank') return;
 
   const settingsSnapshot = plugin.settings as unknown as Record<string, unknown>;
@@ -342,7 +342,7 @@ export function createTab(options: TabCreateOptions): TabData {
 
   const id = tabId ?? generateTabId();
 
-  const contentEl = containerEl.createDiv({ cls: 'codexidian-tab-content' });
+  const contentEl = containerEl.createDiv({ cls: 'codexian-tab-content' });
   contentEl.style.display = 'none';
 
   const state = new ChatState({
@@ -428,7 +428,7 @@ function autoResizeTextarea(textarea: HTMLTextAreaElement): void {
   textarea.style.minHeight = '';
 
   // Calculate max height: 55% of view height, minimum 150px
-  const viewHeight = textarea.closest('.codexidian-container')?.clientHeight ?? window.innerHeight;
+  const viewHeight = textarea.closest('.codexian-container')?.clientHeight ?? window.innerHeight;
   const maxHeight = Math.max(TEXTAREA_MIN_MAX_HEIGHT, viewHeight * TEXTAREA_MAX_HEIGHT_PERCENT);
 
   // Get flex-allocated height (what flexbox gives the textarea)
@@ -451,17 +451,17 @@ function autoResizeTextarea(textarea: HTMLTextAreaElement): void {
  * Builds the DOM structure for a tab.
  */
 function buildTabDOM(contentEl: HTMLElement): TabDOMElements {
-  const messagesWrapperEl = contentEl.createDiv({ cls: 'codexidian-messages-wrapper' });
-  const messagesEl = messagesWrapperEl.createDiv({ cls: 'codexidian-messages' });
-  const welcomeEl = messagesEl.createDiv({ cls: 'codexidian-welcome' });
-  const statusPanelContainerEl = contentEl.createDiv({ cls: 'codexidian-status-panel-container' });
-  const inputContainerEl = contentEl.createDiv({ cls: 'codexidian-input-container' });
-  const queueIndicatorEl = inputContainerEl.createDiv({ cls: 'codexidian-input-queue-row' });
-  const navRowEl = inputContainerEl.createDiv({ cls: 'codexidian-input-nav-row' });
-  const inputWrapper = inputContainerEl.createDiv({ cls: 'codexidian-input-wrapper' });
-  const contextRowEl = inputWrapper.createDiv({ cls: 'codexidian-context-row' });
+  const messagesWrapperEl = contentEl.createDiv({ cls: 'codexian-messages-wrapper' });
+  const messagesEl = messagesWrapperEl.createDiv({ cls: 'codexian-messages' });
+  const welcomeEl = messagesEl.createDiv({ cls: 'codexian-welcome' });
+  const statusPanelContainerEl = contentEl.createDiv({ cls: 'codexian-status-panel-container' });
+  const inputContainerEl = contentEl.createDiv({ cls: 'codexian-input-container' });
+  const queueIndicatorEl = inputContainerEl.createDiv({ cls: 'codexian-input-queue-row' });
+  const navRowEl = inputContainerEl.createDiv({ cls: 'codexian-input-nav-row' });
+  const inputWrapper = inputContainerEl.createDiv({ cls: 'codexian-input-wrapper' });
+  const contextRowEl = inputWrapper.createDiv({ cls: 'codexian-context-row' });
   const inputEl = inputWrapper.createEl('textarea', {
-    cls: 'codexidian-input',
+    cls: 'codexian-input',
     attr: {
       placeholder: 'How can I help you today?',
       rows: '3',
@@ -498,12 +498,12 @@ function buildTabDOM(contentEl: HTMLElement): TabDOMElements {
  */
 export async function initializeTabService(
   tab: TabData,
-  plugin: CodexidianPlugin,
+  plugin: CodexianPlugin,
   conversationOverride?: Conversation | null,
 ): Promise<void>;
 export async function initializeTabService(
   tab: TabData,
-  plugin: CodexidianPlugin,
+  plugin: CodexianPlugin,
   conversationOverride?: Conversation | null,
 ): Promise<void> {
   if (tab.lifecycleState === 'closing') {
@@ -577,7 +577,7 @@ export async function initializeTabService(
   }
 }
 
-function initializeContextManagers(tab: TabData, plugin: CodexidianPlugin): void {
+function initializeContextManagers(tab: TabData, plugin: CodexianPlugin): void {
   const { dom } = tab;
   const app = plugin.app;
 
@@ -642,7 +642,7 @@ function initializeSlashCommands(
 /**
  * Initializes instruction mode and todo panel for a tab.
  */
-function initializeInstructionAndTodo(tab: TabData, plugin: CodexidianPlugin): void {
+function initializeInstructionAndTodo(tab: TabData, plugin: CodexianPlugin): void {
   const { dom } = tab;
 
   syncTabProviderServices(tab, plugin);
@@ -699,13 +699,13 @@ function isBangBashEnabled(settings: Record<string, unknown>): boolean {
  */
 function initializeInputToolbar(
   tab: TabData,
-  plugin: CodexidianPlugin,
+  plugin: CodexianPlugin,
   getProviderCatalogConfig?: () => ProviderCatalogInfo,
   onProviderChanged?: (providerId: ProviderId) => void,
 ): void {
   const { dom } = tab;
 
-  const inputToolbar = dom.inputWrapper.createDiv({ cls: 'codexidian-input-toolbar' });
+  const inputToolbar = dom.inputWrapper.createDiv({ cls: 'codexian-input-toolbar' });
 
   // Blank-tab UI config wrapper that returns mixed model options
   const blankTabUIConfigProxy = (): ProviderChatUIConfig => {
@@ -834,7 +834,7 @@ function initializeInputToolbar(
       });
       tab.ui.permissionToggle?.updateDisplay();
       dom.inputWrapper.toggleClass(
-        'codexidian-input-plan-mode',
+        'codexian-input-plan-mode',
         mode === 'plan' && getTabCapabilities(tab, plugin).supportsPlanMode,
       );
     },
@@ -881,7 +881,7 @@ export interface InitializeTabUIOptions {
  */
 export function initializeTabUI(
   tab: TabData,
-  plugin: CodexidianPlugin,
+  plugin: CodexianPlugin,
   options: InitializeTabUIOptions = {}
 ): void {
   const { dom, state } = tab;
@@ -890,13 +890,13 @@ export function initializeTabUI(
   initializeContextManagers(tab, plugin);
 
   // Selection indicator - add to contextRowEl
-  dom.selectionIndicatorEl = dom.contextRowEl.createDiv({ cls: 'codexidian-selection-indicator' });
+  dom.selectionIndicatorEl = dom.contextRowEl.createDiv({ cls: 'codexian-selection-indicator' });
   dom.selectionIndicatorEl.style.display = 'none';
 
-  dom.browserIndicatorEl = dom.contextRowEl.createDiv({ cls: 'codexidian-browser-selection-indicator' });
+  dom.browserIndicatorEl = dom.contextRowEl.createDiv({ cls: 'codexian-browser-selection-indicator' });
   dom.browserIndicatorEl.style.display = 'none';
 
-  dom.canvasIndicatorEl = dom.contextRowEl.createDiv({ cls: 'codexidian-canvas-indicator' });
+  dom.canvasIndicatorEl = dom.contextRowEl.createDiv({ cls: 'codexian-canvas-indicator' });
   dom.canvasIndicatorEl.style.display = 'none';
 
   const catalogInfo = options.getProviderCatalogConfig?.() ?? null;
@@ -971,7 +971,7 @@ interface ForkSource {
  * Prefers the live service session ID; falls back to persisted conversation metadata.
  * Shows a notice and returns null when no session can be resolved.
  */
-function resolveForkSource(tab: TabData, plugin: CodexidianPlugin): ForkSource | null {
+function resolveForkSource(tab: TabData, plugin: CodexianPlugin): ForkSource | null {
   const conversation = tab.conversationId
     ? plugin.getConversationSync(tab.conversationId)
     : null;
@@ -1000,7 +1000,7 @@ function resolveForkSource(tab: TabData, plugin: CodexidianPlugin): ForkSource |
 
 async function handleForkRequest(
   tab: TabData,
-  plugin: CodexidianPlugin,
+  plugin: CodexianPlugin,
   userMessageId: string,
   forkRequestCallback: (forkContext: ForkContext) => Promise<void>,
 ): Promise<void> {
@@ -1051,7 +1051,7 @@ async function handleForkRequest(
 
 async function handleForkAll(
   tab: TabData,
-  plugin: CodexidianPlugin,
+  plugin: CodexianPlugin,
   forkRequestCallback: (forkContext: ForkContext) => Promise<void>,
 ): Promise<void> {
   const { state } = tab;
@@ -1102,7 +1102,7 @@ async function handleForkAll(
 
 export function initializeTabControllers(
   tab: TabData,
-  plugin: CodexidianPlugin,
+  plugin: CodexianPlugin,
   component: Component,
   forkRequestCallback?: (forkContext: ForkContext) => Promise<void>,
   openConversation?: (conversationId: string) => Promise<void>,
@@ -1110,7 +1110,7 @@ export function initializeTabControllers(
 ): void;
 export function initializeTabControllers(
   tab: TabData,
-  plugin: CodexidianPlugin,
+  plugin: CodexianPlugin,
   component: Component,
   forkRequestCallback?: (forkContext: ForkContext) => Promise<void>,
   openConversation?: (conversationId: string) => Promise<void>,
@@ -1326,7 +1326,7 @@ export function initializeTabControllers(
  * Call this after controllers are initialized.
  * Stores cleanup functions in dom.eventCleanups for proper memory management.
  */
-export function wireTabInputEvents(tab: TabData, plugin: CodexidianPlugin): void {
+export function wireTabInputEvents(tab: TabData, plugin: CodexianPlugin): void {
   const { dom, ui, state, controllers } = tab;
 
   let wasBangBashActive = ui.bangBashModeManager?.isActive() ?? false;
@@ -1535,7 +1535,7 @@ export async function destroyTab(tab: TabData): Promise<void> {
  * Gets the display title for a tab.
  * Uses synchronous access since we only need the title, not messages.
  */
-export function getTabTitle(tab: TabData, plugin: CodexidianPlugin): string {
+export function getTabTitle(tab: TabData, plugin: CodexianPlugin): string {
   if (tab.conversationId) {
     const conversation = plugin.getConversationSync(tab.conversationId);
     if (conversation?.title) {
@@ -1546,7 +1546,7 @@ export function getTabTitle(tab: TabData, plugin: CodexidianPlugin): string {
 }
 
 /** Shared between Tab.ts and TabManager.ts to avoid duplication. */
-export function setupServiceCallbacks(tab: TabData, plugin: CodexidianPlugin): void {
+export function setupServiceCallbacks(tab: TabData, plugin: CodexianPlugin): void {
   if (tab.service && tab.controllers.inputController) {
     tab.service.setApprovalCallback(
       async (toolName, input, description, options) =>
@@ -1645,7 +1645,7 @@ function renderAutoTriggeredTurn(tab: TabData, result: AutoTurnResult): void {
   tab.renderer?.scrollToBottom();
 }
 
-export function updatePlanModeUI(tab: TabData, plugin: CodexidianPlugin, mode: string): void {
+export function updatePlanModeUI(tab: TabData, plugin: CodexianPlugin, mode: string): void {
   const providerId = getTabProviderId(tab, plugin);
   const snapshot = getTabSettingsSnapshot(tab, plugin);
   const uiConfig = ProviderRegistry.getChatUIConfig(providerId);
@@ -1662,7 +1662,7 @@ export function updatePlanModeUI(tab: TabData, plugin: CodexidianPlugin, mode: s
   void plugin.saveSettings();
   tab.ui.permissionToggle?.updateDisplay();
   tab.dom.inputWrapper.toggleClass(
-    'codexidian-input-plan-mode',
+    'codexian-input-plan-mode',
     mode === 'plan' && getTabCapabilities(tab, plugin).supportsPlanMode,
   );
 }

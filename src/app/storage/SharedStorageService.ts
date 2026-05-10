@@ -3,12 +3,12 @@ import { Notice } from 'obsidian';
 
 import { SESSIONS_PATH, SessionStorage } from '../../core/bootstrap/SessionStorage';
 import type { SharedAppStorage } from '../../core/bootstrap/storage';
-import { CODEXIDIAN_STORAGE_PATH } from '../../core/bootstrap/StoragePaths';
+import { CODEXIAN_STORAGE_PATH } from '../../core/bootstrap/StoragePaths';
 import { VaultFileAdapter } from '../../core/storage/VaultFileAdapter';
-import { CodexidianSettingsStorage, type StoredCodexidianSettings } from '../settings/CodexidianSettingsStorage';
+import { CodexianSettingsStorage, type StoredCodexianSettings } from '../settings/CodexianSettingsStorage';
 
 export class SharedStorageService implements SharedAppStorage {
-  readonly codexidianSettings: CodexidianSettingsStorage;
+  readonly codexianSettings: CodexianSettingsStorage;
   readonly sessions: SessionStorage;
 
   private adapter: VaultFileAdapter;
@@ -17,18 +17,18 @@ export class SharedStorageService implements SharedAppStorage {
   constructor(plugin: Plugin) {
     this.plugin = plugin;
     this.adapter = new VaultFileAdapter(plugin.app);
-    this.codexidianSettings = new CodexidianSettingsStorage(this.adapter);
+    this.codexianSettings = new CodexianSettingsStorage(this.adapter);
     this.sessions = new SessionStorage(this.adapter);
   }
 
-  async initialize(): Promise<{ codexidian: Record<string, unknown> }> {
+  async initialize(): Promise<{ codexian: Record<string, unknown> }> {
     await this.ensureDirectories();
-    const codexidian = await this.codexidianSettings.load();
-    return { codexidian };
+    const codexian = await this.codexianSettings.load();
+    return { codexian };
   }
 
-  async saveCodexidianSettings(settings: Record<string, unknown>): Promise<void> {
-    await this.codexidianSettings.save(settings as StoredCodexidianSettings);
+  async saveCodexianSettings(settings: Record<string, unknown>): Promise<void> {
+    await this.codexianSettings.save(settings as StoredCodexianSettings);
   }
 
   async setTabManagerState(state: { openTabs: Array<{ tabId: string; conversationId: string | null; draftModel?: string | null }>; activeTabId: string | null }): Promise<void> {
@@ -59,7 +59,7 @@ export class SharedStorageService implements SharedAppStorage {
   }
 
   private async ensureDirectories(): Promise<void> {
-    await this.adapter.ensureFolder(CODEXIDIAN_STORAGE_PATH);
+    await this.adapter.ensureFolder(CODEXIAN_STORAGE_PATH);
     await this.adapter.ensureFolder(SESSIONS_PATH);
   }
 

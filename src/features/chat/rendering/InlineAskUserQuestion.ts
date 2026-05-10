@@ -55,9 +55,9 @@ export class InlineAskUserQuestion {
   }
 
   render(): void {
-    this.rootEl = this.containerEl.createDiv({ cls: 'codexidian-ask-question-inline' });
+    this.rootEl = this.containerEl.createDiv({ cls: 'codexian-ask-question-inline' });
 
-    const titleEl = this.rootEl.createDiv({ cls: 'codexidian-ask-inline-title' });
+    const titleEl = this.rootEl.createDiv({ cls: 'codexian-ask-inline-title' });
     titleEl.setText(this.config.title);
 
     if (this.config.headerEl) {
@@ -81,10 +81,10 @@ export class InlineAskUserQuestion {
     }
 
     if (!this.config.immediateSelect) {
-      this.tabBar = this.rootEl.createDiv({ cls: 'codexidian-ask-tab-bar' });
+      this.tabBar = this.rootEl.createDiv({ cls: 'codexian-ask-tab-bar' });
       this.renderTabBar();
     }
-    this.contentArea = this.rootEl.createDiv({ cls: 'codexidian-ask-content' });
+    this.contentArea = this.rootEl.createDiv({ cls: 'codexian-ask-content' });
     this.renderTabContent();
 
     this.rootEl.setAttribute('tabindex', '0');
@@ -177,9 +177,9 @@ export class InlineAskUserQuestion {
 
     for (let idx = 0; idx < this.questions.length; idx++) {
       const answered = this.isQuestionAnswered(idx);
-      const tab = this.tabBar.createSpan({ cls: 'codexidian-ask-tab' });
-      tab.createSpan({ text: this.questions[idx].header, cls: 'codexidian-ask-tab-label' });
-      tab.createSpan({ text: answered ? ' \u2713' : '', cls: 'codexidian-ask-tab-tick' });
+      const tab = this.tabBar.createSpan({ cls: 'codexian-ask-tab' });
+      tab.createSpan({ text: this.questions[idx].header, cls: 'codexian-ask-tab-label' });
+      tab.createSpan({ text: answered ? ' \u2713' : '', cls: 'codexian-ask-tab-tick' });
       tab.setAttribute('title', this.questions[idx].question);
 
       if (idx === this.activeTabIndex) tab.addClass('is-active');
@@ -189,9 +189,9 @@ export class InlineAskUserQuestion {
     }
 
     const allAnswered = this.questions.every((_, i) => this.isQuestionAnswered(i));
-    const submitTab = this.tabBar.createSpan({ cls: 'codexidian-ask-tab' });
-    submitTab.createSpan({ text: allAnswered ? '\u2713 ' : '', cls: 'codexidian-ask-tab-submit-check' });
-    submitTab.createSpan({ text: 'Submit', cls: 'codexidian-ask-tab-label' });
+    const submitTab = this.tabBar.createSpan({ cls: 'codexian-ask-tab' });
+    submitTab.createSpan({ text: allAnswered ? '\u2713 ' : '', cls: 'codexian-ask-tab-submit-check' });
+    submitTab.createSpan({ text: 'Submit', cls: 'codexian-ask-tab-label' });
     if (this.activeTabIndex === this.questions.length) submitTab.addClass('is-active');
     submitTab.addEventListener('click', () => this.switchTab(this.questions.length));
     this.tabElements.push(submitTab);
@@ -232,10 +232,10 @@ export class InlineAskUserQuestion {
 
     this.contentArea.createDiv({
       text: q.question,
-      cls: 'codexidian-ask-question-text',
+      cls: 'codexian-ask-question-text',
     });
 
-    const listEl = this.contentArea.createDiv({ cls: 'codexidian-ask-list' });
+    const listEl = this.contentArea.createDiv({ cls: 'codexian-ask-list' });
 
     for (let optIdx = 0; optIdx < q.options.length; optIdx++) {
       const option = q.options[optIdx];
@@ -243,27 +243,27 @@ export class InlineAskUserQuestion {
       const optionValue = this.getOptionValue(option);
       const isSelected = selected.has(optionValue);
 
-      const row = listEl.createDiv({ cls: 'codexidian-ask-item' });
+      const row = listEl.createDiv({ cls: 'codexian-ask-item' });
       if (isFocused) row.addClass('is-focused');
       if (isSelected) row.addClass('is-selected');
 
-      row.createSpan({ text: isFocused ? '\u203A' : '\u00A0', cls: 'codexidian-ask-cursor' });
-      row.createSpan({ text: `${optIdx + 1}. `, cls: 'codexidian-ask-item-num' });
+      row.createSpan({ text: isFocused ? '\u203A' : '\u00A0', cls: 'codexian-ask-cursor' });
+      row.createSpan({ text: `${optIdx + 1}. `, cls: 'codexian-ask-item-num' });
 
       if (isMulti) {
         this.renderMultiSelectCheckbox(row, isSelected);
       }
 
-      const labelBlock = row.createDiv({ cls: 'codexidian-ask-item-content' });
-      const labelRow = labelBlock.createDiv({ cls: 'codexidian-ask-label-row' });
-      labelRow.createSpan({ text: option.label, cls: 'codexidian-ask-item-label' });
+      const labelBlock = row.createDiv({ cls: 'codexian-ask-item-content' });
+      const labelRow = labelBlock.createDiv({ cls: 'codexian-ask-label-row' });
+      labelRow.createSpan({ text: option.label, cls: 'codexian-ask-item-label' });
 
       if (!isMulti && isSelected) {
-        labelRow.createSpan({ text: ' \u2713', cls: 'codexidian-ask-check-mark' });
+        labelRow.createSpan({ text: ' \u2713', cls: 'codexian-ask-check-mark' });
       }
 
       if (option.description) {
-        labelBlock.createDiv({ text: option.description, cls: 'codexidian-ask-item-desc' });
+        labelBlock.createDiv({ text: option.description, cls: 'codexian-ask-item-desc' });
       }
 
       row.addEventListener('click', () => {
@@ -281,18 +281,18 @@ export class InlineAskUserQuestion {
       const customText = this.customInputs.get(idx) ?? '';
       const hasCustomText = customText.trim().length > 0;
 
-      const customRow = listEl.createDiv({ cls: 'codexidian-ask-item codexidian-ask-custom-item' });
+      const customRow = listEl.createDiv({ cls: 'codexian-ask-item codexian-ask-custom-item' });
       if (customFocused) customRow.addClass('is-focused');
 
-      customRow.createSpan({ text: customFocused ? '\u203A' : '\u00A0', cls: 'codexidian-ask-cursor' });
-      customRow.createSpan({ text: `${customIdx + 1}. `, cls: 'codexidian-ask-item-num' });
+      customRow.createSpan({ text: customFocused ? '\u203A' : '\u00A0', cls: 'codexian-ask-cursor' });
+      customRow.createSpan({ text: `${customIdx + 1}. `, cls: 'codexian-ask-item-num' });
 
       if (isMulti) {
         this.renderMultiSelectCheckbox(customRow, hasCustomText);
       }
 
       const inputEl = customRow.createEl('input', {
-        cls: 'codexidian-ask-custom-text',
+        cls: 'codexian-ask-custom-text',
         value: customText,
       });
       inputEl.setAttribute('type', q.isSecret ? 'password' : 'text');
@@ -318,47 +318,47 @@ export class InlineAskUserQuestion {
 
     this.contentArea.createDiv({
       text: this.config.immediateSelect ? HINTS_TEXT_IMMEDIATE : HINTS_TEXT,
-      cls: 'codexidian-ask-hints',
+      cls: 'codexian-ask-hints',
     });
   }
 
   private renderSubmitTab(): void {
     this.contentArea.createDiv({
       text: 'Review your answers',
-      cls: 'codexidian-ask-review-title',
+      cls: 'codexian-ask-review-title',
     });
 
-    const reviewEl = this.contentArea.createDiv({ cls: 'codexidian-ask-review' });
+    const reviewEl = this.contentArea.createDiv({ cls: 'codexian-ask-review' });
 
     for (let idx = 0; idx < this.questions.length; idx++) {
       const q = this.questions[idx];
       const answerText = this.getAnswerText(idx);
 
-      const pairEl = reviewEl.createDiv({ cls: 'codexidian-ask-review-pair' });
-      pairEl.createDiv({ text: `${idx + 1}.`, cls: 'codexidian-ask-review-num' });
-      const bodyEl = pairEl.createDiv({ cls: 'codexidian-ask-review-body' });
-      bodyEl.createDiv({ text: q.question, cls: 'codexidian-ask-review-q-text' });
+      const pairEl = reviewEl.createDiv({ cls: 'codexian-ask-review-pair' });
+      pairEl.createDiv({ text: `${idx + 1}.`, cls: 'codexian-ask-review-num' });
+      const bodyEl = pairEl.createDiv({ cls: 'codexian-ask-review-body' });
+      bodyEl.createDiv({ text: q.question, cls: 'codexian-ask-review-q-text' });
       bodyEl.createDiv({
         text: answerText || 'Not answered',
-        cls: answerText ? 'codexidian-ask-review-a-text' : 'codexidian-ask-review-empty',
+        cls: answerText ? 'codexian-ask-review-a-text' : 'codexian-ask-review-empty',
       });
       pairEl.addEventListener('click', () => this.switchTab(idx));
     }
 
     this.contentArea.createDiv({
       text: 'Ready to submit your answers?',
-      cls: 'codexidian-ask-review-prompt',
+      cls: 'codexian-ask-review-prompt',
     });
 
-    const actionsEl = this.contentArea.createDiv({ cls: 'codexidian-ask-list' });
+    const actionsEl = this.contentArea.createDiv({ cls: 'codexian-ask-list' });
     const allAnswered = this.questions.every((_, i) => this.isQuestionAnswered(i));
 
-    const submitRow = actionsEl.createDiv({ cls: 'codexidian-ask-item' });
+    const submitRow = actionsEl.createDiv({ cls: 'codexian-ask-item' });
     if (this.focusedItemIndex === 0) submitRow.addClass('is-focused');
     if (!allAnswered) submitRow.addClass('is-disabled');
-    submitRow.createSpan({ text: this.focusedItemIndex === 0 ? '\u203A' : '\u00A0', cls: 'codexidian-ask-cursor' });
-    submitRow.createSpan({ text: '1. ', cls: 'codexidian-ask-item-num' });
-    submitRow.createSpan({ text: 'Submit answers', cls: 'codexidian-ask-item-label' });
+    submitRow.createSpan({ text: this.focusedItemIndex === 0 ? '\u203A' : '\u00A0', cls: 'codexian-ask-cursor' });
+    submitRow.createSpan({ text: '1. ', cls: 'codexian-ask-item-num' });
+    submitRow.createSpan({ text: 'Submit answers', cls: 'codexian-ask-item-label' });
     submitRow.addEventListener('click', () => {
       this.focusedItemIndex = 0;
       this.updateFocusIndicator();
@@ -366,11 +366,11 @@ export class InlineAskUserQuestion {
     });
     this.currentItems.push(submitRow);
 
-    const cancelRow = actionsEl.createDiv({ cls: 'codexidian-ask-item' });
+    const cancelRow = actionsEl.createDiv({ cls: 'codexian-ask-item' });
     if (this.focusedItemIndex === 1) cancelRow.addClass('is-focused');
-    cancelRow.createSpan({ text: this.focusedItemIndex === 1 ? '\u203A' : '\u00A0', cls: 'codexidian-ask-cursor' });
-    cancelRow.createSpan({ text: '2. ', cls: 'codexidian-ask-item-num' });
-    cancelRow.createSpan({ text: 'Cancel', cls: 'codexidian-ask-item-label' });
+    cancelRow.createSpan({ text: this.focusedItemIndex === 1 ? '\u203A' : '\u00A0', cls: 'codexian-ask-cursor' });
+    cancelRow.createSpan({ text: '2. ', cls: 'codexian-ask-item-num' });
+    cancelRow.createSpan({ text: 'Cancel', cls: 'codexian-ask-item-label' });
     cancelRow.addEventListener('click', () => {
       this.focusedItemIndex = 1;
       this.handleResolve(null);
@@ -379,7 +379,7 @@ export class InlineAskUserQuestion {
 
     this.contentArea.createDiv({
       text: HINTS_TEXT,
-      cls: 'codexidian-ask-hints',
+      cls: 'codexian-ask-hints',
     });
   }
 
@@ -430,7 +430,7 @@ export class InlineAskUserQuestion {
   private renderMultiSelectCheckbox(parent: HTMLElement, checked: boolean): void {
     parent.createSpan({
       text: checked ? '[\u2713] ' : '[ ] ',
-      cls: `codexidian-ask-check${checked ? ' is-checked' : ''}`,
+      cls: `codexian-ask-check${checked ? ' is-checked' : ''}`,
     });
   }
 
@@ -446,16 +446,16 @@ export class InlineAskUserQuestion {
       item.toggleClass('is-selected', isSelected);
 
       if (isMulti) {
-        const checkSpan = item.querySelector('.codexidian-ask-check') as HTMLElement | null;
+        const checkSpan = item.querySelector('.codexian-ask-check') as HTMLElement | null;
         if (checkSpan) {
           checkSpan.textContent = isSelected ? '[\u2713] ' : '[ ] ';
           checkSpan.toggleClass('is-checked', isSelected);
         }
       } else {
-        const labelRow = item.querySelector('.codexidian-ask-label-row') as HTMLElement | null;
-        const existingMark = item.querySelector('.codexidian-ask-check-mark');
+        const labelRow = item.querySelector('.codexian-ask-label-row') as HTMLElement | null;
+        const existingMark = item.querySelector('.codexian-ask-check-mark');
         if (isSelected && !existingMark && labelRow) {
-          labelRow.createSpan({ text: ' \u2713', cls: 'codexidian-ask-check-mark' });
+          labelRow.createSpan({ text: ' \u2713', cls: 'codexian-ask-check-mark' });
         } else if (!isSelected && existingMark) {
           existingMark.remove();
         }
@@ -466,14 +466,14 @@ export class InlineAskUserQuestion {
   private updateFocusIndicator(): void {
     for (let i = 0; i < this.currentItems.length; i++) {
       const item = this.currentItems[i];
-      const cursor = item.querySelector('.codexidian-ask-cursor');
+      const cursor = item.querySelector('.codexian-ask-cursor');
       if (i === this.focusedItemIndex) {
         item.addClass('is-focused');
         if (cursor) cursor.textContent = '\u203A';
         item.scrollIntoView({ block: 'nearest' });
 
-        if (item.hasClass('codexidian-ask-custom-item')) {
-          const input = item.querySelector('.codexidian-ask-custom-text') as HTMLInputElement;
+        if (item.hasClass('codexian-ask-custom-item')) {
+          const input = item.querySelector('.codexian-ask-custom-text') as HTMLInputElement;
           if (input) {
             input.focus();
             this.isInputFocused = true;
@@ -483,8 +483,8 @@ export class InlineAskUserQuestion {
         item.removeClass('is-focused');
         if (cursor) cursor.textContent = '\u00A0';
 
-        if (item.hasClass('codexidian-ask-custom-item')) {
-          const input = item.querySelector('.codexidian-ask-custom-text') as HTMLInputElement;
+        if (item.hasClass('codexian-ask-custom-item')) {
+          const input = item.querySelector('.codexian-ask-custom-text') as HTMLInputElement;
           if (input && document.activeElement === input) {
             input.blur();
             this.isInputFocused = false;
@@ -497,14 +497,14 @@ export class InlineAskUserQuestion {
   private updateTabIndicators(): void {
     for (let idx = 0; idx < this.questions.length; idx++) {
       const tab = this.tabElements[idx];
-      const tick = tab.querySelector('.codexidian-ask-tab-tick');
+      const tick = tab.querySelector('.codexian-ask-tab-tick');
       const answered = this.isQuestionAnswered(idx);
       tab.toggleClass('is-answered', answered);
       if (tick) tick.textContent = answered ? ' \u2713' : '';
     }
     const submitTab = this.tabElements[this.questions.length];
     if (submitTab) {
-      const submitCheck = submitTab.querySelector('.codexidian-ask-tab-submit-check');
+      const submitCheck = submitTab.querySelector('.codexian-ask-tab-submit-check');
       const allAnswered = this.questions.every((_, i) => this.isQuestionAnswered(i));
       if (submitCheck) submitCheck.textContent = allAnswered ? '\u2713 ' : '';
     }
@@ -622,7 +622,7 @@ export class InlineAskUserQuestion {
         } else if (this.canShowCustomInputForQuestion(q)) {
           this.isInputFocused = true;
           const input = this.contentArea.querySelector(
-            '.codexidian-ask-custom-text',
+            '.codexian-ask-custom-text',
           ) as HTMLInputElement;
           input?.focus();
         }

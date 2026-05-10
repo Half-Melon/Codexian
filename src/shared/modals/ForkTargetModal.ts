@@ -21,16 +21,16 @@ class ForkTargetModal extends Modal {
 
   onOpen() {
     this.setTitle(t('chat.fork.chooseTarget'));
-    this.modalEl.addClass('codexidian-fork-target-modal');
+    this.modalEl.addClass('codexian-fork-target-modal');
 
-    const list = this.contentEl.createDiv({ cls: 'codexidian-fork-target-list' });
+    const list = this.contentEl.createDiv({ cls: 'codexian-fork-target-list' });
 
     this.createOption(list, 'current-tab', t('chat.fork.targetCurrentTab'));
     this.createOption(list, 'new-tab', t('chat.fork.targetNewTab'));
   }
 
   private createOption(container: HTMLElement, target: ForkTarget, label: string): void {
-    const item = container.createDiv({ cls: 'codexidian-fork-target-option', text: label });
+    const item = container.createDiv({ cls: 'codexian-fork-target-option', text: label });
     item.addEventListener('click', () => {
       this.resolved = true;
       this.resolve(target);

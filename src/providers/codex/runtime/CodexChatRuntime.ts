@@ -25,7 +25,7 @@ import type {
   SessionUpdateResult,
 } from '../../../core/runtime/types';
 import type { ChatMessage, Conversation, ForkSource, SlashCommand, StreamChunk } from '../../../core/types';
-import type CodexidianPlugin from '../../../main';
+import type CodexianPlugin from '../../../main';
 import { getVaultPath } from '../../../utils/path';
 import { buildContextFromHistory } from '../../../utils/session';
 import { CODEX_PROVIDER_CAPABILITIES } from '../capabilities';
@@ -105,7 +105,7 @@ const EFFORT_MAP: Record<string, string> = {
 export class CodexChatRuntime implements ChatRuntime {
   readonly providerId: ProviderId = 'codex';
 
-  private plugin: CodexidianPlugin;
+  private plugin: CodexianPlugin;
   private session = new CodexSessionManager();
   private process: CodexAppServerProcess | null = null;
   private transport: CodexRpcTransport | null = null;
@@ -142,7 +142,7 @@ export class CodexChatRuntime implements ChatRuntime {
   private canceled = false;
   private turnMetadata: ChatTurnMetadata = {};
 
-  constructor(plugin: CodexidianPlugin) {
+  constructor(plugin: CodexianPlugin) {
     this.plugin = plugin;
   }
 
@@ -1237,7 +1237,7 @@ export class CodexChatRuntime implements ChatRuntime {
 
     try {
       if (images && images.length > 0) {
-        tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'codexidian-codex-images-'));
+        tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'codexian-codex-images-'));
         for (let i = 0; i < images.length; i++) {
           const img = images[i];
           if (!img.mediaType.startsWith('image/')) continue;

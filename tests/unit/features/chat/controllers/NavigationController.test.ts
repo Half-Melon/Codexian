@@ -226,7 +226,7 @@ describe('NavigationController', () => {
 
     it('adds focusable CSS class to messagesEl', () => {
       controller.initialize();
-      expect(messagesEl.hasClass('codexidian-messages-focusable')).toBe(true);
+      expect(messagesEl.hasClass('codexian-messages-focusable')).toBe(true);
     });
 
     it('attaches keydown listener to messagesEl', () => {

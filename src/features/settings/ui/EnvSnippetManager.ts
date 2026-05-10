@@ -8,19 +8,19 @@ import {
 import { ProviderRegistry } from '../../../core/providers/ProviderRegistry';
 import type { EnvironmentScope, EnvSnippet } from '../../../core/types';
 import { t } from '../../../i18n/i18n';
-import type CodexidianPlugin from '../../../main';
+import type CodexianPlugin from '../../../main';
 import { formatContextLimit, parseContextLimit, parseEnvironmentVariables } from '../../../utils/env';
-import type { CodexidianView } from '../../chat/CodexidianView';
+import type { CodexianView } from '../../chat/CodexianView';
 
 export class EnvSnippetModal extends Modal {
-  plugin: CodexidianPlugin;
+  plugin: CodexianPlugin;
   snippet: EnvSnippet | null;
   snippetScope: EnvironmentScope;
   onSave: (snippet: EnvSnippet) => void;
 
   constructor(
     app: App,
-    plugin: CodexidianPlugin,
+    plugin: CodexianPlugin,
     snippet: EnvSnippet | null,
     scope: EnvironmentScope,
     onSave: (snippet: EnvSnippet) => void,
@@ -36,7 +36,7 @@ export class EnvSnippetModal extends Modal {
     const { contentEl } = this;
     this.setTitle(this.snippet ? t('settings.envSnippets.modal.titleEdit') : t('settings.envSnippets.modal.titleSave'));
 
-    this.modalEl.addClass('codexidian-env-snippet-modal');
+    this.modalEl.addClass('codexian-env-snippet-modal');
 
     let nameEl: HTMLInputElement;
     let descEl: HTMLInputElement;
@@ -116,14 +116,14 @@ export class EnvSnippetModal extends Modal {
       });
 
       for (const modelId of uniqueModelIds) {
-        const row = contextLimitsContainer.createDiv({ cls: 'codexidian-snippet-limit-row' });
-        row.createSpan({ text: modelId, cls: 'codexidian-snippet-limit-model' });
-        row.createSpan({ cls: 'codexidian-snippet-limit-spacer' });
+        const row = contextLimitsContainer.createDiv({ cls: 'codexian-snippet-limit-row' });
+        row.createSpan({ text: modelId, cls: 'codexian-snippet-limit-model' });
+        row.createSpan({ cls: 'codexian-snippet-limit-spacer' });
 
         const input = row.createEl('input', {
           type: 'text',
           placeholder: '200k',
-          cls: 'codexidian-snippet-limit-input',
+          cls: 'codexian-snippet-limit-input',
         });
         input.value = existingLimits[modelId] ? formatContextLimit(existingLimits[modelId]) : '';
         contextLimitInputs.set(modelId, input);
@@ -158,23 +158,23 @@ export class EnvSnippetModal extends Modal {
         text.inputEl.rows = 8;
         text.inputEl.addEventListener('blur', () => renderContextLimitFields());
       });
-    envVarsSetting.settingEl.addClass('codexidian-env-snippet-setting');
-    envVarsSetting.controlEl.addClass('codexidian-env-snippet-control');
+    envVarsSetting.settingEl.addClass('codexian-env-snippet-setting');
+    envVarsSetting.controlEl.addClass('codexian-env-snippet-control');
 
-    contextLimitsContainer = contentEl.createDiv({ cls: 'codexidian-snippet-context-limits' });
+    contextLimitsContainer = contentEl.createDiv({ cls: 'codexian-snippet-context-limits' });
     renderContextLimitFields();
 
-    const buttonContainer = contentEl.createDiv({ cls: 'codexidian-snippet-buttons' });
+    const buttonContainer = contentEl.createDiv({ cls: 'codexian-snippet-buttons' });
 
     const cancelBtn = buttonContainer.createEl('button', {
       text: t('settings.envSnippets.modal.cancel'),
-      cls: 'codexidian-cancel-btn'
+      cls: 'codexian-cancel-btn'
     });
     cancelBtn.addEventListener('click', () => this.close());
 
     const saveBtn = buttonContainer.createEl('button', {
       text: this.snippet ? t('settings.envSnippets.modal.update') : t('settings.envSnippets.modal.save'),
-      cls: 'codexidian-save-btn'
+      cls: 'codexian-save-btn'
     });
     saveBtn.addEventListener('click', () => saveSnippet());
 
@@ -190,13 +190,13 @@ export class EnvSnippetModal extends Modal {
 
 export class EnvSnippetManager {
   private containerEl: HTMLElement;
-  private plugin: CodexidianPlugin;
+  private plugin: CodexianPlugin;
   private scope: EnvironmentScope;
   private onContextLimitsChange?: () => void;
 
   constructor(
     containerEl: HTMLElement,
-    plugin: CodexidianPlugin,
+    plugin: CodexianPlugin,
     scope: EnvironmentScope,
     onContextLimitsChange?: () => void,
   ) {
@@ -210,11 +210,11 @@ export class EnvSnippetManager {
   private render() {
     this.containerEl.empty();
 
-    const headerEl = this.containerEl.createDiv({ cls: 'codexidian-snippet-header' });
-    headerEl.createSpan({ text: t('settings.envSnippets.name'), cls: 'codexidian-snippet-label' });
+    const headerEl = this.containerEl.createDiv({ cls: 'codexian-snippet-header' });
+    headerEl.createSpan({ text: t('settings.envSnippets.name'), cls: 'codexian-snippet-label' });
 
     const saveBtn = headerEl.createEl('button', {
-      cls: 'codexidian-settings-action-btn',
+      cls: 'codexian-settings-action-btn',
       attr: { 'aria-label': t('settings.envSnippets.addBtn') },
     });
     setIcon(saveBtn, 'plus');
@@ -223,30 +223,30 @@ export class EnvSnippetManager {
     const snippets = this.plugin.settings.envSnippets.filter((snippet) => this.shouldDisplaySnippet(snippet));
 
     if (snippets.length === 0) {
-      const emptyEl = this.containerEl.createDiv({ cls: 'codexidian-snippet-empty' });
+      const emptyEl = this.containerEl.createDiv({ cls: 'codexian-snippet-empty' });
       emptyEl.setText(t('settings.envSnippets.noSnippets'));
       return;
     }
 
-    const listEl = this.containerEl.createDiv({ cls: 'codexidian-snippet-list' });
+    const listEl = this.containerEl.createDiv({ cls: 'codexian-snippet-list' });
 
     for (const snippet of snippets) {
-      const itemEl = listEl.createDiv({ cls: 'codexidian-snippet-item' });
+      const itemEl = listEl.createDiv({ cls: 'codexian-snippet-item' });
 
-      const infoEl = itemEl.createDiv({ cls: 'codexidian-snippet-info' });
+      const infoEl = itemEl.createDiv({ cls: 'codexian-snippet-info' });
 
-      const nameEl = infoEl.createDiv({ cls: 'codexidian-snippet-name' });
+      const nameEl = infoEl.createDiv({ cls: 'codexian-snippet-name' });
       nameEl.setText(snippet.name);
 
       if (snippet.description) {
-        const descEl = infoEl.createDiv({ cls: 'codexidian-snippet-description' });
+        const descEl = infoEl.createDiv({ cls: 'codexian-snippet-description' });
         descEl.setText(snippet.description);
       }
 
-      const actionsEl = itemEl.createDiv({ cls: 'codexidian-snippet-actions' });
+      const actionsEl = itemEl.createDiv({ cls: 'codexian-snippet-actions' });
 
       const restoreBtn = actionsEl.createEl('button', {
-        cls: 'codexidian-settings-action-btn',
+        cls: 'codexian-settings-action-btn',
         attr: { 'aria-label': 'Insert' },
       });
       setIcon(restoreBtn, 'clipboard-paste');
@@ -259,7 +259,7 @@ export class EnvSnippetManager {
       });
 
       const editBtn = actionsEl.createEl('button', {
-        cls: 'codexidian-settings-action-btn',
+        cls: 'codexian-settings-action-btn',
         attr: { 'aria-label': 'Edit' },
       });
       setIcon(editBtn, 'pencil');
@@ -268,7 +268,7 @@ export class EnvSnippetManager {
       });
 
       const deleteBtn = actionsEl.createEl('button', {
-        cls: 'codexidian-settings-action-btn codexidian-settings-delete-btn',
+        cls: 'codexian-settings-action-btn codexian-settings-delete-btn',
         attr: { 'aria-label': 'Delete' },
       });
       setIcon(deleteBtn, 'trash-2');
@@ -328,7 +328,7 @@ export class EnvSnippetManager {
     await this.plugin.saveSettings();
 
     this.onContextLimitsChange?.();
-    const view = this.plugin.app.workspace.getLeavesOfType('codexidian-view')[0]?.view as CodexidianView | undefined;
+    const view = this.plugin.app.workspace.getLeavesOfType('codexian-view')[0]?.view as CodexianView | undefined;
     view?.refreshModelSelector();
   }
 
@@ -371,7 +371,7 @@ export class EnvSnippetManager {
   }
 
   private syncTextareaValue(scope: EnvironmentScope, value: string): void {
-    const selector = `.codexidian-settings-env-textarea[data-env-scope="${scope}"]`;
+    const selector = `.codexian-settings-env-textarea[data-env-scope="${scope}"]`;
     const envTextarea = document.querySelector(selector) as HTMLTextAreaElement | null;
     if (envTextarea) {
       envTextarea.value = value;

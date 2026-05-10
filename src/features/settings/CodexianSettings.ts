@@ -12,7 +12,7 @@ import type { ProviderId } from '../../core/providers/types';
 import type { ChatViewPlacement } from '../../core/types/settings';
 import { getUserLanguageOptions, resolveLocalePreference, setLocale, t } from '../../i18n/i18n';
 import type { TranslationKey, UserLanguagePreference } from '../../i18n/types';
-import type CodexidianPlugin from '../../main';
+import type CodexianPlugin from '../../main';
 import { formatContextLimit, parseContextLimit, parseEnvironmentVariables } from '../../utils/env';
 import { buildNavMappingText, parseNavMappings } from './keyboardNavigation';
 import { renderEnvironmentSettingsSection } from './ui/EnvironmentSettingsSection';
@@ -46,7 +46,7 @@ function openHotkeySettings(app: App): void {
       return;
     }
 
-    searchEl.value = 'Codexidian';
+    searchEl.value = 'Codexian';
     tab.updateHotkeyVisibility?.();
   }, 100);
 }
@@ -71,13 +71,13 @@ function addHotkeySettingRow(
   translationPrefix: string,
 ): void {
   const hotkey = getHotkeyForCommand(app, commandId);
-  const item = containerEl.createDiv({ cls: 'codexidian-hotkey-item' });
+  const item = containerEl.createDiv({ cls: 'codexian-hotkey-item' });
   item.createSpan({
-    cls: 'codexidian-hotkey-name',
+    cls: 'codexian-hotkey-name',
     text: t(`${translationPrefix}.name` as TranslationKey),
   });
   if (hotkey) {
-    item.createSpan({ cls: 'codexidian-hotkey-badge', text: hotkey });
+    item.createSpan({ cls: 'codexian-hotkey-badge', text: hotkey });
   }
   item.addEventListener('click', () => openHotkeySettings(app));
 }
@@ -88,11 +88,11 @@ function getObsidianLocale(app: App): string | undefined {
   return typeof locale === 'string' ? locale : undefined;
 }
 
-export class CodexidianSettingTab extends PluginSettingTab {
-  plugin: CodexidianPlugin;
+export class CodexianSettingTab extends PluginSettingTab {
+  plugin: CodexianPlugin;
   private activeTab: SettingsTabId = 'general';
 
-  constructor(app: App, plugin: CodexidianPlugin) {
+  constructor(app: App, plugin: CodexianPlugin) {
     super(app, plugin);
     this.plugin = plugin;
   }
@@ -100,7 +100,7 @@ export class CodexidianSettingTab extends PluginSettingTab {
   display(): void {
     const { containerEl } = this;
     containerEl.empty();
-    containerEl.addClass('codexidian-settings');
+    containerEl.addClass('codexian-settings');
 
     setLocale(resolveLocalePreference(this.plugin.settings.locale, getObsidianLocale(this.app)));
 
@@ -110,7 +110,7 @@ export class CodexidianSettingTab extends PluginSettingTab {
       this.activeTab = 'general';
     }
 
-    const tabBar = containerEl.createDiv({ cls: 'codexidian-settings-tabs' });
+    const tabBar = containerEl.createDiv({ cls: 'codexian-settings-tabs' });
     const tabButtons = new Map<SettingsTabId, HTMLButtonElement>();
     const tabContents = new Map<SettingsTabId, HTMLDivElement>();
 
@@ -119,14 +119,14 @@ export class CodexidianSettingTab extends PluginSettingTab {
         ? t('settings.tabs.general' as TranslationKey)
         : ProviderRegistry.getProviderDisplayName(id);
       const button = tabBar.createEl('button', {
-        cls: `codexidian-settings-tab${id === this.activeTab ? ' codexidian-settings-tab--active' : ''}`,
+        cls: `codexian-settings-tab${id === this.activeTab ? ' codexian-settings-tab--active' : ''}`,
         text: label,
       });
       button.addEventListener('click', () => {
         this.activeTab = id;
         for (const tabId of tabIds) {
-          tabButtons.get(tabId)?.toggleClass('codexidian-settings-tab--active', tabId === id);
-          tabContents.get(tabId)?.toggleClass('codexidian-settings-tab-content--active', tabId === id);
+          tabButtons.get(tabId)?.toggleClass('codexian-settings-tab--active', tabId === id);
+          tabContents.get(tabId)?.toggleClass('codexian-settings-tab-content--active', tabId === id);
         }
       });
       tabButtons.set(id, button);
@@ -134,7 +134,7 @@ export class CodexidianSettingTab extends PluginSettingTab {
 
     for (const id of tabIds) {
       const content = containerEl.createDiv({
-        cls: `codexidian-settings-tab-content${id === this.activeTab ? ' codexidian-settings-tab-content--active' : ''}`,
+        cls: `codexian-settings-tab-content${id === this.activeTab ? ' codexian-settings-tab-content--active' : ''}`,
       });
       tabContents.set(id, content);
     }
@@ -294,7 +294,7 @@ export class CodexidianSettingTab extends PluginSettingTab {
       .setName(t('settings.maxTabs.name'))
       .setDesc(t('settings.maxTabs.desc'));
 
-    const maxTabsWarningEl = container.createDiv({ cls: 'codexidian-max-tabs-warning' });
+    const maxTabsWarningEl = container.createDiv({ cls: 'codexian-max-tabs-warning' });
     maxTabsWarningEl.style.color = 'var(--text-warning)';
     maxTabsWarningEl.style.fontSize = '0.85em';
     maxTabsWarningEl.style.marginTop = '-0.5em';
@@ -466,7 +466,7 @@ export class CodexidianSettingTab extends PluginSettingTab {
             this.plugin.settings.mediaFolder = value.trim();
             await this.plugin.saveSettings();
           });
-        text.inputEl.addClass('codexidian-settings-media-input');
+        text.inputEl.addClass('codexian-settings-media-input');
         text.inputEl.addEventListener('blur', () => this.restartServiceForPromptChange());
       });
 
@@ -532,12 +532,12 @@ export class CodexidianSettingTab extends PluginSettingTab {
 
     new Setting(container).setName(t('settings.hotkeys')).setHeading();
 
-    const hotkeyGrid = container.createDiv({ cls: 'codexidian-hotkey-grid' });
-    addHotkeySettingRow(hotkeyGrid, this.app, 'codexidian:inline-edit', 'settings.inlineEditHotkey');
-    addHotkeySettingRow(hotkeyGrid, this.app, 'codexidian:open-view', 'settings.openChatHotkey');
-    addHotkeySettingRow(hotkeyGrid, this.app, 'codexidian:new-session', 'settings.newSessionHotkey');
-    addHotkeySettingRow(hotkeyGrid, this.app, 'codexidian:new-tab', 'settings.newTabHotkey');
-    addHotkeySettingRow(hotkeyGrid, this.app, 'codexidian:close-current-tab', 'settings.closeTabHotkey');
+    const hotkeyGrid = container.createDiv({ cls: 'codexian-hotkey-grid' });
+    addHotkeySettingRow(hotkeyGrid, this.app, 'codexian:inline-edit', 'settings.inlineEditHotkey');
+    addHotkeySettingRow(hotkeyGrid, this.app, 'codexian:open-view', 'settings.openChatHotkey');
+    addHotkeySettingRow(hotkeyGrid, this.app, 'codexian:new-session', 'settings.newSessionHotkey');
+    addHotkeySettingRow(hotkeyGrid, this.app, 'codexian:new-tab', 'settings.newTabHotkey');
+    addHotkeySettingRow(hotkeyGrid, this.app, 'codexian:close-current-tab', 'settings.closeTabHotkey');
 
     // --- Environment ---
 
@@ -618,33 +618,33 @@ export class CodexidianSettingTab extends PluginSettingTab {
       return;
     }
 
-    const headerEl = container.createDiv({ cls: 'codexidian-context-limits-header' });
+    const headerEl = container.createDiv({ cls: 'codexian-context-limits-header' });
     headerEl.createSpan({
       text: t('settings.customContextLimits.name'),
-      cls: 'codexidian-context-limits-label',
+      cls: 'codexian-context-limits-label',
     });
 
-    const descEl = container.createDiv({ cls: 'codexidian-context-limits-desc' });
+    const descEl = container.createDiv({ cls: 'codexian-context-limits-desc' });
     descEl.setText(t('settings.customContextLimits.desc'));
 
-    const listEl = container.createDiv({ cls: 'codexidian-context-limits-list' });
+    const listEl = container.createDiv({ cls: 'codexian-context-limits-list' });
 
     for (const modelId of uniqueModelIds) {
       const currentValue = this.plugin.settings.customContextLimits?.[modelId];
 
-      const itemEl = listEl.createDiv({ cls: 'codexidian-context-limits-item' });
-      const nameEl = itemEl.createDiv({ cls: 'codexidian-context-limits-model' });
+      const itemEl = listEl.createDiv({ cls: 'codexian-context-limits-item' });
+      const nameEl = itemEl.createDiv({ cls: 'codexian-context-limits-model' });
       nameEl.setText(modelId);
 
-      const inputWrapper = itemEl.createDiv({ cls: 'codexidian-context-limits-input-wrapper' });
+      const inputWrapper = itemEl.createDiv({ cls: 'codexian-context-limits-input-wrapper' });
       const inputEl = inputWrapper.createEl('input', {
         type: 'text',
         placeholder: '200k',
-        cls: 'codexidian-context-limits-input',
+        cls: 'codexian-context-limits-input',
         value: currentValue ? formatContextLimit(currentValue) : '',
       });
 
-      const validationEl = inputWrapper.createDiv({ cls: 'codexidian-context-limit-validation' });
+      const validationEl = inputWrapper.createDiv({ cls: 'codexian-context-limit-validation' });
 
       inputEl.addEventListener('input', async () => {
         const trimmed = inputEl.value.trim();
@@ -656,19 +656,19 @@ export class CodexidianSettingTab extends PluginSettingTab {
         if (!trimmed) {
           delete this.plugin.settings.customContextLimits[modelId];
           validationEl.style.display = 'none';
-          inputEl.classList.remove('codexidian-input-error');
+          inputEl.classList.remove('codexian-input-error');
         } else {
           const parsed = parseContextLimit(trimmed);
           if (parsed === null) {
             validationEl.setText(t('settings.customContextLimits.invalid'));
             validationEl.style.display = 'block';
-            inputEl.classList.add('codexidian-input-error');
+            inputEl.classList.add('codexian-input-error');
             return;
           }
 
           this.plugin.settings.customContextLimits[modelId] = parsed;
           validationEl.style.display = 'none';
-          inputEl.classList.remove('codexidian-input-error');
+          inputEl.classList.remove('codexian-input-error');
         }
 
         await this.plugin.saveSettings();

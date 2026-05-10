@@ -1,5 +1,5 @@
 /**
- * Codexidian - Resume session dropdown
+ * Codexian - Resume session dropdown
  *
  * Dropup UI for selecting a previous conversation to resume.
  * Shown when the /resume built-in command is executed.
@@ -37,7 +37,7 @@ export class ResumeSessionDropdown {
     this.currentConversationId = currentConversationId;
     this.callbacks = callbacks;
 
-    this.dropdownEl = this.containerEl.createDiv({ cls: 'codexidian-resume-dropdown' });
+    this.dropdownEl = this.containerEl.createDiv({ cls: 'codexian-resume-dropdown' });
     this.render();
     this.dropdownEl.addClass('visible');
 
@@ -109,7 +109,7 @@ export class ResumeSessionDropdown {
   }
 
   private updateSelection(): void {
-    const items = this.dropdownEl.querySelectorAll('.codexidian-resume-item');
+    const items = this.dropdownEl.querySelectorAll('.codexian-resume-item');
     items?.forEach((item, index) => {
       if (index === this.selectedIndex) {
         item.addClass('selected');
@@ -129,32 +129,32 @@ export class ResumeSessionDropdown {
   private render(): void {
     this.dropdownEl.empty();
 
-    const header = this.dropdownEl.createDiv({ cls: 'codexidian-resume-header' });
+    const header = this.dropdownEl.createDiv({ cls: 'codexian-resume-header' });
     header.createSpan({ text: 'Resume conversation' });
 
     if (this.conversations.length === 0) {
-      this.dropdownEl.createDiv({ cls: 'codexidian-resume-empty', text: 'No conversations' });
+      this.dropdownEl.createDiv({ cls: 'codexian-resume-empty', text: 'No conversations' });
       return;
     }
 
-    const list = this.dropdownEl.createDiv({ cls: 'codexidian-resume-list' });
+    const list = this.dropdownEl.createDiv({ cls: 'codexian-resume-list' });
 
     for (let i = 0; i < this.conversations.length; i++) {
       const conv = this.conversations[i];
       const isCurrent = conv.id === this.currentConversationId;
 
-      const item = list.createDiv({ cls: 'codexidian-resume-item' });
+      const item = list.createDiv({ cls: 'codexian-resume-item' });
       if (isCurrent) item.addClass('current');
       if (i === this.selectedIndex) item.addClass('selected');
 
-      const iconEl = item.createDiv({ cls: 'codexidian-resume-item-icon' });
+      const iconEl = item.createDiv({ cls: 'codexian-resume-item-icon' });
       setIcon(iconEl, isCurrent ? 'message-square-dot' : 'message-square');
 
-      const content = item.createDiv({ cls: 'codexidian-resume-item-content' });
-      const titleEl = content.createDiv({ cls: 'codexidian-resume-item-title', text: conv.title });
+      const content = item.createDiv({ cls: 'codexian-resume-item-content' });
+      const titleEl = content.createDiv({ cls: 'codexian-resume-item-title', text: conv.title });
       titleEl.setAttribute('title', conv.title);
       content.createDiv({
-        cls: 'codexidian-resume-item-date',
+        cls: 'codexian-resume-item-date',
         text: isCurrent ? 'Current session' : this.formatDate(conv.lastResponseAt ?? conv.createdAt),
       });
 

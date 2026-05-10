@@ -11,7 +11,7 @@ import type {
 import type { ChatRuntime } from '../../../core/runtime/ChatRuntime';
 import type { Conversation, SlashCommand } from '../../../core/types';
 import { t } from '../../../i18n/i18n';
-import type CodexidianPlugin from '../../../main';
+import type CodexianPlugin from '../../../main';
 import { chooseForkTarget } from '../../../shared/modals/ForkTargetModal';
 import { getTabProviderId } from './providerResolution';
 import {
@@ -77,7 +77,7 @@ type ProviderCommandWarmupEntry = {
  * TabManager coordinates multiple chat tabs.
  */
 export class TabManager implements TabManagerInterface {
-  private plugin: CodexidianPlugin;
+  private plugin: CodexianPlugin;
   private containerEl: HTMLElement;
   private view: TabManagerViewHost;
 
@@ -101,7 +101,7 @@ export class TabManager implements TabManagerInterface {
   }
 
   constructor(
-    plugin: CodexidianPlugin,
+    plugin: CodexianPlugin,
     containerEl: HTMLElement,
     view: TabManagerViewHost,
     callbacks: TabManagerCallbacks = {},

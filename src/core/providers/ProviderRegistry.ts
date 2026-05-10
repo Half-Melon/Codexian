@@ -1,4 +1,4 @@
-import type CodexidianPlugin from '../../main';
+import type CodexianPlugin from '../../main';
 import type { ChatRuntime } from '../runtime/ChatRuntime';
 import {
   type CreateChatRuntimeOptions,
@@ -45,15 +45,15 @@ export class ProviderRegistry {
     return this.getProviderRegistration(providerId).createRuntime(options);
   }
 
-  static createTitleGenerationService(plugin: CodexidianPlugin, providerId: ProviderId = DEFAULT_CHAT_PROVIDER_ID): TitleGenerationService {
+  static createTitleGenerationService(plugin: CodexianPlugin, providerId: ProviderId = DEFAULT_CHAT_PROVIDER_ID): TitleGenerationService {
     return this.getProviderRegistration(providerId).createTitleGenerationService(plugin);
   }
 
-  static createInstructionRefineService(plugin: CodexidianPlugin, providerId: ProviderId = DEFAULT_CHAT_PROVIDER_ID): InstructionRefineService {
+  static createInstructionRefineService(plugin: CodexianPlugin, providerId: ProviderId = DEFAULT_CHAT_PROVIDER_ID): InstructionRefineService {
     return this.getProviderRegistration(providerId).createInstructionRefineService(plugin);
   }
 
-  static createInlineEditService(plugin: CodexidianPlugin, providerId: ProviderId = DEFAULT_CHAT_PROVIDER_ID): InlineEditService {
+  static createInlineEditService(plugin: CodexianPlugin, providerId: ProviderId = DEFAULT_CHAT_PROVIDER_ID): InlineEditService {
     return this.getProviderRegistration(providerId).createInlineEditService(plugin);
   }
 

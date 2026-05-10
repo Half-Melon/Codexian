@@ -1,16 +1,16 @@
-# Codexidian
+# Codexian
 
 English | [简体中文](README.zh-CN.md)
 
-Codexidian is an Obsidian desktop plugin that brings Codex into the vault as a local, vault-aware working assistant. It provides a chat sidebar, inline editing, file mentions, Codex skills, subagents, MCP support, and a structured knowledge-base workflow for turning saved sources into reusable notes.
+Codexian is a desktop plugin for Obsidian that brings Codex into the vault as a local, vault-aware working assistant. It provides a chat sidebar, inline editing, file mentions, Codex skills, subagents, MCP support, and a structured knowledge-base workflow for turning saved sources into reusable notes.
 
-![Codexidian screenshot](assets/screenshot.png)
+![Codexian screenshot](assets/screenshot.png)
 
-## Why Codexidian
+## Why Codexian
 
 Obsidian is strong at long-term knowledge storage, but maintaining a useful knowledge base still requires repetitive work: collecting sources, summarizing them, extracting concepts, keeping indexes current, recording useful Q&A, and checking whether the system is drifting.
 
-Codexidian connects that work to Codex inside the vault. The plugin keeps the interaction close to the notes, lets Codex use the vault as its working directory, and adds a first-class workflow for a sustainable `new/`, `raw/`, `wiki/`, and `outputs/` knowledge system.
+Codexian connects that work to Codex inside the vault. The plugin keeps the interaction close to the notes, lets Codex use the vault as its working directory, and adds a first-class workflow for a sustainable `new/`, `raw/`, `wiki/`, and `outputs/` knowledge system.
 
 ## Features
 
@@ -21,7 +21,7 @@ Codexidian connects that work to Codex inside the vault. The plugin keeps the in
 - Multi-tab conversations, conversation history, fork, resume, and compact.
 - Plan mode and permission controls through the shared toolbar.
 - Instruction mode with `#`.
-- English and Simplified Chinese interface. The default language follows Obsidian's language setting, and it can be overridden in Codexidian settings.
+- English and Simplified Chinese interface. The default language follows Obsidian's language setting, and it can be overridden in Codexian settings.
 - Codex CLI-managed MCP support. Configure servers with `codex mcp`.
 - Knowledge-base workflow controls from the ribbon and command palette:
   - Compile new sources from `new/`.
@@ -35,7 +35,7 @@ Codexidian connects that work to Codex inside the vault. The plugin keeps the in
 
 ## Knowledge-Base Workflow
 
-Codexidian is designed around a three-layer knowledge-base structure:
+Codexian is designed around a three-layer knowledge-base structure:
 
 ```text
 new/                  New sources waiting to be compiled
@@ -70,7 +70,7 @@ wiki/maps/LLM Personal Knowledge Base Workflow.md
 .codex/skills/
 ```
 
-Put source files into the vault root `new/` folder, then click the ribbon action or run `Codexidian: Compile new sources` from the command palette. Codexidian sends Codex a workflow prompt that reads the new files, creates summaries, updates indexes and concepts, then archives the compiled originals into `raw/articles/`, `raw/posts/`, `raw/papers/`, `raw/transcripts/`, or `raw/inbox/`.
+Put source files into the vault root `new/` folder, then click the ribbon action or run `Codexian: Compile new sources` from the command palette. Codexian sends Codex a workflow prompt that reads the new files, creates summaries, updates indexes and concepts, then archives the compiled originals into `raw/articles/`, `raw/posts/`, `raw/papers/`, `raw/transcripts/`, or `raw/inbox/`.
 
 Compiled source files are renamed from their content with clearer, topic-specific titles. Filename collisions are handled without overwriting existing files, and archive moves are recorded in `outputs/reports/YYYY-MM-DD-archive-log.md`.
 
@@ -91,11 +91,11 @@ When using Codex.app on macOS, the Codex CLI path is usually:
 
 ### Install from a GitHub release
 
-1. Download `codexidian-1.0.0.zip` from the GitHub Releases page.
+1. Download `codexian-1.0.0.zip` from the GitHub Releases page.
 2. Create this folder in your vault if it does not already exist:
 
 ```text
-<your-vault>/.obsidian/plugins/codexidian/
+<your-vault>/.obsidian/plugins/codexian/
 ```
 
 3. Extract these three files into that folder:
@@ -106,10 +106,10 @@ manifest.json
 styles.css
 ```
 
-4. Restart Obsidian or run `Reload app without saving` from the command palette.
+4. Restart the app or run `Reload app without saving` from the command palette.
 5. Open `Settings -> Community plugins`.
-6. Enable community plugins if required, then enable `Codexidian`.
-7. Open `Settings -> Codexidian` and confirm the Codex CLI path.
+6. Enable community plugins if required, then enable `Codexian`.
+7. Open `Settings -> Codexian` and confirm the Codex CLI path.
 
 ### Build from source
 
@@ -121,7 +121,7 @@ npm run build
 The build produces `main.js`, `manifest.json`, and `styles.css` in the project root. Copy those files into:
 
 ```text
-<your-vault>/.obsidian/plugins/codexidian/
+<your-vault>/.obsidian/plugins/codexian/
 ```
 
 For local development, set `OBSIDIAN_VAULT` in `.env.local` and run:
@@ -134,10 +134,10 @@ The build script will copy the plugin output into the configured vault plugin fo
 
 ## Settings
 
-Codexidian stores plugin settings in:
+Codexian stores plugin settings in:
 
 ```text
-<vault>/.codexidian/codexidian-settings.json
+<vault>/.codexian/codexian-settings.json
 ```
 
 The settings page includes:
@@ -172,17 +172,21 @@ The project uses:
 
 ## Privacy and Security
 
-Codexidian runs locally inside Obsidian and uses the local Codex CLI. The plugin can read and write files in the active vault because that is required for vault-aware workflows. Codex can also run local commands when allowed by the configured permission mode.
+Codexian runs locally inside Obsidian and uses the local Codex CLI. The plugin can read and write files in the active vault because that is required for vault-aware workflows. Codex can also run local commands when allowed by the configured permission mode.
 
 Review permission prompts carefully, keep secrets out of the vault, and avoid placing private credentials in notes that may be sent to a model or used by tools.
 
+Codex itself may use network services depending on the user's Codex CLI configuration and account. Codexian does not add separate telemetry, advertising, or self-update mechanisms.
+
+The plugin can work with external context directories and local MCP tools when the user configures those features. In those cases, Codex may read files outside the vault or call local tools according to the configured permission mode.
+
 ## Author
 
-Codexidian is created and maintained by HalfMelon.
+Codexian is created and maintained by HalfMelon. The project is developed in the Codexian repository.
 
 ## Acknowledgements
 
-Codexidian takes inspiration from Claudian's approach to agent-assisted Obsidian workflows, then adapts and extends the idea for a Codex-only workflow with a structured knowledge-base system, source compilation, archive handling, and health checks.
+Codexian takes inspiration from Claudian's approach to agent-assisted Obsidian workflows, then adapts and extends the idea for a Codex-only workflow with a structured knowledge-base system, source compilation, archive handling, and health checks.
 
 Thanks to the Linux.Do community. Its open-source spirit and practical discussions encouraged this project.
 

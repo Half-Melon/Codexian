@@ -614,7 +614,7 @@ describe('ConversationController', () => {
 
         expect(dropdown.children.length).toBe(2);
         const list = dropdown.children[1];
-        expect(list.hasClass('codexidian-history-list')).toBe(true);
+        expect(list.hasClass('codexian-history-list')).toBe(true);
         expect(list.children.length).toBe(2);
       });
 
@@ -624,7 +624,7 @@ describe('ConversationController', () => {
         controller.updateHistoryDropdown();
 
         const list = dropdown.children[1];
-        expect(list.children[0].hasClass('codexidian-history-empty')).toBe(true);
+        expect(list.children[0].hasClass('codexian-history-empty')).toBe(true);
       });
 
       it('should sort conversations by lastResponseAt descending', () => {
@@ -637,7 +637,7 @@ describe('ConversationController', () => {
         controller.updateHistoryDropdown();
 
         const list = dropdown.children[1];
-        const firstTitle = list.children[0].querySelector('.codexidian-history-item-title');
+        const firstTitle = list.children[0].querySelector('.codexian-history-item-title');
         expect(firstTitle?.textContent).toBe('New');
       });
 
@@ -666,7 +666,7 @@ describe('ConversationController', () => {
 
         const list = dropdown.children[1];
         const item = list.children[0];
-        const loadingEl = item.querySelector('.codexidian-action-loading');
+        const loadingEl = item.querySelector('.codexian-action-loading');
         expect(loadingEl).toBeTruthy();
       });
 
@@ -679,7 +679,7 @@ describe('ConversationController', () => {
 
         const list = dropdown.children[1];
         const item = list.children[0];
-        const actions = item.querySelector('.codexidian-history-item-actions');
+        const actions = item.querySelector('.codexian-history-item-actions');
         expect(actions).toBeTruthy();
         // regenerate button + rename button + delete button = 3 children
         expect(actions!.children.length).toBe(3);
@@ -696,7 +696,7 @@ describe('ConversationController', () => {
 
         const list = dropdown.children[1];
         const item = list.children[0];
-        const content = item.querySelector('.codexidian-history-item-content');
+        const content = item.querySelector('.codexian-history-item-content');
         const listeners = content?._eventListeners?.get('click');
         expect(listeners).toBeUndefined();
       });
@@ -714,7 +714,7 @@ describe('ConversationController', () => {
         const list = dropdown.children[1];
         // conv-2 is the non-current one (sorted second by lastResponseAt)
         const otherItem = list.children[1];
-        const content = otherItem.querySelector('.codexidian-history-item-content');
+        const content = otherItem.querySelector('.codexian-history-item-content');
         const listeners = content?._eventListeners?.get('click');
         expect(listeners).toBeDefined();
         expect(listeners!.length).toBe(1);
@@ -731,7 +731,7 @@ describe('ConversationController', () => {
 
         const list = dropdown.children[1];
         const item = list.children[0];
-        const deleteBtn = item.querySelector('.codexidian-delete-btn');
+        const deleteBtn = item.querySelector('.codexian-delete-btn');
         expect(deleteBtn).toBeTruthy();
 
         const clickHandlers = deleteBtn!._eventListeners?.get('click');
@@ -775,7 +775,7 @@ describe('ConversationController', () => {
 
         const list = container.children[1];
         const otherItem = list.children[1];
-        const content = otherItem.querySelector('.codexidian-history-item-content');
+        const content = otherItem.querySelector('.codexian-history-item-content');
         const clickHandlers = content?._eventListeners?.get('click');
         expect(clickHandlers).toBeDefined();
 
@@ -811,7 +811,7 @@ describe('ConversationController', () => {
 
         const list = container.children[1];
         const otherItem = list.children[1];
-        const content = otherItem.querySelector('.codexidian-history-item-content');
+        const content = otherItem.querySelector('.codexian-history-item-content');
         const auxClickHandlers = content?._eventListeners?.get('auxclick');
         expect(auxClickHandlers).toBeDefined();
 
@@ -910,7 +910,7 @@ describe('ConversationController', () => {
 
       const list = dropdown.children[1];
       const otherItem = list.children[1];
-      const content = otherItem.querySelector('.codexidian-history-item-content');
+      const content = otherItem.querySelector('.codexian-history-item-content');
       const clickHandlers = content?._eventListeners?.get('click');
       expect(clickHandlers).toBeDefined();
 
@@ -934,7 +934,7 @@ describe('ConversationController', () => {
 
       const list = dropdown.children[1];
       const item = list.children[0];
-      const actions = item.querySelector('.codexidian-history-item-actions');
+      const actions = item.querySelector('.codexian-history-item-actions');
       // First child is the regenerate button
       const regenerateBtn = actions!.children[0];
       const clickHandlers = regenerateBtn._eventListeners?.get('click');
@@ -962,7 +962,7 @@ describe('ConversationController', () => {
 
       const list = dropdown.children[1];
       const item = list.children[0];
-      const actions = item.querySelector('.codexidian-history-item-actions');
+      const actions = item.querySelector('.codexian-history-item-actions');
       expect(actions).toBeTruthy();
       // For non-failed items: rename is children[0], delete is children[1]
       const rBtn = actions!.children[0];
@@ -977,7 +977,7 @@ describe('ConversationController', () => {
       (mockInput as any).focus = jest.fn();
       (mockInput as any).select = jest.fn();
 
-      const titleEl = item.querySelector('.codexidian-history-item-title');
+      const titleEl = item.querySelector('.codexian-history-item-title');
       if (titleEl) {
         (titleEl as any).replaceWith = jest.fn();
       }
@@ -1007,7 +1007,7 @@ describe('ConversationController', () => {
 
       const list = dropdown.children[1];
       const item = list.children[0];
-      const deleteBtn = item.querySelector('.codexidian-delete-btn');
+      const deleteBtn = item.querySelector('.codexian-delete-btn');
       expect(deleteBtn).toBeTruthy();
 
       const clickHandlers = deleteBtn!._eventListeners?.get('click');
@@ -1030,7 +1030,7 @@ describe('ConversationController', () => {
 
       const list = dropdown.children[1];
       const otherItem = list.children[1]; // conv-2
-      const deleteBtn = otherItem.querySelector('.codexidian-delete-btn');
+      const deleteBtn = otherItem.querySelector('.codexian-delete-btn');
       const clickHandlers = deleteBtn!._eventListeners?.get('click');
 
       await clickHandlers![0]({ stopPropagation: jest.fn() });

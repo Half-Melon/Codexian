@@ -1,5 +1,5 @@
 /* Permission Mode Toggle */
-.codexidian-permission-toggle {
+.codexian-permission-toggle {
   display: flex;
   align-items: center;
   gap: 6px;
@@ -8,18 +8,18 @@
   padding-right: 8px;
 }
 
-.codexidian-permission-label {
+.codexian-permission-label {
   font-size: 11px;
   color: var(--text-muted);
   min-width: 28px;
 }
 
-.codexidian-permission-label.plan-active {
+.codexian-permission-label.plan-active {
   color: rgb(92, 148, 140);
   font-weight: 600;
 }
 
-.codexidian-toggle-switch {
+.codexian-toggle-switch {
   width: 32px;
   height: 18px;
   border-radius: 9px;
@@ -30,7 +30,7 @@
   flex-shrink: 0;
 }
 
-.codexidian-toggle-switch::after {
+.codexian-toggle-switch::after {
   content: '';
   position: absolute;
   width: 14px;
@@ -42,15 +42,15 @@
   transition: transform 0.2s ease, background 0.2s ease;
 }
 
-.codexidian-toggle-switch:hover {
+.codexian-toggle-switch:hover {
   background: var(--background-modifier-hover);
 }
 
-.codexidian-toggle-switch.active {
-  background: rgba(var(--codexidian-brand-rgb), 0.3);
+.codexian-toggle-switch.active {
+  background: rgba(var(--codexian-brand-rgb), 0.3);
 }
 
-.codexidian-toggle-switch.active::after {
+.codexian-toggle-switch.active::after {
   transform: translateX(14px);
-  background: var(--codexidian-brand);
+  background: var(--codexian-brand);
 }

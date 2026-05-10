@@ -8,7 +8,7 @@ import { updateContextRowHasContent } from './contextRowVisibility';
 
 const SELECTION_POLL_INTERVAL = 250;
 const INPUT_HANDOFF_GRACE_MS = 1500;
-const HIGHLIGHT_KEY = 'codexidian-selection';
+const HIGHLIGHT_KEY = 'codexian-selection';
 
 export class SelectionController {
   private app: App;

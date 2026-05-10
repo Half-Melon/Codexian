@@ -27,7 +27,7 @@ export class TabBar {
 
   /** Builds the tab bar UI. */
   private build(): void {
-    this.containerEl.addClass('codexidian-tab-badges');
+    this.containerEl.addClass('codexian-tab-badges');
   }
 
   /**
@@ -47,17 +47,17 @@ export class TabBar {
   /** Renders a single tab badge. */
   private renderBadge(item: TabBarItem): void {
     // Determine state class (priority: active > attention > streaming > idle)
-    let stateClass = 'codexidian-tab-badge-idle';
+    let stateClass = 'codexian-tab-badge-idle';
     if (item.isActive) {
-      stateClass = 'codexidian-tab-badge-active';
+      stateClass = 'codexian-tab-badge-active';
     } else if (item.needsAttention) {
-      stateClass = 'codexidian-tab-badge-attention';
+      stateClass = 'codexian-tab-badge-attention';
     } else if (item.isStreaming) {
-      stateClass = 'codexidian-tab-badge-streaming';
+      stateClass = 'codexian-tab-badge-streaming';
     }
 
     const badgeEl = this.containerEl.createDiv({
-      cls: `codexidian-tab-badge ${stateClass}`,
+      cls: `codexian-tab-badge ${stateClass}`,
       text: String(item.index),
     });
 
@@ -82,6 +82,6 @@ export class TabBar {
   /** Destroys the tab bar. */
   destroy(): void {
     this.containerEl.empty();
-    this.containerEl.removeClass('codexidian-tab-badges');
+    this.containerEl.removeClass('codexian-tab-badges');
   }
 }

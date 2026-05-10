@@ -24,20 +24,20 @@ export class NavigationSidebar {
     private parentEl: HTMLElement,
     private messagesEl: HTMLElement
   ) {
-    this.container = this.parentEl.createDiv({ cls: 'codexidian-nav-sidebar' });
+    this.container = this.parentEl.createDiv({ cls: 'codexian-nav-sidebar' });
 
     // Create buttons
-    this.topBtn = this.createButton('codexidian-nav-btn-top', 'chevrons-up', 'Scroll to top');
-    this.prevBtn = this.createButton('codexidian-nav-btn-prev', 'chevron-up', 'Previous message');
-    this.nextBtn = this.createButton('codexidian-nav-btn-next', 'chevron-down', 'Next message');
-    this.bottomBtn = this.createButton('codexidian-nav-btn-bottom', 'chevrons-down', 'Scroll to bottom');
+    this.topBtn = this.createButton('codexian-nav-btn-top', 'chevrons-up', 'Scroll to top');
+    this.prevBtn = this.createButton('codexian-nav-btn-prev', 'chevron-up', 'Previous message');
+    this.nextBtn = this.createButton('codexian-nav-btn-next', 'chevron-down', 'Next message');
+    this.bottomBtn = this.createButton('codexian-nav-btn-bottom', 'chevrons-down', 'Scroll to bottom');
 
     this.setupEventListeners();
     this.applyVisibility();
   }
 
   private createButton(cls: string, icon: string, label: string): HTMLElement {
-    const btn = this.container.createDiv({ cls: `codexidian-nav-btn ${cls}` });
+    const btn = this.container.createDiv({ cls: `codexian-nav-btn ${cls}` });
     setIcon(btn, icon);
     btn.setAttribute('aria-label', label);
     return btn;
@@ -85,7 +85,7 @@ export class NavigationSidebar {
    * Scrolls to previous or next user message, skipping assistant messages.
    */
   private scrollToMessage(direction: 'prev' | 'next'): void {
-    const messages = Array.from(this.messagesEl.querySelectorAll('.codexidian-message-user')) as HTMLElement[];
+    const messages = Array.from(this.messagesEl.querySelectorAll('.codexian-message-user')) as HTMLElement[];
 
     if (messages.length === 0) return;
 

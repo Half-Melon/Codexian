@@ -65,7 +65,7 @@
     }
   },
   "settings": {
-    "title": "Codexidian 设置",
+    "title": "Codexian 设置",
     "tabs": {
       "general": "通用",
       "codex": "Codex"
@@ -78,7 +78,7 @@
     "models": "模型",
     "experimental": "实验性功能",
     "userName": {
-      "name": "Codexidian 应该如何称呼你？",
+      "name": "Codexian 应该如何称呼你？",
       "desc": "用于个性化问候的用户名（留空使用通用问候）"
     },
     "excludedTags": {
@@ -157,7 +157,7 @@
     },
     "plugins": {
       "name": "Codex Plugins",
-      "desc": "Codexidian is Codex-only and does not manage third-party provider plugins."
+      "desc": "Codexian is Codex-only and does not manage third-party provider plugins."
     },
     "subagents": {
       "name": "子代理",
@@ -200,7 +200,7 @@
     "safety": "安全",
     "loadUserSettings": {
       "name": "Load user Codex settings",
-      "desc": "Codex reads its own CLI configuration. Codexidian keeps provider settings under this vault."
+      "desc": "Codex reads its own CLI configuration. Codexian keeps provider settings under this vault."
     },
     "codexSafeMode": {
       "name": "Safe mode",
@@ -242,7 +242,7 @@
     },
     "enableChrome": {
       "name": "Browser integration",
-      "desc": "Browser integration is provider-specific. Codexidian does not manage a separate Chrome extension here."
+      "desc": "Browser integration is provider-specific. Codexian does not manage a separate Chrome extension here."
     },
     "enableBangBash": {
       "name": "启用命令模式 (!)",
@@ -271,7 +271,7 @@
       "desc": "响应流式传输时显示原始 LaTeX，并在每个文本块完成后只渲染一次数学公式。"
     },
     "chatViewPlacement": {
-      "name": "Codexidian 打开位置",
+      "name": "Codexian 打开位置",
       "desc": "选择新建聊天面板时的打开位置",
       "rightSidebar": "右侧边栏",
       "leftSidebar": "左侧边栏",
@@ -320,9 +320,9 @@
     }
   },
   "knowledgeWorkflow": {
-    "notReady": "Codexidian 还没准备好，请先打开聊天面板后再试一次。",
+    "notReady": "Codexian 还没准备好，请先打开聊天面板后再试一次。",
     "status": {
-      "title": "Codexidian 知识库状态",
+      "title": "Codexian 知识库状态",
       "pendingNewSources": "new/ 待编译来源",
       "latestArchiveLog": "最近归档日志",
       "latestHealthCheck": "最近健康检查",
@@ -331,9 +331,9 @@
       "moreFiles": "以及 {count} 个更多文件"
     },
     "initialized": {
-      "ready": "Codexidian 知识库工作流已就绪，没有需要新建的文件。",
-      "created": "Codexidian 知识库工作流已初始化：新建 {folders} 个目录、{files} 个文件。",
-      "failed": "Codexidian 知识库工作流初始化失败：{message}"
+      "ready": "Codexian 知识库工作流已就绪，没有需要新建的文件。",
+      "created": "Codexian 知识库工作流已初始化：新建 {folders} 个目录、{files} 个文件。",
+      "failed": "Codexian 知识库工作流初始化失败：{message}"
     },
     "commands": {
       "initialize": {

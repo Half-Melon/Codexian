@@ -30,7 +30,7 @@ function createMockCallbacks() {
 
 function createContainerWithInputWrapper(): { container: any; inputWrapper: any } {
   const container = createMockEl();
-  const inputWrapper = container.createDiv({ cls: 'codexidian-input-wrapper' });
+  const inputWrapper = container.createDiv({ cls: 'codexian-input-wrapper' });
   return { container, inputWrapper };
 }
 
@@ -183,13 +183,13 @@ describe('ImageContextManager', () => {
 
       const mgr = new ImageContextManager(c, input, cb, previewContainer);
       expect(mgr).toBeDefined();
-      const previewEl = previewContainer.querySelector('.codexidian-image-preview');
+      const previewEl = previewContainer.querySelector('.codexian-image-preview');
       expect(previewEl).not.toBeNull();
     });
 
     it('should insert image preview before file indicator if present', () => {
       const previewContainer = createMockEl();
-      const fileIndicator = previewContainer.createDiv({ cls: 'codexidian-file-indicator' });
+      const fileIndicator = previewContainer.createDiv({ cls: 'codexian-file-indicator' });
       // Patch parentElement to match check in constructor
       Object.defineProperty(fileIndicator, 'parentElement', { get: () => previewContainer });
 
@@ -200,7 +200,7 @@ describe('ImageContextManager', () => {
       new ImageContextManager(c, input, cb, previewContainer);
       const children = previewContainer.children;
       const fileIndicatorIdx = children.indexOf(fileIndicator);
-      const previewIdx = children.findIndex((el: any) => el.hasClass?.('codexidian-image-preview'));
+      const previewIdx = children.findIndex((el: any) => el.hasClass?.('codexian-image-preview'));
       expect(previewIdx).toBeLessThan(fileIndicatorIdx);
     });
   });
@@ -664,15 +664,15 @@ describe('ImageContextManager - Private Helpers', () => {
       expect(previewEl.children.length).toBe(1);
 
       const chipEl = previewEl.children[0];
-      expect(chipEl.hasClass('codexidian-image-chip')).toBe(true);
+      expect(chipEl.hasClass('codexian-image-chip')).toBe(true);
 
-      const thumbEl = chipEl.querySelector('.codexidian-image-thumb');
+      const thumbEl = chipEl.querySelector('.codexian-image-thumb');
       expect(thumbEl).not.toBeNull();
 
-      const infoEl = chipEl.querySelector('.codexidian-image-info');
+      const infoEl = chipEl.querySelector('.codexian-image-info');
       expect(infoEl).not.toBeNull();
 
-      const removeEl = chipEl.querySelector('.codexidian-image-remove');
+      const removeEl = chipEl.querySelector('.codexian-image-remove');
       expect(removeEl).not.toBeNull();
     });
 
@@ -691,7 +691,7 @@ describe('ImageContextManager - Private Helpers', () => {
       cb.onImagesChanged.mockClear();
 
       const firstChip = mgr['imagePreviewEl'].children[0];
-      const removeEl = firstChip.querySelector('.codexidian-image-remove');
+      const removeEl = firstChip.querySelector('.codexian-image-remove');
       removeEl.dispatchEvent({ type: 'click', stopPropagation: jest.fn() });
 
       expect(mgr.getAttachedImages()).toHaveLength(1);
@@ -729,7 +729,7 @@ describe('ImageContextManager - Private Helpers', () => {
       const image = createImageAttachment({ name: 'test.png', mediaType: 'image/png', data: 'abc123' });
       manager['showFullImage'](image);
 
-      expect(mockBody.createDiv).toHaveBeenCalledWith({ cls: 'codexidian-image-modal-overlay' });
+      expect(mockBody.createDiv).toHaveBeenCalledWith({ cls: 'codexian-image-modal-overlay' });
     });
 
     it('should register Escape key handler and close button', () => {

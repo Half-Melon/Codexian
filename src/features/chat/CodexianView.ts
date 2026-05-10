@@ -5,8 +5,8 @@ import { getHiddenProviderCommandSet } from '../../core/providers/commands/hidde
 import { ProviderRegistry } from '../../core/providers/ProviderRegistry';
 import { ProviderSettingsCoordinator } from '../../core/providers/ProviderSettingsCoordinator';
 import { DEFAULT_CHAT_PROVIDER_ID, type ProviderId } from '../../core/providers/types';
-import { VIEW_TYPE_CODEXIDIAN } from '../../core/types';
-import type CodexidianPlugin from '../../main';
+import { VIEW_TYPE_CODEXIAN } from '../../core/types';
+import type CodexianPlugin from '../../main';
 import { createProviderIconSvg } from '../../shared/icons';
 import type { HistoryConversationOpenState } from './controllers/ConversationController';
 import { getTabProviderId, onProviderAvailabilityChanged, updatePlanModeUI } from './tabs/Tab';
@@ -15,8 +15,8 @@ import { TabManager } from './tabs/TabManager';
 import type { TabData, TabId } from './tabs/types';
 import { recalculateUsageForModel } from './utils/usageInfo';
 
-export class CodexidianView extends ItemView {
-  private plugin: CodexidianPlugin;
+export class CodexianView extends ItemView {
+  private plugin: CodexianPlugin;
 
   // Tab management
   private tabManager: TabManager | null = null;
@@ -46,12 +46,12 @@ export class CodexidianView extends ItemView {
   // Debouncing for tab state persistence
   private pendingPersist: ReturnType<typeof setTimeout> | null = null;
 
-  constructor(leaf: WorkspaceLeaf, plugin: CodexidianPlugin) {
+  constructor(leaf: WorkspaceLeaf, plugin: CodexianPlugin) {
     super(leaf);
     this.plugin = plugin;
 
     // Hover Editor compatibility: Define load as an instance method that can't be
-    // overwritten by prototype patching. Hover Editor patches CodexidianView.prototype.load
+    // overwritten by prototype patching. Hover Editor patches CodexianView.prototype.load
     // after our class is defined, but instance methods take precedence over prototype methods.
     const originalLoad = Object.getPrototypeOf(this).load.bind(this);
     Object.defineProperty(this, 'load', {
@@ -73,11 +73,11 @@ export class CodexidianView extends ItemView {
   }
 
   getViewType(): string {
-    return VIEW_TYPE_CODEXIDIAN;
+    return VIEW_TYPE_CODEXIAN;
   }
 
   getDisplayText(): string {
-    return 'Codexidian';
+    return 'Codexian';
   }
 
   getIcon(): string {
@@ -113,7 +113,7 @@ export class CodexidianView extends ItemView {
       tab.ui.permissionToggle?.updateDisplay();
       tab.ui.serviceTierToggle?.updateDisplay();
       tab.dom.inputWrapper.toggleClass(
-        'codexidian-input-plan-mode',
+        'codexian-input-plan-mode',
         providerSettings.permissionMode === 'plan' && capabilities.supportsPlanMode,
       );
     }
@@ -154,13 +154,13 @@ export class CodexidianView extends ItemView {
 
     this.viewContainerEl = container;
     this.viewContainerEl.empty();
-    this.viewContainerEl.addClass('codexidian-container');
+    this.viewContainerEl.addClass('codexian-container');
 
-    const header = this.viewContainerEl.createDiv({ cls: 'codexidian-header' });
+    const header = this.viewContainerEl.createDiv({ cls: 'codexian-header' });
     this.buildHeader(header);
 
     this.navRowContent = this.buildNavRowContent();
-    this.tabContentEl = this.viewContainerEl.createDiv({ cls: 'codexidian-tab-content-container' });
+    this.tabContentEl = this.viewContainerEl.createDiv({ cls: 'codexian-tab-content-container' });
 
     this.tabManager = new TabManager(
       this.plugin,
@@ -234,17 +234,17 @@ export class CodexidianView extends ItemView {
     this.headerEl = header;
 
     // Title slot container (logo + title or tabs)
-    this.titleSlotEl = header.createDiv({ cls: 'codexidian-title-slot' });
+    this.titleSlotEl = header.createDiv({ cls: 'codexian-title-slot' });
 
     // Logo (hidden when 2+ tabs) — populated by syncHeaderLogo()
-    this.logoEl = this.titleSlotEl.createSpan({ cls: 'codexidian-logo' });
+    this.logoEl = this.titleSlotEl.createSpan({ cls: 'codexian-logo' });
     this.syncHeaderLogo(DEFAULT_CHAT_PROVIDER_ID);
 
     // Title text (hidden in header mode when 2+ tabs)
-    this.titleTextEl = this.titleSlotEl.createEl('h4', { text: 'Codexidian', cls: 'codexidian-title-text' });
+    this.titleTextEl = this.titleSlotEl.createEl('h4', { text: 'Codexian', cls: 'codexian-title-text' });
 
     // Header actions container (for header mode - initially hidden)
-    this.headerActionsEl = header.createDiv({ cls: 'codexidian-header-actions codexidian-header-actions-slot' });
+    this.headerActionsEl = header.createDiv({ cls: 'codexian-header-actions codexian-header-actions-slot' });
     this.headerActionsEl.style.display = 'none';
   }
 
@@ -258,7 +258,7 @@ export class CodexidianView extends ItemView {
 
     // Tab badges (left side in nav row, or in title slot for header mode)
     this.tabBarContainerEl = document.createElement('div');
-    this.tabBarContainerEl.className = 'codexidian-tab-bar-container';
+    this.tabBarContainerEl.className = 'codexian-tab-bar-container';
     this.tabBar = new TabBar(this.tabBarContainerEl, {
       onTabClick: (tabId) => this.handleTabClick(tabId),
       onTabClose: (tabId) => this.handleTabClose(tabId),
@@ -268,10 +268,10 @@ export class CodexidianView extends ItemView {
 
     // Header actions (right side)
     this.headerActionsContent = document.createElement('div');
-    this.headerActionsContent.className = 'codexidian-header-actions';
+    this.headerActionsContent.className = 'codexian-header-actions';
 
     // New tab button (plus icon)
-    const newTabBtn = this.headerActionsContent.createDiv({ cls: 'codexidian-header-btn codexidian-new-tab-btn' });
+    const newTabBtn = this.headerActionsContent.createDiv({ cls: 'codexian-header-btn codexian-new-tab-btn' });
     setIcon(newTabBtn, 'square-plus');
     newTabBtn.setAttribute('aria-label', 'New tab');
     newTabBtn.addEventListener('click', async () => {
@@ -279,7 +279,7 @@ export class CodexidianView extends ItemView {
     });
 
     // New conversation button (square-pen icon - new conversation in current tab)
-    const newBtn = this.headerActionsContent.createDiv({ cls: 'codexidian-header-btn' });
+    const newBtn = this.headerActionsContent.createDiv({ cls: 'codexian-header-btn' });
     setIcon(newBtn, 'square-pen');
     newBtn.setAttribute('aria-label', 'New conversation');
     newBtn.addEventListener('click', async () => {
@@ -288,12 +288,12 @@ export class CodexidianView extends ItemView {
     });
 
     // History dropdown
-    const historyContainer = this.headerActionsContent.createDiv({ cls: 'codexidian-history-container' });
-    const historyBtn = historyContainer.createDiv({ cls: 'codexidian-header-btn' });
+    const historyContainer = this.headerActionsContent.createDiv({ cls: 'codexian-history-container' });
+    const historyBtn = historyContainer.createDiv({ cls: 'codexian-header-btn' });
     setIcon(historyBtn, 'history');
     historyBtn.setAttribute('aria-label', 'Chat history');
 
-    this.historyDropdown = historyContainer.createDiv({ cls: 'codexidian-history-menu' });
+    this.historyDropdown = historyContainer.createDiv({ cls: 'codexian-history-menu' });
 
     historyBtn.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -354,7 +354,7 @@ export class CodexidianView extends ItemView {
     const isHeaderMode = this.plugin.settings.tabBarPosition === 'header';
 
     // Update container class for CSS styling
-    this.viewContainerEl.toggleClass('codexidian-container--header-mode', isHeaderMode);
+    this.viewContainerEl.toggleClass('codexian-container--header-mode', isHeaderMode);
 
     // Move nav content to appropriate location
     this.updateNavRowLocation();
@@ -559,7 +559,7 @@ export class CodexidianView extends ItemView {
     });
 
     // Register Escape on the view's Obsidian Scope to prevent Obsidian from
-    // navigating away when Codexidian is open as a main-area tab.
+    // navigating away when Codexian is open as a main-area tab.
     // Returning false consumes the event (preventDefault + stops scope propagation).
     this.scope = new Scope(this.app.scope);
     this.scope.register([], 'Escape', () => {

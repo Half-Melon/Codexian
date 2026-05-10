@@ -7,7 +7,7 @@ import './providers';
 import type { Editor, WorkspaceLeaf } from 'obsidian';
 import { MarkdownView, Notice, Plugin } from 'obsidian';
 
-import { DEFAULT_CODEXIDIAN_SETTINGS } from './app/settings/defaultSettings';
+import { DEFAULT_CODEXIAN_SETTINGS } from './app/settings/defaultSettings';
 import { SharedStorageService } from './app/storage/SharedStorageService';
 import type { SharedAppStorage } from './core/bootstrap/storage';
 import {
@@ -22,17 +22,17 @@ import type { ProviderId } from './core/providers/types';
 import type { AppTabManagerState } from './core/providers/types';
 import { DEFAULT_CHAT_PROVIDER_ID } from './core/providers/types';
 import type {
-  CodexidianSettings,
+  CodexianSettings,
   Conversation,
   ConversationMeta,
 } from './core/types';
 import {
-  VIEW_TYPE_CODEXIDIAN,
+  VIEW_TYPE_CODEXIAN,
 } from './core/types';
 import type { ChatViewPlacement, EnvironmentScope } from './core/types/settings';
-import { CodexidianView } from './features/chat/CodexidianView';
+import { CodexianView } from './features/chat/CodexianView';
 import { type InlineEditContext, InlineEditModal } from './features/inline-edit/ui/InlineEditModal';
-import { CodexidianSettingTab } from './features/settings/CodexidianSettings';
+import { CodexianSettingTab } from './features/settings/CodexianSettings';
 import {
   buildKnowledgeWorkflowPrompt,
   getKnowledgeWorkflowDefinition,
@@ -47,7 +47,7 @@ import { resolveLocalePreference, setLocale, t } from './i18n/i18n';
 import { buildCursorContext } from './utils/editor';
 import { getVaultPath } from './utils/path';
 
-function isCodexidianView(value: unknown): value is CodexidianView {
+function isCodexianView(value: unknown): value is CodexianView {
   return !!value
     && typeof value === 'object'
     && typeof (value as { getTabManager?: unknown }).getTabManager === 'function';
@@ -64,8 +64,8 @@ function getObsidianLocale(app: unknown): string | undefined {
   return typeof locale === 'string' ? locale : undefined;
 }
 
-export default class CodexidianPlugin extends Plugin {
-  settings!: CodexidianSettings;
+export default class CodexianPlugin extends Plugin {
+  settings!: CodexianSettings;
   storage!: SharedAppStorage;
   private conversations: Conversation[] = [];
   private lastKnownTabManagerState: AppTabManagerState | null = null;
@@ -76,11 +76,11 @@ export default class CodexidianPlugin extends Plugin {
     await this.initializeKnowledgeWorkflow({ silent: true });
 
     this.registerView(
-      VIEW_TYPE_CODEXIDIAN,
-      (leaf) => new CodexidianView(leaf, this)
+      VIEW_TYPE_CODEXIAN,
+      (leaf) => new CodexianView(leaf, this)
     );
 
-    this.addRibbonIcon('bot', 'Open Codexidian', () => {
+    this.addRibbonIcon('bot', 'Open Codexian', () => {
       this.activateView();
     });
     registerKnowledgeWorkflowRibbonIcons(this);
@@ -196,7 +196,7 @@ export default class CodexidianPlugin extends Plugin {
 
     registerKnowledgeWorkflowCommands(this);
 
-    this.addSettingTab(new CodexidianSettingTab(this.app, this));
+    this.addSettingTab(new CodexianSettingTab(this.app, this));
   }
 
   async onunload() {
@@ -212,13 +212,13 @@ export default class CodexidianPlugin extends Plugin {
 
   async activateView() {
     const { workspace } = this.app;
-    let leaf = workspace.getLeavesOfType(VIEW_TYPE_CODEXIDIAN)[0];
+    let leaf = workspace.getLeavesOfType(VIEW_TYPE_CODEXIAN)[0];
 
     if (!leaf) {
       const newLeaf = this.getLeafForPlacement(this.settings.chatViewPlacement);
       if (newLeaf) {
         await newLeaf.setViewState({
-          type: VIEW_TYPE_CODEXIDIAN,
+          type: VIEW_TYPE_CODEXIAN,
           active: true,
         });
         leaf = newLeaf;
@@ -243,7 +243,7 @@ export default class CodexidianPlugin extends Plugin {
   }
 
   private canCreateNewTab(): boolean {
-    const hasCodexidianLeaf = this.app.workspace.getLeavesOfType(VIEW_TYPE_CODEXIDIAN).length > 0;
+    const hasCodexianLeaf = this.app.workspace.getLeavesOfType(VIEW_TYPE_CODEXIAN).length > 0;
     const view = this.getView();
     const tabManager = view?.getTabManager();
 
@@ -251,14 +251,14 @@ export default class CodexidianPlugin extends Plugin {
       return tabManager.canCreateTab();
     }
 
-    if (hasCodexidianLeaf) {
+    if (hasCodexianLeaf) {
       return false;
     }
 
     return this.getLastKnownOpenTabCount() < this.getMaxTabsLimit();
   }
 
-  private async ensureViewOpen(): Promise<CodexidianView | null> {
+  private async ensureViewOpen(): Promise<CodexianView | null> {
     const existingView = this.getView();
     if (existingView) {
       return existingView;
@@ -361,7 +361,7 @@ export default class CodexidianPlugin extends Plugin {
         new Notice(message);
       }
     } catch (error) {
-      console.error('Failed to initialize Codexidian knowledge workflow', error);
+      console.error('Failed to initialize Codexian knowledge workflow', error);
       if (!options.silent) {
         const message = error instanceof Error ? error.message : String(error);
         new Notice(t('knowledgeWorkflow.initialized.failed', { message }));
@@ -371,15 +371,15 @@ export default class CodexidianPlugin extends Plugin {
 
   async loadSettings() {
     this.storage = new SharedStorageService(this);
-    const { codexidian } = await this.storage.initialize();
+    const { codexian } = await this.storage.initialize();
     this.lastKnownTabManagerState = await this.storage.getTabManagerState();
 
     this.settings = {
-      ...DEFAULT_CODEXIDIAN_SETTINGS,
-      ...codexidian,
-    } as CodexidianSettings;
+      ...DEFAULT_CODEXIAN_SETTINGS,
+      ...codexian,
+    } as CodexianSettings;
     this.settings.knowledgeWorkflow = {
-      ...DEFAULT_CODEXIDIAN_SETTINGS.knowledgeWorkflow,
+      ...DEFAULT_CODEXIAN_SETTINGS.knowledgeWorkflow,
       ...this.settings.knowledgeWorkflow,
     };
 
@@ -481,7 +481,7 @@ export default class CodexidianPlugin extends Plugin {
       this.settings as unknown as Record<string, unknown>,
     );
 
-    await this.storage.saveCodexidianSettings(this.settings);
+    await this.storage.saveCodexianSettings(this.settings);
   }
 
   /** Updates and persists environment variables, restarting processes to apply changes. */
@@ -820,17 +820,17 @@ export default class CodexidianPlugin extends Plugin {
     await this.storage.setTabManagerState(state);
   }
 
-  getView(): CodexidianView | null {
-    const leaves = this.app.workspace.getLeavesOfType(VIEW_TYPE_CODEXIDIAN);
-    return leaves.map(leaf => leaf.view).find(isCodexidianView) ?? null;
+  getView(): CodexianView | null {
+    const leaves = this.app.workspace.getLeavesOfType(VIEW_TYPE_CODEXIAN);
+    return leaves.map(leaf => leaf.view).find(isCodexianView) ?? null;
   }
 
-  getAllViews(): CodexidianView[] {
-    const leaves = this.app.workspace.getLeavesOfType(VIEW_TYPE_CODEXIDIAN);
-    return leaves.map(leaf => leaf.view).filter(isCodexidianView);
+  getAllViews(): CodexianView[] {
+    const leaves = this.app.workspace.getLeavesOfType(VIEW_TYPE_CODEXIAN);
+    return leaves.map(leaf => leaf.view).filter(isCodexianView);
   }
 
-  findConversationAcrossViews(conversationId: string): { view: CodexidianView; tabId: string } | null {
+  findConversationAcrossViews(conversationId: string): { view: CodexianView; tabId: string } | null {
     for (const view of this.getAllViews()) {
       const tabManager = view.getTabManager();
       if (!tabManager) continue;

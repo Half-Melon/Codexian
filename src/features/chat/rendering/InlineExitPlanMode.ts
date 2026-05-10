@@ -42,43 +42,43 @@ export class InlineExitPlanMode {
   }
 
   render(): void {
-    this.rootEl = this.containerEl.createDiv({ cls: 'codexidian-plan-approval-inline' });
+    this.rootEl = this.containerEl.createDiv({ cls: 'codexian-plan-approval-inline' });
 
-    const titleEl = this.rootEl.createDiv({ cls: 'codexidian-plan-inline-title' });
+    const titleEl = this.rootEl.createDiv({ cls: 'codexian-plan-inline-title' });
     titleEl.setText('Plan complete');
 
     this.planContent = this.readPlanContent();
     if (this.planContent) {
-      const contentEl = this.rootEl.createDiv({ cls: 'codexidian-plan-content-preview' });
+      const contentEl = this.rootEl.createDiv({ cls: 'codexian-plan-content-preview' });
       if (this.renderContent) {
         void this.renderContent(contentEl, this.planContent);
       } else {
-        contentEl.createDiv({ cls: 'codexidian-plan-content-text', text: this.planContent });
+        contentEl.createDiv({ cls: 'codexian-plan-content-text', text: this.planContent });
       }
     } else if (this.planReadError) {
       this.rootEl.createDiv({
-        cls: 'codexidian-plan-content-preview codexidian-plan-read-error',
+        cls: 'codexian-plan-content-preview codexian-plan-read-error',
         text: `Could not read plan file: ${this.planReadError}. "Approve (new session)" will not include plan details.`,
       });
     }
 
     const allowedPrompts = this.input.allowedPrompts as Array<{ tool: string; prompt: string }> | undefined;
     if (allowedPrompts && Array.isArray(allowedPrompts) && allowedPrompts.length > 0) {
-      const permEl = this.rootEl.createDiv({ cls: 'codexidian-plan-permissions' });
-      permEl.createDiv({ text: 'Requested permissions:', cls: 'codexidian-plan-permissions-label' });
-      const listEl = permEl.createEl('ul', { cls: 'codexidian-plan-permissions-list' });
+      const permEl = this.rootEl.createDiv({ cls: 'codexian-plan-permissions' });
+      permEl.createDiv({ text: 'Requested permissions:', cls: 'codexian-plan-permissions-label' });
+      const listEl = permEl.createEl('ul', { cls: 'codexian-plan-permissions-list' });
       for (const perm of allowedPrompts) {
         listEl.createEl('li', { text: perm.prompt });
       }
     }
 
-    const actionsEl = this.rootEl.createDiv({ cls: 'codexidian-ask-list' });
+    const actionsEl = this.rootEl.createDiv({ cls: 'codexian-ask-list' });
 
-    const newSessionRow = actionsEl.createDiv({ cls: 'codexidian-ask-item' });
+    const newSessionRow = actionsEl.createDiv({ cls: 'codexian-ask-item' });
     newSessionRow.addClass('is-focused');
-    newSessionRow.createSpan({ text: '\u203A', cls: 'codexidian-ask-cursor' });
-    newSessionRow.createSpan({ text: '1. ', cls: 'codexidian-ask-item-num' });
-    newSessionRow.createSpan({ text: 'Approve (new session)', cls: 'codexidian-ask-item-label' });
+    newSessionRow.createSpan({ text: '\u203A', cls: 'codexian-ask-cursor' });
+    newSessionRow.createSpan({ text: '1. ', cls: 'codexian-ask-item-num' });
+    newSessionRow.createSpan({ text: 'Approve (new session)', cls: 'codexian-ask-item-label' });
     newSessionRow.addEventListener('click', () => {
       this.focusedIndex = 0;
       this.updateFocus();
@@ -89,10 +89,10 @@ export class InlineExitPlanMode {
     });
     this.items.push(newSessionRow);
 
-    const approveRow = actionsEl.createDiv({ cls: 'codexidian-ask-item' });
-    approveRow.createSpan({ text: '\u00A0', cls: 'codexidian-ask-cursor' });
-    approveRow.createSpan({ text: '2. ', cls: 'codexidian-ask-item-num' });
-    approveRow.createSpan({ text: 'Approve (current session)', cls: 'codexidian-ask-item-label' });
+    const approveRow = actionsEl.createDiv({ cls: 'codexian-ask-item' });
+    approveRow.createSpan({ text: '\u00A0', cls: 'codexian-ask-cursor' });
+    approveRow.createSpan({ text: '2. ', cls: 'codexian-ask-item-num' });
+    approveRow.createSpan({ text: 'Approve (current session)', cls: 'codexian-ask-item-label' });
     approveRow.addEventListener('click', () => {
       this.focusedIndex = 1;
       this.updateFocus();
@@ -100,12 +100,12 @@ export class InlineExitPlanMode {
     });
     this.items.push(approveRow);
 
-    const feedbackRow = actionsEl.createDiv({ cls: 'codexidian-ask-item codexidian-ask-custom-item' });
-    feedbackRow.createSpan({ text: '\u00A0', cls: 'codexidian-ask-cursor' });
-    feedbackRow.createSpan({ text: '3. ', cls: 'codexidian-ask-item-num' });
+    const feedbackRow = actionsEl.createDiv({ cls: 'codexian-ask-item codexian-ask-custom-item' });
+    feedbackRow.createSpan({ text: '\u00A0', cls: 'codexian-ask-cursor' });
+    feedbackRow.createSpan({ text: '3. ', cls: 'codexian-ask-item-num' });
     this.feedbackInput = feedbackRow.createEl('input', {
       type: 'text',
-      cls: 'codexidian-ask-custom-text',
+      cls: 'codexian-ask-custom-text',
       placeholder: 'Enter feedback to continue planning...',
     });
     this.feedbackInput.addEventListener('focus', () => { this.isInputFocused = true; });
@@ -116,7 +116,7 @@ export class InlineExitPlanMode {
     });
     this.items.push(feedbackRow);
 
-    this.rootEl.createDiv({ text: HINTS_TEXT, cls: 'codexidian-ask-hints' });
+    this.rootEl.createDiv({ text: HINTS_TEXT, cls: 'codexian-ask-hints' });
 
     this.rootEl.setAttribute('tabindex', '0');
     this.rootEl.addEventListener('keydown', this.boundKeyDown);
@@ -221,14 +221,14 @@ export class InlineExitPlanMode {
   private updateFocus(): void {
     for (let i = 0; i < this.items.length; i++) {
       const item = this.items[i];
-      const cursor = item.querySelector('.codexidian-ask-cursor');
+      const cursor = item.querySelector('.codexian-ask-cursor');
       if (i === this.focusedIndex) {
         item.addClass('is-focused');
         if (cursor) cursor.textContent = '\u203A';
         item.scrollIntoView({ block: 'nearest' });
 
-        if (item.hasClass('codexidian-ask-custom-item')) {
-          const input = item.querySelector('.codexidian-ask-custom-text') as HTMLInputElement;
+        if (item.hasClass('codexian-ask-custom-item')) {
+          const input = item.querySelector('.codexian-ask-custom-text') as HTMLInputElement;
           if (input) {
             input.focus();
             this.isInputFocused = true;
@@ -238,8 +238,8 @@ export class InlineExitPlanMode {
         item.removeClass('is-focused');
         if (cursor) cursor.textContent = '\u00A0';
 
-        if (item.hasClass('codexidian-ask-custom-item')) {
-          const input = item.querySelector('.codexidian-ask-custom-text') as HTMLInputElement;
+        if (item.hasClass('codexian-ask-custom-item')) {
+          const input = item.querySelector('.codexian-ask-custom-text') as HTMLInputElement;
           if (input && document.activeElement === input) {
             input.blur();
             this.isInputFocused = false;

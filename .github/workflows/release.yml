@@ -39,8 +39,8 @@ jobs:
         run: |
           VERSION="${GITHUB_REF_NAME#v}"
           mkdir -p release
-          zip -j "release/codexidian-${VERSION}.zip" main.js manifest.json styles.css
-          unzip -l "release/codexidian-${VERSION}.zip"
+          zip -j "release/codexian-${VERSION}.zip" main.js manifest.json styles.css
+          unzip -l "release/codexian-${VERSION}.zip"
 
       - name: Get previous tag
         id: prev_tag

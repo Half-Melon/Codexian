@@ -1,12 +1,12 @@
 import { getEnabledProviderForModel } from '../../../core/providers/modelRouting';
 import type { ProviderId } from '../../../core/providers/types';
 import type { Conversation } from '../../../core/types';
-import type CodexidianPlugin from '../../../main';
+import type CodexianPlugin from '../../../main';
 import type { TabProviderContext } from './types';
 
 function getStoredConversationProviderId(
   tab: TabProviderContext,
-  plugin: CodexidianPlugin,
+  plugin: CodexianPlugin,
 ): ProviderId {
   if (tab.conversationId) {
     const conversation = plugin.getConversationSync(tab.conversationId);
@@ -27,7 +27,7 @@ function getStoredConversationProviderId(
 
 export function getTabProviderId(
   tab: TabProviderContext,
-  plugin: CodexidianPlugin,
+  plugin: CodexianPlugin,
   conversation?: Conversation | null,
 ): ProviderId {
   return conversation?.providerId ?? getStoredConversationProviderId(tab, plugin);

@@ -46,7 +46,7 @@ export class ModelSelector {
   private callbacks: ToolbarCallbacks;
   constructor(parentEl: HTMLElement, callbacks: ToolbarCallbacks) {
     this.callbacks = callbacks;
-    this.container = parentEl.createDiv({ cls: 'codexidian-model-selector' });
+    this.container = parentEl.createDiv({ cls: 'codexian-model-selector' });
     this.render();
   }
 
@@ -62,10 +62,10 @@ export class ModelSelector {
   private render() {
     this.container.empty();
 
-    this.buttonEl = this.container.createDiv({ cls: 'codexidian-model-btn' });
+    this.buttonEl = this.container.createDiv({ cls: 'codexian-model-btn' });
     this.updateDisplay();
 
-    this.dropdownEl = this.container.createDiv({ cls: 'codexidian-model-dropdown' });
+    this.dropdownEl = this.container.createDiv({ cls: 'codexian-model-dropdown' });
     this.renderOptions();
   }
 
@@ -79,7 +79,7 @@ export class ModelSelector {
 
     this.buttonEl.empty();
 
-    const labelEl = this.buttonEl.createSpan({ cls: 'codexidian-model-label' });
+    const labelEl = this.buttonEl.createSpan({ cls: 'codexian-model-label' });
     labelEl.setText(displayModel?.label || 'Unknown');
   }
 
@@ -94,12 +94,12 @@ export class ModelSelector {
     let lastGroup: string | undefined;
     for (const model of reversed) {
       if (model.group && model.group !== lastGroup) {
-        const separator = this.dropdownEl.createDiv({ cls: 'codexidian-model-group' });
+        const separator = this.dropdownEl.createDiv({ cls: 'codexian-model-group' });
         separator.setText(model.group);
         lastGroup = model.group;
       }
 
-      const option = this.dropdownEl.createDiv({ cls: 'codexidian-model-option' });
+      const option = this.dropdownEl.createDiv({ cls: 'codexian-model-option' });
       if (model.value === currentModel) {
         option.addClass('selected');
       }
@@ -107,7 +107,7 @@ export class ModelSelector {
       const icon = model.providerIcon ?? this.callbacks.getUIConfig().getProviderIcon?.();
       if (icon) {
         option.appendChild(createProviderIconSvg(icon, {
-          className: 'codexidian-model-provider-icon',
+          className: 'codexian-model-provider-icon',
           height: 12,
           width: 12,
         }));
@@ -135,7 +135,7 @@ export class ModeSelector {
 
   constructor(parentEl: HTMLElement, callbacks: ToolbarCallbacks) {
     this.callbacks = callbacks;
-    this.container = parentEl.createDiv({ cls: 'codexidian-mode-selector' });
+    this.container = parentEl.createDiv({ cls: 'codexian-mode-selector' });
     this.render();
   }
 
@@ -146,8 +146,8 @@ export class ModeSelector {
   private render() {
     this.container.empty();
 
-    this.labelEl = this.container.createSpan({ cls: 'codexidian-mode-label' });
-    this.toggleEl = this.container.createDiv({ cls: 'codexidian-toggle-switch' });
+    this.labelEl = this.container.createSpan({ cls: 'codexian-mode-label' });
+    this.toggleEl = this.container.createDiv({ cls: 'codexian-toggle-switch' });
 
     this.toggleEl.addEventListener('click', () => this.toggle());
 
@@ -225,7 +225,7 @@ export class ThinkingBudgetSelector {
 
   constructor(parentEl: HTMLElement, callbacks: ToolbarCallbacks) {
     this.callbacks = callbacks;
-    this.container = parentEl.createDiv({ cls: 'codexidian-thinking-selector' });
+    this.container = parentEl.createDiv({ cls: 'codexian-thinking-selector' });
     this.render();
   }
 
@@ -233,16 +233,16 @@ export class ThinkingBudgetSelector {
     this.container.empty();
 
     // Effort selector (for adaptive thinking models)
-    this.effortEl = this.container.createDiv({ cls: 'codexidian-thinking-effort' });
-    const effortLabel = this.effortEl.createSpan({ cls: 'codexidian-thinking-label-text' });
+    this.effortEl = this.container.createDiv({ cls: 'codexian-thinking-effort' });
+    const effortLabel = this.effortEl.createSpan({ cls: 'codexian-thinking-label-text' });
     effortLabel.setText('Effort:');
-    this.effortGearsEl = this.effortEl.createDiv({ cls: 'codexidian-thinking-gears' });
+    this.effortGearsEl = this.effortEl.createDiv({ cls: 'codexian-thinking-gears' });
 
     // Legacy budget selector (for custom models)
-    this.budgetEl = this.container.createDiv({ cls: 'codexidian-thinking-budget' });
-    const budgetLabel = this.budgetEl.createSpan({ cls: 'codexidian-thinking-label-text' });
+    this.budgetEl = this.container.createDiv({ cls: 'codexian-thinking-budget' });
+    const budgetLabel = this.budgetEl.createSpan({ cls: 'codexian-thinking-label-text' });
     budgetLabel.setText('Thinking:');
-    this.budgetGearsEl = this.budgetEl.createDiv({ cls: 'codexidian-thinking-gears' });
+    this.budgetGearsEl = this.budgetEl.createDiv({ cls: 'codexian-thinking-gears' });
 
     this.updateDisplay();
   }
@@ -258,13 +258,13 @@ export class ThinkingBudgetSelector {
     const options = uiConfig.getReasoningOptions(model, settings);
     const currentInfo = options.find(e => e.value === currentEffort);
 
-    const currentEl = this.effortGearsEl.createDiv({ cls: 'codexidian-thinking-current' });
+    const currentEl = this.effortGearsEl.createDiv({ cls: 'codexian-thinking-current' });
     currentEl.setText(currentInfo?.label || options[0]?.label || 'High');
 
-    const optionsEl = this.effortGearsEl.createDiv({ cls: 'codexidian-thinking-options' });
+    const optionsEl = this.effortGearsEl.createDiv({ cls: 'codexian-thinking-options' });
 
     for (const effort of [...options].reverse()) {
-      const gearEl = optionsEl.createDiv({ cls: 'codexidian-thinking-gear' });
+      const gearEl = optionsEl.createDiv({ cls: 'codexian-thinking-gear' });
       gearEl.setText(effort.label);
 
       if (effort.value === currentEffort) {
@@ -290,13 +290,13 @@ export class ThinkingBudgetSelector {
     const options: ProviderReasoningOption[] = uiConfig.getReasoningOptions(model, settings);
     const currentBudgetInfo = options.find(b => b.value === currentBudget);
 
-    const currentEl = this.budgetGearsEl.createDiv({ cls: 'codexidian-thinking-current' });
+    const currentEl = this.budgetGearsEl.createDiv({ cls: 'codexian-thinking-current' });
     currentEl.setText(currentBudgetInfo?.label || options[0]?.label || 'Off');
 
-    const optionsEl = this.budgetGearsEl.createDiv({ cls: 'codexidian-thinking-options' });
+    const optionsEl = this.budgetGearsEl.createDiv({ cls: 'codexian-thinking-options' });
 
     for (const budget of [...options].reverse()) {
-      const gearEl = optionsEl.createDiv({ cls: 'codexidian-thinking-gear' });
+      const gearEl = optionsEl.createDiv({ cls: 'codexian-thinking-gear' });
       gearEl.setText(budget.label);
       const tokens = budget.tokens ?? 0;
       gearEl.setAttribute('title', tokens > 0 ? `${tokens.toLocaleString()} tokens` : 'Disabled');
@@ -361,7 +361,7 @@ export class PermissionToggle {
 
   constructor(parentEl: HTMLElement, callbacks: ToolbarCallbacks) {
     this.callbacks = callbacks;
-    this.container = parentEl.createDiv({ cls: 'codexidian-permission-toggle' });
+    this.container = parentEl.createDiv({ cls: 'codexian-permission-toggle' });
     this.render();
   }
 
@@ -373,8 +373,8 @@ export class PermissionToggle {
   private render() {
     this.container.empty();
 
-    this.labelEl = this.container.createSpan({ cls: 'codexidian-permission-label' });
-    this.toggleEl = this.container.createDiv({ cls: 'codexidian-toggle-switch' });
+    this.labelEl = this.container.createSpan({ cls: 'codexian-permission-label' });
+    this.toggleEl = this.container.createDiv({ cls: 'codexian-toggle-switch' });
 
     this.updateDisplay();
 
@@ -440,15 +440,15 @@ export class ServiceTierToggle {
 
   constructor(parentEl: HTMLElement, callbacks: ToolbarCallbacks) {
     this.callbacks = callbacks;
-    this.container = parentEl.createDiv({ cls: 'codexidian-service-tier-toggle' });
+    this.container = parentEl.createDiv({ cls: 'codexian-service-tier-toggle' });
     this.render();
   }
 
   private render() {
     this.container.empty();
 
-    this.buttonEl = this.container.createDiv({ cls: 'codexidian-service-tier-button' });
-    this.iconEl = this.buttonEl.createSpan({ cls: 'codexidian-service-tier-icon' });
+    this.buttonEl = this.container.createDiv({ cls: 'codexian-service-tier-button' });
+    this.iconEl = this.buttonEl.createSpan({ cls: 'codexian-service-tier-icon' });
     setIcon(this.iconEl, 'zap');
 
     this.updateDisplay();
@@ -519,7 +519,7 @@ export class ExternalContextSelector {
 
   constructor(parentEl: HTMLElement, callbacks: ToolbarCallbacks) {
     this.callbacks = callbacks;
-    this.container = parentEl.createDiv({ cls: 'codexidian-external-context-selector' });
+    this.container = parentEl.createDiv({ cls: 'codexian-external-context-selector' });
     this.render();
   }
 
@@ -681,12 +681,12 @@ export class ExternalContextSelector {
   private render() {
     this.container.empty();
 
-    const iconWrapper = this.container.createDiv({ cls: 'codexidian-external-context-icon-wrapper' });
+    const iconWrapper = this.container.createDiv({ cls: 'codexian-external-context-icon-wrapper' });
 
-    this.iconEl = iconWrapper.createDiv({ cls: 'codexidian-external-context-icon' });
+    this.iconEl = iconWrapper.createDiv({ cls: 'codexian-external-context-icon' });
     setIcon(this.iconEl, 'folder');
 
-    this.badgeEl = iconWrapper.createDiv({ cls: 'codexidian-external-context-badge' });
+    this.badgeEl = iconWrapper.createDiv({ cls: 'codexian-external-context-badge' });
 
     this.updateDisplay();
 
@@ -696,7 +696,7 @@ export class ExternalContextSelector {
       this.openFolderPicker();
     });
 
-    this.dropdownEl = this.container.createDiv({ cls: 'codexidian-external-context-dropdown' });
+    this.dropdownEl = this.container.createDiv({ cls: 'codexian-external-context-dropdown' });
     this.renderDropdown();
   }
 
@@ -751,20 +751,20 @@ export class ExternalContextSelector {
     this.dropdownEl.empty();
 
     // Header
-    const headerEl = this.dropdownEl.createDiv({ cls: 'codexidian-external-context-header' });
+    const headerEl = this.dropdownEl.createDiv({ cls: 'codexian-external-context-header' });
     headerEl.setText('External Contexts');
 
     // Path list
-    const listEl = this.dropdownEl.createDiv({ cls: 'codexidian-external-context-list' });
+    const listEl = this.dropdownEl.createDiv({ cls: 'codexian-external-context-list' });
 
     if (this.externalContextPaths.length === 0) {
-      const emptyEl = listEl.createDiv({ cls: 'codexidian-external-context-empty' });
+      const emptyEl = listEl.createDiv({ cls: 'codexian-external-context-empty' });
       emptyEl.setText('Click folder icon to add');
     } else {
       for (const pathStr of this.externalContextPaths) {
-        const itemEl = listEl.createDiv({ cls: 'codexidian-external-context-item' });
+        const itemEl = listEl.createDiv({ cls: 'codexian-external-context-item' });
 
-        const pathTextEl = itemEl.createSpan({ cls: 'codexidian-external-context-text' });
+        const pathTextEl = itemEl.createSpan({ cls: 'codexian-external-context-text' });
         // Show shortened path for display
         const displayPath = this.shortenPath(pathStr);
         pathTextEl.setText(displayPath);
@@ -772,7 +772,7 @@ export class ExternalContextSelector {
 
         // Lock toggle button
         const isPersistent = this.persistentPaths.has(pathStr);
-        const lockBtn = itemEl.createSpan({ cls: 'codexidian-external-context-lock' });
+        const lockBtn = itemEl.createSpan({ cls: 'codexian-external-context-lock' });
         if (isPersistent) {
           lockBtn.addClass('locked');
         }
@@ -783,7 +783,7 @@ export class ExternalContextSelector {
           this.togglePersistence(pathStr);
         });
 
-        const removeBtn = itemEl.createSpan({ cls: 'codexidian-external-context-remove' });
+        const removeBtn = itemEl.createSpan({ cls: 'codexian-external-context-remove' });
         setIcon(removeBtn, 'x');
         removeBtn.setAttribute('title', 'Remove path');
         removeBtn.addEventListener('click', (e) => {
@@ -851,7 +851,7 @@ export class ContextUsageMeter {
   private circumference: number = 0;
 
   constructor(parentEl: HTMLElement) {
-    this.container = parentEl.createDiv({ cls: 'codexidian-context-meter' });
+    this.container = parentEl.createDiv({ cls: 'codexian-context-meter' });
     this.render();
     // Initially hidden
     this.container.style.display = 'none';
@@ -882,21 +882,21 @@ export class ContextUsageMeter {
     const x2 = cx + radius * Math.cos(endRad);
     const y2 = cy + radius * Math.sin(endRad);
 
-    const gaugeEl = this.container.createDiv({ cls: 'codexidian-context-meter-gauge' });
+    const gaugeEl = this.container.createDiv({ cls: 'codexian-context-meter-gauge' });
     gaugeEl.innerHTML = `
       <svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
-        <path class="codexidian-meter-bg"
+        <path class="codexian-meter-bg"
           d="M ${x1} ${y1} A ${radius} ${radius} 0 1 1 ${x2} ${y2}"
           fill="none" stroke-width="${strokeWidth}" stroke-linecap="round"/>
-        <path class="codexidian-meter-fill"
+        <path class="codexian-meter-fill"
           d="M ${x1} ${y1} A ${radius} ${radius} 0 1 1 ${x2} ${y2}"
           fill="none" stroke-width="${strokeWidth}" stroke-linecap="round"
           stroke-dasharray="${this.circumference}" stroke-dashoffset="${this.circumference}"/>
       </svg>
     `;
-    this.fillPath = gaugeEl.querySelector('.codexidian-meter-fill');
+    this.fillPath = gaugeEl.querySelector('.codexian-meter-fill');
 
-    this.percentEl = this.container.createSpan({ cls: 'codexidian-context-meter-percent' });
+    this.percentEl = this.container.createSpan({ cls: 'codexian-context-meter-percent' });
   }
 
   update(usage: UsageInfo | null): void {

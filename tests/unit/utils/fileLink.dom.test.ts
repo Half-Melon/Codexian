@@ -54,7 +54,7 @@ describe('processFileLinks', () => {
 
       processFileLinks(app, container);
 
-      const link = container.querySelector('a.codexidian-file-link');
+      const link = container.querySelector('a.codexian-file-link');
       expect(link).not.toBeNull();
       expect(link!.textContent).toBe('note.md');
       expect(link!.getAttribute('data-href')).toBe('note.md');
@@ -69,7 +69,7 @@ describe('processFileLinks', () => {
 
       processFileLinks(app, container);
 
-      const link = container.querySelector('a.codexidian-file-link');
+      const link = container.querySelector('a.codexian-file-link');
       expect(link).toBeNull();
     });
 
@@ -94,7 +94,7 @@ describe('processFileLinks', () => {
 
       processFileLinks(app, container);
 
-      const links = container.querySelectorAll('a.codexidian-file-link');
+      const links = container.querySelectorAll('a.codexian-file-link');
       expect(links.length).toBe(2);
     });
 
@@ -107,7 +107,7 @@ describe('processFileLinks', () => {
 
       processFileLinks(app, container);
 
-      const link = container.querySelector('a.codexidian-file-link');
+      const link = container.querySelector('a.codexian-file-link');
       expect(link).not.toBeNull();
       expect(link!.textContent).toBe('My Note');
     });
@@ -121,7 +121,7 @@ describe('processFileLinks', () => {
 
       processFileLinks(app, container);
 
-      const link = container.querySelector('a.codexidian-file-link');
+      const link = container.querySelector('a.codexian-file-link');
       expect(link).not.toBeNull();
     });
   });
@@ -136,7 +136,7 @@ describe('processFileLinks', () => {
 
       processFileLinks(app, container);
 
-      const link = code.querySelector('a.codexidian-file-link');
+      const link = code.querySelector('a.codexian-file-link');
       expect(link).not.toBeNull();
       expect(link!.textContent).toBe('note.md');
     });
@@ -152,7 +152,7 @@ describe('processFileLinks', () => {
 
       processFileLinks(app, container);
 
-      const link = container.querySelector('a.codexidian-file-link');
+      const link = container.querySelector('a.codexian-file-link');
       expect(link).toBeNull();
       expect(code.textContent).toBe('[[note.md]]');
     });
@@ -168,7 +168,7 @@ describe('processFileLinks', () => {
 
       processFileLinks(app, container);
 
-      const link = container.querySelector('a.codexidian-file-link');
+      const link = container.querySelector('a.codexian-file-link');
       expect(link).toBeNull();
     });
 
@@ -181,22 +181,22 @@ describe('processFileLinks', () => {
 
       processFileLinks(app, container);
 
-      const links = container.querySelectorAll('a.codexidian-file-link');
+      const links = container.querySelectorAll('a.codexian-file-link');
       expect(links.length).toBe(0);
     });
 
-    it('skips text nodes inside elements with .codexidian-file-link class', () => {
+    it('skips text nodes inside elements with .codexian-file-link class', () => {
       const app = createMockApp(['note.md']);
       const container = document.createElement('div');
       const span = document.createElement('span');
-      span.className = 'codexidian-file-link';
+      span.className = 'codexian-file-link';
       span.textContent = '[[note.md]]';
       container.appendChild(span);
 
       processFileLinks(app, container);
 
       // Should not create nested links
-      const links = container.querySelectorAll('a.codexidian-file-link');
+      const links = container.querySelectorAll('a.codexian-file-link');
       expect(links.length).toBe(0);
     });
 
@@ -210,7 +210,7 @@ describe('processFileLinks', () => {
 
       processFileLinks(app, container);
 
-      const links = container.querySelectorAll('a.codexidian-file-link');
+      const links = container.querySelectorAll('a.codexian-file-link');
       expect(links.length).toBe(0);
     });
 
@@ -224,7 +224,7 @@ describe('processFileLinks', () => {
       const internalLink = container.querySelector('a.internal-link');
       expect(internalLink).not.toBeNull();
       expect(internalLink!.textContent).toBe('note');
-      expect(internalLink!.classList.contains('codexidian-file-link')).toBe(true);
+      expect(internalLink!.classList.contains('codexian-file-link')).toBe(true);
       expect(container.textContent).toBe('note and [[missing.md]]');
     });
 
@@ -237,7 +237,7 @@ describe('processFileLinks', () => {
 
       processFileLinks(app, container);
 
-      const link = container.querySelector('a.codexidian-file-link');
+      const link = container.querySelector('a.codexian-file-link');
       expect(link).not.toBeNull();
     });
   });
@@ -252,7 +252,7 @@ describe('processFileLinks', () => {
 
       processFileLinks(app, container);
 
-      const link = container.querySelector('a.codexidian-file-link');
+      const link = container.querySelector('a.codexian-file-link');
       expect(link).toBeNull();
     });
 
@@ -265,7 +265,7 @@ describe('processFileLinks', () => {
 
       processFileLinks(app, container);
 
-      const links = container.querySelectorAll('a.codexidian-file-link');
+      const links = container.querySelectorAll('a.codexian-file-link');
       expect(links.length).toBe(1);
       expect(links[0].textContent).toBe('note.md');
     });

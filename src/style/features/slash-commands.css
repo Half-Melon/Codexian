@@ -1,5 +1,5 @@
 /* Slash Command Dropdown */
-.codexidian-slash-dropdown {
+.codexian-slash-dropdown {
   display: none;
   position: absolute;
   bottom: 100%;
@@ -17,46 +17,46 @@
   overflow-y: auto;
 }
 
-.codexidian-slash-dropdown.visible {
+.codexian-slash-dropdown.visible {
   display: block;
 }
 
 /* Fixed positioning for inline editor */
-.codexidian-slash-dropdown-fixed {
+.codexian-slash-dropdown-fixed {
   position: fixed;
   z-index: 10001;
 }
 
-.codexidian-slash-item {
+.codexian-slash-item {
   padding: 8px 12px;
   cursor: pointer;
   transition: background 0.1s ease;
   border-bottom: 1px solid var(--background-modifier-border);
 }
 
-.codexidian-slash-item:last-child {
+.codexian-slash-item:last-child {
   border-bottom: none;
 }
 
-.codexidian-slash-item:hover,
-.codexidian-slash-item.selected {
+.codexian-slash-item:hover,
+.codexian-slash-item.selected {
   background: var(--background-modifier-hover);
 }
 
-.codexidian-slash-name {
+.codexian-slash-name {
   font-size: 12px;
   font-weight: 500;
   color: var(--text-normal);
   font-family: var(--font-monospace);
 }
 
-.codexidian-slash-hint {
+.codexian-slash-hint {
   font-size: 12px;
   color: var(--text-muted);
   margin-left: 8px;
 }
 
-.codexidian-slash-desc {
+.codexian-slash-desc {
   font-size: 11px;
   color: var(--text-muted);
   margin-top: 2px;
@@ -65,7 +65,7 @@
   white-space: nowrap;
 }
 
-.codexidian-slash-empty {
+.codexian-slash-empty {
   padding: 16px;
   text-align: center;
   color: var(--text-muted);
@@ -73,15 +73,15 @@
 }
 
 /* Scrollbar */
-.codexidian-slash-dropdown::-webkit-scrollbar {
+.codexian-slash-dropdown::-webkit-scrollbar {
   width: 6px;
 }
 
-.codexidian-slash-dropdown::-webkit-scrollbar-track {
+.codexian-slash-dropdown::-webkit-scrollbar-track {
   background: transparent;
 }
 
-.codexidian-slash-dropdown::-webkit-scrollbar-thumb {
+.codexian-slash-dropdown::-webkit-scrollbar-thumb {
   background: var(--background-modifier-border);
   border-radius: 3px;
 }

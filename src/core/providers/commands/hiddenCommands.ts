@@ -1,4 +1,4 @@
-import type { CodexidianSettings, HiddenProviderCommands } from '../../types/settings';
+import type { CodexianSettings, HiddenProviderCommands } from '../../types/settings';
 import type { ProviderId } from '../types';
 
 function normalizeHiddenCommandName(value: string): string {
@@ -60,14 +60,14 @@ export function normalizeHiddenProviderCommands(
 }
 
 export function getHiddenProviderCommands(
-  settings: Pick<CodexidianSettings, 'hiddenProviderCommands'>,
+  settings: Pick<CodexianSettings, 'hiddenProviderCommands'>,
   providerId: ProviderId,
 ): string[] {
   return settings.hiddenProviderCommands?.[providerId] ?? [];
 }
 
 export function getHiddenProviderCommandSet(
-  settings: Pick<CodexidianSettings, 'hiddenProviderCommands'>,
+  settings: Pick<CodexianSettings, 'hiddenProviderCommands'>,
   providerId: ProviderId,
 ): Set<string> {
   return new Set(getHiddenProviderCommands(settings, providerId).map((command) => command.toLowerCase()));

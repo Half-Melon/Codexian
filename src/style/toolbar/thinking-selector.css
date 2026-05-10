@@ -1,24 +1,24 @@
 /* Thinking selector (effort for adaptive models, token budget for custom) */
-.codexidian-thinking-selector {
+.codexian-thinking-selector {
   display: flex;
   align-items: center;
   gap: 6px;
 }
 
 /* Effort / budget container (shared layout) */
-.codexidian-thinking-effort,
-.codexidian-thinking-budget {
+.codexian-thinking-effort,
+.codexian-thinking-budget {
   display: flex;
   align-items: center;
   gap: 6px;
 }
 
-.codexidian-thinking-label-text {
+.codexian-thinking-label-text {
   font-size: 11px;
   color: var(--text-muted);
 }
 
-.codexidian-thinking-gears {
+.codexian-thinking-gears {
   position: relative;
   display: flex;
   align-items: center;
@@ -26,10 +26,10 @@
 }
 
 /* Current selection (visible when collapsed) */
-.codexidian-thinking-current {
+.codexian-thinking-current {
   padding: 3px 8px;
   font-size: 11px;
-  color: var(--codexidian-brand);
+  color: var(--codexian-brand);
   font-weight: 500;
   cursor: pointer;
   border-radius: 3px;
@@ -38,7 +38,7 @@
 }
 
 /* Options container - expands vertically upward */
-.codexidian-thinking-options {
+.codexian-thinking-options {
   position: absolute;
   left: 0;
   bottom: 100%;
@@ -56,12 +56,12 @@
 }
 
 /* Expand on hover */
-.codexidian-thinking-gears:hover .codexidian-thinking-options {
+.codexian-thinking-gears:hover .codexian-thinking-options {
   opacity: 1;
   visibility: visible;
 }
 
-.codexidian-thinking-gear {
+.codexian-thinking-gear {
   padding: 3px 8px;
   font-size: 11px;
   color: var(--text-muted);
@@ -71,13 +71,13 @@
   white-space: nowrap;
 }
 
-.codexidian-thinking-gear:hover {
+.codexian-thinking-gear:hover {
   background: var(--background-modifier-hover);
   color: var(--text-normal);
 }
 
-.codexidian-thinking-gear.selected {
-  background: rgba(var(--codexidian-brand-rgb), 0.15);
-  color: var(--codexidian-brand);
+.codexian-thinking-gear.selected {
+  background: rgba(var(--codexian-brand-rgb), 0.15);
+  color: var(--codexian-brand);
   font-weight: 500;
 }

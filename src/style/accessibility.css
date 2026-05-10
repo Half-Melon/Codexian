@@ -1,39 +1,39 @@
 /* Accessibility - Focus Visible Styles */
 
 /* outline + offset + border-radius */
-.codexidian-tool-header:focus-visible,
-.codexidian-thinking-header:focus-visible,
-.codexidian-subagent-header:focus-visible,
-.codexidian-header-btn:focus-visible,
-.codexidian-model-btn:focus-visible,
-.codexidian-thinking-current:focus-visible {
+.codexian-tool-header:focus-visible,
+.codexian-thinking-header:focus-visible,
+.codexian-subagent-header:focus-visible,
+.codexian-header-btn:focus-visible,
+.codexian-model-btn:focus-visible,
+.codexian-thinking-current:focus-visible {
   outline: 2px solid var(--interactive-accent);
   outline-offset: 2px;
   border-radius: 4px;
 }
 
 /* outline + offset only */
-.codexidian-action-btn:focus-visible,
-.codexidian-toggle-switch:focus-visible,
-.codexidian-file-chip:focus-visible,
-.codexidian-image-chip:focus-visible,
-.codexidian-file-chip-remove:focus-visible,
-.codexidian-image-remove:focus-visible,
-.codexidian-image-modal-close:focus-visible,
-.codexidian-approved-remove-btn:focus-visible,
-.codexidian-save-env-btn:focus-visible,
-.codexidian-restore-snippet-btn:focus-visible,
-.codexidian-edit-snippet-btn:focus-visible,
-.codexidian-delete-snippet-btn:focus-visible,
-.codexidian-cancel-btn:focus-visible,
-.codexidian-save-btn:focus-visible,
-.codexidian-code-lang-label:focus-visible {
+.codexian-action-btn:focus-visible,
+.codexian-toggle-switch:focus-visible,
+.codexian-file-chip:focus-visible,
+.codexian-image-chip:focus-visible,
+.codexian-file-chip-remove:focus-visible,
+.codexian-image-remove:focus-visible,
+.codexian-image-modal-close:focus-visible,
+.codexian-approved-remove-btn:focus-visible,
+.codexian-save-env-btn:focus-visible,
+.codexian-restore-snippet-btn:focus-visible,
+.codexian-edit-snippet-btn:focus-visible,
+.codexian-delete-snippet-btn:focus-visible,
+.codexian-cancel-btn:focus-visible,
+.codexian-save-btn:focus-visible,
+.codexian-code-lang-label:focus-visible {
   outline: 2px solid var(--interactive-accent);
   outline-offset: 2px;
 }
 
 /* outline + negative offset + border-radius */
-.codexidian-history-item-content:focus-visible {
+.codexian-history-item-content:focus-visible {
   outline: 2px solid var(--interactive-accent);
   outline-offset: -2px;
   border-radius: 4px;

@@ -325,7 +325,7 @@ describe('InputController - Message Queue', () => {
       controller.updateQueueIndicator();
 
       const queueIndicatorEl = deps.state.queueIndicatorEl as any;
-      expect(queueIndicatorEl.querySelector('.codexidian-queue-indicator-text')?.textContent).toBe('⌙ Queued: test message');
+      expect(queueIndicatorEl.querySelector('.codexian-queue-indicator-text')?.textContent).toBe('⌙ Queued: test message');
       expect(queueIndicatorEl.style.display).toBe('flex');
     });
 
@@ -345,7 +345,7 @@ describe('InputController - Message Queue', () => {
       controller.updateQueueIndicator();
 
       const queueIndicatorEl = deps.state.queueIndicatorEl as any;
-      const text = queueIndicatorEl.querySelector('.codexidian-queue-indicator-text')?.textContent as string;
+      const text = queueIndicatorEl.querySelector('.codexian-queue-indicator-text')?.textContent as string;
       expect(text).toContain('...');
     });
 
@@ -356,7 +356,7 @@ describe('InputController - Message Queue', () => {
       controller.updateQueueIndicator();
 
       const queueIndicatorEl = deps.state.queueIndicatorEl as any;
-      const text = queueIndicatorEl.querySelector('.codexidian-queue-indicator-text')?.textContent as string;
+      const text = queueIndicatorEl.querySelector('.codexian-queue-indicator-text')?.textContent as string;
       expect(text).toContain('queued content');
       expect(text).toContain('[images]');
     });
@@ -368,7 +368,7 @@ describe('InputController - Message Queue', () => {
       controller.updateQueueIndicator();
 
       const queueIndicatorEl = deps.state.queueIndicatorEl as any;
-      expect(queueIndicatorEl.querySelector('.codexidian-queue-indicator-text')?.textContent).toBe('⌙ Queued: [images]');
+      expect(queueIndicatorEl.querySelector('.codexian-queue-indicator-text')?.textContent).toBe('⌙ Queued: [images]');
     });
 
     it('should show Codex steer action when queued message can be steered', () => {
@@ -391,7 +391,7 @@ describe('InputController - Message Queue', () => {
       controller.updateQueueIndicator();
 
       const queueIndicatorEl = deps.state.queueIndicatorEl as any;
-      expect(queueIndicatorEl.querySelector('.codexidian-queue-indicator-action')?.textContent).toBe('Steer Now');
+      expect(queueIndicatorEl.querySelector('.codexian-queue-indicator-action')?.textContent).toBe('Steer Now');
     });
 
     it('should steer the queued Codex message when the action is clicked', async () => {
@@ -443,7 +443,7 @@ describe('InputController - Message Queue', () => {
       controller.updateQueueIndicator();
 
       const queueIndicatorEl = deps.state.queueIndicatorEl as any;
-      queueIndicatorEl.querySelector('.codexidian-queue-indicator-action')?.click();
+      queueIndicatorEl.querySelector('.codexian-queue-indicator-action')?.click();
       await Promise.resolve();
       await Promise.resolve();
 
@@ -452,9 +452,9 @@ describe('InputController - Message Queue', () => {
       }));
       expect(mockAgentService.steer).toHaveBeenCalled();
       expect(deps.state.queuedMessage).toBeNull();
-      expect(queueIndicatorEl.querySelector('.codexidian-queue-indicator-text')?.textContent)
+      expect(queueIndicatorEl.querySelector('.codexian-queue-indicator-text')?.textContent)
         .toBe('⌙ Steering: queued follow-up');
-      expect(queueIndicatorEl.querySelector('.codexidian-queue-indicator-action')).toBeNull();
+      expect(queueIndicatorEl.querySelector('.codexian-queue-indicator-action')).toBeNull();
       expect(queueIndicatorEl.style.display).toBe('flex');
       expect(deps.state.messages).toHaveLength(2);
       expect(deps.state.messages[0]).toMatchObject({
@@ -501,7 +501,7 @@ describe('InputController - Message Queue', () => {
       controller.updateQueueIndicator();
 
       const queueIndicatorEl = deps.state.queueIndicatorEl as any;
-      queueIndicatorEl.querySelector('.codexidian-queue-indicator-action')?.click();
+      queueIndicatorEl.querySelector('.codexian-queue-indicator-action')?.click();
       await Promise.resolve();
       await Promise.resolve();
 
@@ -558,7 +558,7 @@ describe('InputController - Message Queue', () => {
       controller.updateQueueIndicator();
 
       const queueIndicatorEl = deps.state.queueIndicatorEl as any;
-      queueIndicatorEl.querySelector('.codexidian-queue-indicator-action')?.click();
+      queueIndicatorEl.querySelector('.codexian-queue-indicator-action')?.click();
       await Promise.resolve();
       await Promise.resolve();
 
@@ -645,7 +645,7 @@ describe('InputController - Message Queue', () => {
       controller.updateQueueIndicator();
 
       const queueIndicatorEl = deps.state.queueIndicatorEl as any;
-      queueIndicatorEl.querySelector('.codexidian-queue-indicator-action')?.click();
+      queueIndicatorEl.querySelector('.codexian-queue-indicator-action')?.click();
       await Promise.resolve();
       await Promise.resolve();
 
@@ -760,7 +760,7 @@ describe('InputController - Message Queue', () => {
       controller.updateQueueIndicator();
 
       const queueIndicatorEl = deps.state.queueIndicatorEl as any;
-      queueIndicatorEl.querySelector('.codexidian-queue-indicator-action')?.click();
+      queueIndicatorEl.querySelector('.codexian-queue-indicator-action')?.click();
       await Promise.resolve();
       await Promise.resolve();
 
@@ -2187,9 +2187,9 @@ describe('InputController - Message Queue', () => {
         'Run shell command',
       );
 
-      const items = parentEl.querySelectorAll('codexidian-ask-item');
+      const items = parentEl.querySelectorAll('codexian-ask-item');
       const target = items.find((item: any) => {
-        const label = item.querySelector('codexidian-ask-item-label');
+        const label = item.querySelector('codexian-ask-item-label');
         return label?.textContent === optionLabel;
       });
       expect(target).toBeDefined();
@@ -2218,13 +2218,13 @@ describe('InputController - Message Queue', () => {
         },
       );
 
-      const reasonEl = parentEl.querySelector('codexidian-ask-approval-reason');
+      const reasonEl = parentEl.querySelector('codexian-ask-approval-reason');
       expect(reasonEl?.textContent).toBe('Command is destructive');
 
-      const pathEl = parentEl.querySelector('codexidian-ask-approval-blocked-path');
+      const pathEl = parentEl.querySelector('codexian-ask-approval-blocked-path');
       expect(pathEl?.textContent).toBe('/usr/bin/rm');
 
-      const agentEl = parentEl.querySelector('codexidian-ask-approval-agent');
+      const agentEl = parentEl.querySelector('codexian-ask-approval-agent');
       expect(agentEl?.textContent).toBe('Agent: agent-42');
 
       controller.dismissPendingApproval();
@@ -2260,12 +2260,12 @@ describe('InputController - Message Queue', () => {
         } as any,
       );
 
-      const descEl = parentEl.querySelector('codexidian-ask-approval-desc');
+      const descEl = parentEl.querySelector('codexian-ask-approval-desc');
       expect(descEl?.textContent).toContain('api.openai.com');
 
-      const items = parentEl.querySelectorAll('codexidian-ask-item');
+      const items = parentEl.querySelectorAll('codexian-ask-item');
       const labels = items
-        .map((item: any) => item.querySelector('codexidian-ask-item-label')?.textContent)
+        .map((item: any) => item.querySelector('codexian-ask-item-label')?.textContent)
         .filter(Boolean);
       expect(labels).toEqual(expect.arrayContaining([
         'Allow once',
@@ -2304,9 +2304,9 @@ describe('InputController - Message Queue', () => {
           },
         );
 
-        const items = parentEl.querySelectorAll('codexidian-ask-item');
+        const items = parentEl.querySelectorAll('codexian-ask-item');
         const target = items.find((item: any) => {
-          const label = item.querySelector('codexidian-ask-item-label');
+          const label = item.querySelector('codexian-ask-item-label');
           return label?.textContent === optionLabel;
         });
         expect(target).toBeDefined();
@@ -2342,9 +2342,9 @@ describe('InputController - Message Queue', () => {
         } as any,
       );
 
-      const items = parentEl.querySelectorAll('codexidian-ask-item');
+      const items = parentEl.querySelectorAll('codexian-ask-item');
       const target = items.find((item: any) => {
-        const label = item.querySelector('codexidian-ask-item-label');
+        const label = item.querySelector('codexian-ask-item-label');
         return label?.textContent === 'Allow similar commands';
       });
       expect(target).toBeDefined();
@@ -2404,9 +2404,9 @@ describe('InputController - Message Queue', () => {
 
       expect(inputContainerEl.style.display).toBe('none');
 
-      const items = parentEl.querySelectorAll('codexidian-ask-item');
+      const items = parentEl.querySelectorAll('codexian-ask-item');
       const allowOnceItem = items.find((item: any) => {
-        const label = item.querySelector('codexidian-ask-item-label');
+        const label = item.querySelector('codexian-ask-item-label');
         return label?.textContent === 'Allow once';
       });
       expect(allowOnceItem).toBeDefined();

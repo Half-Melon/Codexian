@@ -1,20 +1,20 @@
 /* Brand & semantic color tokens */
-.codexidian-container {
-  --codexidian-brand: #d0d0d0;
-  --codexidian-brand-rgb: 208, 208, 208;
-  --codexidian-brand-codex: #d0d0d0;
-  --codexidian-brand-codex-rgb: 208, 208, 208;
-  --codexidian-error: #dc3545;
-  --codexidian-error-rgb: 220, 53, 69;
-  --codexidian-compact: #5bc0de;
+.codexian-container {
+  --codexian-brand: #d0d0d0;
+  --codexian-brand-rgb: 208, 208, 208;
+  --codexian-brand-codex: #d0d0d0;
+  --codexian-brand-codex-rgb: 208, 208, 208;
+  --codexian-error: #dc3545;
+  --codexian-error-rgb: 220, 53, 69;
+  --codexian-compact: #5bc0de;
 }
 
-body.theme-light .codexidian-container {
-  --codexidian-brand-codex: #000000;
-  --codexidian-brand-codex-rgb: 0, 0, 0;
+body.theme-light .codexian-container {
+  --codexian-brand-codex: #000000;
+  --codexian-brand-codex-rgb: 0, 0, 0;
 }
 
-.codexidian-container[data-provider="codex"] {
-  --codexidian-brand: var(--codexidian-brand-codex);
-  --codexidian-brand-rgb: var(--codexidian-brand-codex-rgb);
+.codexian-container[data-provider="codex"] {
+  --codexian-brand: var(--codexian-brand-codex);
+  --codexian-brand-rgb: var(--codexian-brand-codex-rgb);
 }

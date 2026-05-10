@@ -2,12 +2,12 @@ import { Setting } from 'obsidian';
 
 import { getEnvironmentReviewKeysForScope } from '../../../core/providers/providerEnvironment';
 import type { EnvironmentScope } from '../../../core/types/settings';
-import type CodexidianPlugin from '../../../main';
+import type CodexianPlugin from '../../../main';
 import { EnvSnippetManager } from './EnvSnippetManager';
 
 interface EnvironmentSettingsSectionOptions {
   container: HTMLElement;
-  plugin: CodexidianPlugin;
+  plugin: CodexianPlugin;
   scope: EnvironmentScope;
   heading?: string;
   name: string;
@@ -35,7 +35,7 @@ export function renderEnvironmentSettingsSection(
   }
 
   let envTextarea: HTMLTextAreaElement | null = null;
-  const reviewEl = container.createDiv({ cls: 'codexidian-env-review-warning' });
+  const reviewEl = container.createDiv({ cls: 'codexian-env-review-warning' });
   reviewEl.style.color = 'var(--text-warning)';
   reviewEl.style.fontSize = '0.85em';
   reviewEl.style.marginTop = '-0.5em';
@@ -63,7 +63,7 @@ export function renderEnvironmentSettingsSection(
         .setValue(plugin.getEnvironmentVariablesForScope(scope));
       text.inputEl.rows = 6;
       text.inputEl.cols = 50;
-      text.inputEl.addClass('codexidian-settings-env-textarea');
+      text.inputEl.addClass('codexian-settings-env-textarea');
       text.inputEl.dataset.envScope = scope;
       text.inputEl.addEventListener('input', () => updateReviewWarning());
       text.inputEl.addEventListener('blur', async () => {
@@ -76,10 +76,10 @@ export function renderEnvironmentSettingsSection(
 
   updateReviewWarning();
 
-  const contextLimitsContainer = container.createDiv({ cls: 'codexidian-context-limits-container' });
+  const contextLimitsContainer = container.createDiv({ cls: 'codexian-context-limits-container' });
   renderCustomContextLimits?.(contextLimitsContainer);
 
-  const envSnippetsContainer = container.createDiv({ cls: 'codexidian-env-snippets-container' });
+  const envSnippetsContainer = container.createDiv({ cls: 'codexian-env-snippets-container' });
   new EnvSnippetManager(envSnippetsContainer, plugin, scope, () => {
     renderCustomContextLimits?.(contextLimitsContainer);
   });

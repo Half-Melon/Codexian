@@ -1,8 +1,8 @@
-.codexidian-tool-call {
+.codexian-tool-call {
   margin: 8px 0;
 }
 
-.codexidian-tool-header {
+.codexian-tool-header {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -11,23 +11,23 @@
   overflow: hidden;
 }
 
-.codexidian-tool-header:hover {
+.codexian-tool-header:hover {
   opacity: 0.85;
 }
 
-.codexidian-tool-icon {
+.codexian-tool-icon {
   display: flex;
   align-items: center;
   color: var(--text-accent);
   flex-shrink: 0;
 }
 
-.codexidian-tool-icon svg {
+.codexian-tool-icon svg {
   width: 16px;
   height: 16px;
 }
 
-.codexidian-tool-name {
+.codexian-tool-name {
   font-family: var(--font-monospace);
   font-size: 13px;
   font-weight: 400;
@@ -36,7 +36,7 @@
   flex-shrink: 0;
 }
 
-.codexidian-tool-summary {
+.codexian-tool-summary {
   font-family: var(--font-monospace);
   font-size: 13px;
   color: var(--text-muted);
@@ -47,15 +47,15 @@
   min-width: 0;
 }
 
-.codexidian-tool-summary:empty {
+.codexian-tool-summary:empty {
   display: none;
 }
 
-.codexidian-tool-call-bash.expanded .codexidian-tool-summary {
+.codexian-tool-call-bash.expanded .codexian-tool-summary {
   display: none;
 }
 
-.codexidian-tool-bash-command {
+.codexian-tool-bash-command {
   font-family: var(--font-monospace);
   font-size: 12px;
   line-height: 1.4;
@@ -65,8 +65,8 @@
   padding: 2px 0 4px;
 }
 
-/* Legacy: StatusPanel bash entries still use codexidian-tool-label */
-.codexidian-tool-label {
+/* Legacy: StatusPanel bash entries still use codexian-tool-label */
+.codexian-tool-label {
   font-family: var(--font-monospace);
   font-size: 13px;
   font-weight: 400;
@@ -76,47 +76,47 @@
   text-overflow: ellipsis;
 }
 
-.codexidian-tool-current {
+.codexian-tool-current {
   font-family: var(--font-monospace);
   font-size: 13px;
   color: var(--text-muted);
   white-space: nowrap;
 }
 
-.codexidian-tool-current:empty {
+.codexian-tool-current:empty {
   display: none;
 }
 
-.codexidian-tool-status {
+.codexian-tool-status {
   display: flex;
   align-items: center;
   flex-shrink: 0;
   margin-left: auto;
 }
 
-.codexidian-tool-status svg {
+.codexian-tool-status svg {
   width: 14px;
   height: 14px;
 }
 
-.codexidian-tool-status.status-running {
+.codexian-tool-status.status-running {
   color: var(--text-accent);
 }
 
-.codexidian-tool-status.status-completed {
+.codexian-tool-status.status-completed {
   color: var(--color-green);
 }
 
-.codexidian-tool-status.status-error {
+.codexian-tool-status.status-error {
   color: var(--color-red);
 }
 
-.codexidian-tool-status.status-blocked {
+.codexian-tool-status.status-blocked {
   color: var(--color-orange);
 }
 
 /* Tool call content - border style (like thinking block) */
-.codexidian-tool-content {
+.codexian-tool-content {
   padding: 4px 0;
   padding-inline-start: 16px;
   margin-inline-start: 7px;
@@ -124,34 +124,34 @@
 }
 
 /* Tool content variants that render inline widgets instead of bordered results */
-.codexidian-tool-content-todo,
-.codexidian-tool-content-ask {
+.codexian-tool-content-todo,
+.codexian-tool-content-ask {
   border-inline-start: none;
   margin-inline-start: 0;
   padding-inline-start: 0;
 }
 
 /* Expanded content: per-line rendering */
-.codexidian-tool-lines {
+.codexian-tool-lines {
   font-family: var(--font-monospace);
   font-size: 12px;
   line-height: 1.4;
   overflow-x: auto;
 }
 
-.codexidian-tool-line {
+.codexian-tool-line {
   padding: 1px 0;
   color: var(--text-muted);
   white-space: pre;
 }
 
 /* Hover highlight for file search results */
-.codexidian-tool-line.hoverable:hover {
+.codexian-tool-line.hoverable:hover {
   background: var(--background-modifier-hover);
 }
 
 /* Truncation indicator: "... N more lines" */
-.codexidian-tool-truncated {
+.codexian-tool-truncated {
   color: var(--text-faint);
   font-style: italic;
   padding: 4px 0;
@@ -160,7 +160,7 @@
 }
 
 /* ToolSearch expanded: icon + tool name rows */
-.codexidian-tool-search-item {
+.codexian-tool-search-item {
   display: flex;
   align-items: center;
   gap: 4px;
@@ -170,7 +170,7 @@
   color: var(--text-muted);
 }
 
-.codexidian-tool-search-icon {
+.codexian-tool-search-icon {
   display: flex;
   align-items: center;
   flex-shrink: 0;
@@ -179,13 +179,13 @@
   color: var(--text-faint);
 }
 
-.codexidian-tool-search-icon svg {
+.codexian-tool-search-icon svg {
   width: 14px;
   height: 14px;
 }
 
 /* Web search links */
-.codexidian-tool-link {
+.codexian-tool-link {
   display: flex;
   align-items: flex-start;
   gap: 6px;
@@ -198,11 +198,11 @@
   line-height: 1.4;
 }
 
-.codexidian-tool-link:hover {
+.codexian-tool-link:hover {
   color: var(--text-accent);
 }
 
-.codexidian-tool-link-icon {
+.codexian-tool-link-icon {
   flex-shrink: 0;
   width: 12px;
   height: 12px;
@@ -210,19 +210,19 @@
   color: var(--text-faint);
 }
 
-.codexidian-tool-link-icon svg {
+.codexian-tool-link-icon svg {
   width: 12px;
   height: 12px;
 }
 
-.codexidian-tool-link-title {
+.codexian-tool-link-title {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 /* Web search summary section */
-.codexidian-tool-web-summary {
+.codexian-tool-web-summary {
   font-family: var(--font-monospace);
   font-size: 12px;
   color: var(--text-muted);
@@ -236,7 +236,7 @@
 }
 
 /* Empty state for file search */
-.codexidian-tool-empty {
+.codexian-tool-empty {
   color: var(--text-faint);
   font-style: italic;
   font-family: var(--font-monospace);
@@ -244,12 +244,12 @@
   padding: 4px 0;
 }
 
-.codexidian-tool-result-row {
+.codexian-tool-result-row {
   display: flex;
   align-items: flex-start;
 }
 
-.codexidian-tool-result-text {
+.codexian-tool-result-text {
   font-family: var(--font-monospace);
   font-size: 12px;
   color: var(--text-muted);
@@ -259,22 +259,22 @@
   flex: 1;
 }
 
-.codexidian-tool-result-item {
+.codexian-tool-result-item {
   display: block;
   margin-bottom: 2px;
 }
 
-.codexidian-tool-patch-section + .codexidian-tool-patch-section {
+.codexian-tool-patch-section + .codexian-tool-patch-section {
   margin-top: 10px;
 }
 
-.codexidian-tool-patch-header {
+.codexian-tool-patch-header {
   font-family: var(--font-monospace);
   font-size: 12px;
   color: var(--text-muted);
   margin-bottom: 4px;
 }
 
-.codexidian-tool-result-item:last-child {
+.codexian-tool-result-item:last-child {
   margin-bottom: 0;
 }

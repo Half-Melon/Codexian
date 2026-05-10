@@ -1,7 +1,7 @@
 {
-  "name": "codexidian",
+  "name": "codexian",
   "version": "1.0.0",
-  "description": "Codexidian - Codex embedded in Obsidian for vault-aware chat and knowledge workflows",
+  "description": "Codexian - Codex-powered vault-aware chat and knowledge workflows",
   "main": "main.js",
   "scripts": {
     "postinstall": "node scripts/postinstall.mjs",

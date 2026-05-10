@@ -1,16 +1,16 @@
-.codexidian-tab-bar-container {
+.codexian-tab-bar-container {
   display: flex;
   align-items: center;
   gap: 4px;
 }
 
-.codexidian-tab-badges {
+.codexian-tab-badges {
   display: flex;
   align-items: center;
   gap: 4px;
 }
 
-.codexidian-tab-badge {
+.codexian-tab-badge {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -26,33 +26,33 @@
   transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
 }
 
-.codexidian-tab-badge:hover {
+.codexian-tab-badge:hover {
   background: var(--background-modifier-hover);
   color: var(--text-normal);
 }
 
-.codexidian-tab-badge-active {
+.codexian-tab-badge-active {
   border-color: var(--interactive-accent);
   color: var(--text-normal);
 }
 
-.codexidian-tab-badge-streaming {
-  border-color: var(--codexidian-brand, #da7756);
+.codexian-tab-badge-streaming {
+  border-color: var(--codexian-brand, #da7756);
 }
 
-.codexidian-tab-badge-streaming[data-provider="codex"] {
-  border-color: var(--codexidian-brand-codex, #d0d0d0);
+.codexian-tab-badge-streaming[data-provider="codex"] {
+  border-color: var(--codexian-brand-codex, #d0d0d0);
 }
 
-.codexidian-tab-badge-attention {
+.codexian-tab-badge-attention {
   border-color: var(--text-error);
 }
 
-.codexidian-tab-badge-idle {
+.codexian-tab-badge-idle {
   border-color: var(--background-modifier-border);
 }
 
-.codexidian-tab-content-container {
+.codexian-tab-content-container {
   display: flex;
   flex-direction: column;
   flex: 1;
@@ -60,7 +60,7 @@
   overflow: hidden;
 }
 
-.codexidian-tab-content {
+.codexian-tab-content {
   position: relative; /* For scroll-to-bottom button positioning */
   display: flex;
   flex-direction: column;

@@ -1,12 +1,12 @@
 /* AskUserQuestion - inline widget rendered in chat panel */
 
-.codexidian-ask-question-inline {
+.codexian-ask-question-inline {
   font-family: var(--font-monospace);
   font-size: 12px;
   outline: none;
 }
 
-.codexidian-ask-inline-title {
+.codexian-ask-inline-title {
   font-weight: 700;
   color: var(--text-muted);
   padding: 6px 10px 0;
@@ -14,7 +14,7 @@
 
 /* ── Tab bar ─────────────────────────────────── */
 
-.codexidian-ask-tab-bar {
+.codexian-ask-tab-bar {
   display: flex;
   align-items: center;
   gap: 6px;
@@ -23,7 +23,7 @@
   line-height: 1.4;
 }
 
-.codexidian-ask-tab {
+.codexian-ask-tab {
   display: inline-flex;
   align-items: center;
   padding: 2px 10px;
@@ -36,16 +36,16 @@
     color 0.15s ease;
 }
 
-.codexidian-ask-tab:hover {
+.codexian-ask-tab:hover {
   color: var(--text-normal);
 }
 
-.codexidian-ask-tab.is-active {
+.codexian-ask-tab.is-active {
   background: hsla(55, 30%, 50%, 0.18);
   color: var(--text-normal);
 }
 
-.codexidian-ask-tab-label {
+.codexian-ask-tab-label {
   font-weight: 600;
   max-width: 14ch;
   overflow: hidden;
@@ -53,23 +53,23 @@
   white-space: nowrap;
 }
 
-.codexidian-ask-tab-tick {
+.codexian-ask-tab-tick {
   color: var(--color-green);
   font-weight: 700;
 }
 
-.codexidian-ask-tab-submit-check {
+.codexian-ask-tab-submit-check {
   color: var(--color-green);
   white-space: pre;
 }
 
 /* ── Content area ────────────────────────────── */
 
-.codexidian-ask-content {
+.codexian-ask-content {
   padding: 8px 10px;
 }
 
-.codexidian-ask-question-text {
+.codexian-ask-question-text {
   font-weight: 700;
   color: var(--text-normal);
   margin-bottom: 8px;
@@ -78,14 +78,14 @@
 
 /* ── Item list ───────────────────────────────── */
 
-.codexidian-ask-list {
+.codexian-ask-list {
   display: flex;
   flex-direction: column;
   gap: 2px;
   margin-bottom: 8px;
 }
 
-.codexidian-ask-item {
+.codexian-ask-item {
   display: flex;
   align-items: flex-start;
   padding: 3px 4px;
@@ -95,11 +95,11 @@
   border-radius: 3px;
 }
 
-.codexidian-ask-item:hover {
+.codexian-ask-item:hover {
   background: var(--background-modifier-hover);
 }
 
-.codexidian-ask-cursor {
+.codexian-ask-cursor {
   display: inline-block;
   width: 2ch;
   flex-shrink: 0;
@@ -107,28 +107,28 @@
   font-weight: 700;
 }
 
-.codexidian-ask-item-num {
+.codexian-ask-item-num {
   color: var(--text-muted);
   flex-shrink: 0;
 }
 
-.codexidian-ask-item-content {
+.codexian-ask-item-content {
   display: flex;
   flex-direction: column;
   flex: 1;
   min-width: 0;
 }
 
-.codexidian-ask-label-row {
+.codexian-ask-label-row {
   display: flex;
   align-items: baseline;
 }
 
-.codexidian-ask-item-label {
+.codexian-ask-item-label {
   font-weight: 600;
 }
 
-.codexidian-ask-item-desc {
+.codexian-ask-item-desc {
   color: var(--text-muted);
   font-weight: 400;
   line-height: 1.4;
@@ -136,39 +136,39 @@
 }
 
 /* Selected items: green text */
-.codexidian-ask-item.is-selected .codexidian-ask-item-label {
+.codexian-ask-item.is-selected .codexian-ask-item-label {
   color: var(--color-green);
 }
 
 /* Disabled items: muted text */
-.codexidian-ask-item.is-disabled .codexidian-ask-item-label {
+.codexian-ask-item.is-disabled .codexian-ask-item-label {
   color: var(--text-faint);
 }
 
 /* ── Multi-select brackets ───────────────────── */
 
-.codexidian-ask-check {
+.codexian-ask-check {
   color: var(--text-faint);
   flex-shrink: 0;
   white-space: pre;
 }
 
-.codexidian-ask-check.is-checked {
+.codexian-ask-check.is-checked {
   color: var(--color-green);
 }
 
 /* ── Single-select check mark ────────────────── */
 
-.codexidian-ask-check-mark {
+.codexian-ask-check-mark {
   color: var(--color-green);
   font-weight: 700;
 }
 
 /* ── Custom input ────────────────────────────── */
 
-.codexidian-ask-item input.codexidian-ask-custom-text,
-.codexidian-ask-item input.codexidian-ask-custom-text:hover,
-.codexidian-ask-item input.codexidian-ask-custom-text:focus {
+.codexian-ask-item input.codexian-ask-custom-text,
+.codexian-ask-item input.codexian-ask-custom-text:hover,
+.codexian-ask-item input.codexian-ask-custom-text:focus {
   border: none;
   border-radius: 0;
   background: transparent;
@@ -186,71 +186,71 @@
   min-width: 0;
 }
 
-.codexidian-ask-custom-text::placeholder {
+.codexian-ask-custom-text::placeholder {
   color: var(--text-faint);
 }
 
 /* ── Submit review tab ───────────────────────── */
 
-.codexidian-ask-review-title {
+.codexian-ask-review-title {
   font-weight: 700;
   color: var(--text-normal);
   margin-bottom: 6px;
 }
 
-.codexidian-ask-review {
+.codexian-ask-review {
   font-family: var(--font-monospace);
   margin-bottom: 16px;
 }
 
-.codexidian-tool-content .codexidian-ask-review {
+.codexian-tool-content .codexian-ask-review {
   font-size: 12px;
 }
 
-.codexidian-ask-review:last-child {
+.codexian-ask-review:last-child {
   margin-bottom: 0;
 }
 
-.codexidian-ask-review-pair {
+.codexian-ask-review-pair {
   display: flex;
   gap: 6px;
   margin-bottom: 4px;
 }
 
-.codexidian-ask-review-pair:last-child {
+.codexian-ask-review-pair:last-child {
   margin-bottom: 0;
 }
 
-.codexidian-ask-review-num {
+.codexian-ask-review-num {
   color: var(--text-muted);
   flex-shrink: 0;
 }
 
-.codexidian-ask-review-body {
+.codexian-ask-review-body {
   min-width: 0;
 }
 
-.codexidian-ask-review-q-text {
+.codexian-ask-review-q-text {
   color: var(--text-muted);
 }
 
-.codexidian-ask-review-a-text {
+.codexian-ask-review-a-text {
   color: var(--text-normal);
 }
 
-.codexidian-ask-review-empty {
+.codexian-ask-review-empty {
   color: var(--text-faint);
   font-style: italic;
 }
 
-.codexidian-ask-review-prompt {
+.codexian-ask-review-prompt {
   color: var(--text-muted);
   margin-bottom: 6px;
 }
 
 /* ── Hints ───────────────────────────────────── */
 
-.codexidian-ask-hints {
+.codexian-ask-hints {
   color: var(--text-faint);
   padding-top: 6px;
   border-top: 1px solid var(--background-modifier-border);
@@ -258,11 +258,11 @@
 
 /* ── Approval header (inline permission request) ── */
 
-.codexidian-ask-approval-info {
+.codexian-ask-approval-info {
   padding: 8px 10px;
 }
 
-.codexidian-ask-approval-tool {
+.codexian-ask-approval-tool {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -272,22 +272,22 @@
   margin-bottom: 8px;
 }
 
-.codexidian-ask-approval-icon {
-  color: var(--codexidian-brand);
+.codexian-ask-approval-icon {
+  color: var(--codexian-brand);
 }
 
-.codexidian-ask-approval-tool-name {
+.codexian-ask-approval-tool-name {
   font-weight: 600;
   color: var(--text-normal);
 }
 
-.codexidian-ask-approval-reason {
+.codexian-ask-approval-reason {
   color: var(--text-muted);
   font-size: 12px;
   margin-bottom: 6px;
 }
 
-.codexidian-ask-approval-blocked-path {
+.codexian-ask-approval-blocked-path {
   font-family: var(--font-monospace);
   font-size: 11px;
   color: var(--text-muted);
@@ -298,13 +298,13 @@
   word-break: break-all;
 }
 
-.codexidian-ask-approval-agent {
+.codexian-ask-approval-agent {
   color: var(--text-muted);
   font-size: 12px;
   margin-bottom: 6px;
 }
 
-.codexidian-ask-approval-desc {
+.codexian-ask-approval-desc {
   padding: 8px 10px;
   background: var(--background-primary-alt);
   border-radius: 6px;

@@ -52,11 +52,11 @@ export class MentionDropdownController {
     this.fixed = options.fixed ?? false;
 
     this.dropdown = new SelectableDropdown<MentionItem>(this.containerEl, {
-      listClassName: 'codexidian-mention-dropdown',
-      itemClassName: 'codexidian-mention-item',
-      emptyClassName: 'codexidian-mention-empty',
+      listClassName: 'codexian-mention-dropdown',
+      itemClassName: 'codexian-mention-item',
+      emptyClassName: 'codexian-mention-empty',
       fixed: this.fixed,
-      fixedClassName: 'codexidian-mention-dropdown-fixed',
+      fixedClassName: 'codexian-mention-dropdown-fixed',
     });
   }
 
@@ -387,7 +387,7 @@ export class MentionDropdownController {
         }
       },
       renderItem: (item, itemEl) => {
-        const iconEl = itemEl.createSpan({ cls: 'codexidian-mention-icon' });
+        const iconEl = itemEl.createSpan({ cls: 'codexian-mention-icon' });
         switch (item.type) {
           case 'agent':
           case 'agent-folder':
@@ -404,41 +404,41 @@ export class MentionDropdownController {
             setIcon(iconEl, 'file-text');
         }
 
-        const textEl = itemEl.createSpan({ cls: 'codexidian-mention-text' });
+        const textEl = itemEl.createSpan({ cls: 'codexian-mention-text' });
 
         switch (item.type) {
           case 'agent-folder':
             textEl.createSpan({
-              cls: 'codexidian-mention-name codexidian-mention-name-agent-folder',
+              cls: 'codexian-mention-name codexian-mention-name-agent-folder',
             }).setText(`@${item.name}/`);
             break;
           case 'agent': {
             // Show ID (which is namespaced for plugin agents) for consistency with inserted text
             textEl.createSpan({
-              cls: 'codexidian-mention-name codexidian-mention-name-agent',
+              cls: 'codexian-mention-name codexian-mention-name-agent',
             }).setText(`@${item.id}`);
             if (item.description) {
-              textEl.createSpan({ cls: 'codexidian-mention-agent-desc' }).setText(item.description);
+              textEl.createSpan({ cls: 'codexian-mention-agent-desc' }).setText(item.description);
             }
             break;
           }
           case 'context-folder':
             textEl.createSpan({
-              cls: 'codexidian-mention-name codexidian-mention-name-folder',
+              cls: 'codexian-mention-name codexian-mention-name-folder',
             }).setText(`@${item.name}/`);
             break;
           case 'context-file':
             textEl.createSpan({
-              cls: 'codexidian-mention-name codexidian-mention-name-context',
+              cls: 'codexian-mention-name codexian-mention-name-context',
             }).setText(item.name);
             break;
           case 'folder':
             textEl.createSpan({
-              cls: 'codexidian-mention-name codexidian-mention-name-folder',
+              cls: 'codexian-mention-name codexian-mention-name-folder',
             }).setText(`@${item.path}/`);
             break;
           default:
-            textEl.createSpan({ cls: 'codexidian-mention-path' }).setText(item.path || item.name);
+            textEl.createSpan({ cls: 'codexian-mention-path' }).setText(item.path || item.name);
         }
       },
       onItemClick: (item, index, e) => {

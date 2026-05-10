@@ -175,14 +175,14 @@ describe('knowledge workflow commands', () => {
     registerKnowledgeWorkflowRibbonIcons(host);
 
     expect(icons.map(item => item.title)).toEqual([
-      'Codexidian: Compile new sources',
-      'Codexidian: Save current Q&A',
-      'Codexidian: Run knowledge-base health check',
-      'Codexidian: Apply health-check suggestions',
-      'Codexidian: Undo last archive',
-      'Codexidian: Run knowledge-base workflow acceptance check',
-      'Codexidian: View knowledge-base status',
-      'Codexidian: Open knowledge-base workflow map',
+      'Codexian: Compile new sources',
+      'Codexian: Save current Q&A',
+      'Codexian: Run knowledge-base health check',
+      'Codexian: Apply health-check suggestions',
+      'Codexian: Undo last archive',
+      'Codexian: Run knowledge-base workflow acceptance check',
+      'Codexian: View knowledge-base status',
+      'Codexian: Open knowledge-base workflow map',
     ]);
     expect(icons.map(item => item.icon)).toEqual([
       'file-plus-2',

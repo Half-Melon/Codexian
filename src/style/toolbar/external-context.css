@@ -1,12 +1,12 @@
 /* External Context Selector */
-.codexidian-external-context-selector {
+.codexian-external-context-selector {
   position: relative;
   display: flex;
   align-items: center;
   margin-left: 8px;
 }
 
-.codexidian-external-context-icon-wrapper {
+.codexian-external-context-icon-wrapper {
   position: relative;
   display: flex;
   align-items: center;
@@ -14,7 +14,7 @@
   cursor: pointer;
 }
 
-.codexidian-external-context-icon {
+.codexian-external-context-icon {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -24,37 +24,37 @@
   transition: color 0.15s ease;
 }
 
-.codexidian-external-context-icon-wrapper:hover .codexidian-external-context-icon {
+.codexian-external-context-icon-wrapper:hover .codexian-external-context-icon {
   color: var(--text-normal);
 }
 
-.codexidian-external-context-icon.active {
-  color: var(--codexidian-brand);
+.codexian-external-context-icon.active {
+  color: var(--codexian-brand);
   animation: external-context-glow 2s ease-in-out infinite;
 }
 
-.codexidian-external-context-icon svg {
+.codexian-external-context-icon svg {
   width: 16px;
   height: 16px;
 }
 
-.codexidian-external-context-badge {
+.codexian-external-context-badge {
   position: absolute;
   top: 0;
   right: 0;
   font-size: 9px;
   font-weight: 600;
-  color: var(--codexidian-brand);
+  color: var(--codexian-brand);
   opacity: 0;
   transition: opacity 0.15s ease;
   pointer-events: none;
 }
 
-.codexidian-external-context-badge.visible {
+.codexian-external-context-badge.visible {
   opacity: 1;
 }
 
-.codexidian-external-context-dropdown {
+.codexian-external-context-dropdown {
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
@@ -72,12 +72,12 @@
   z-index: 100;
 }
 
-.codexidian-external-context-selector:hover .codexidian-external-context-dropdown {
+.codexian-external-context-selector:hover .codexian-external-context-dropdown {
   opacity: 1;
   visibility: visible;
 }
 
-.codexidian-external-context-header {
+.codexian-external-context-header {
   padding: 10px 12px;
   font-size: 12px;
   font-weight: 600;
@@ -85,12 +85,12 @@
   border-bottom: 1px solid var(--background-modifier-border);
 }
 
-.codexidian-external-context-list {
+.codexian-external-context-list {
   max-height: 200px;
   overflow-y: auto;
 }
 
-.codexidian-external-context-empty {
+.codexian-external-context-empty {
   padding: 16px 12px;
   text-align: center;
   color: var(--text-muted);
@@ -98,7 +98,7 @@
   font-style: italic;
 }
 
-.codexidian-external-context-item {
+.codexian-external-context-item {
   display: flex;
   align-items: center;
   padding: 8px 12px;
@@ -106,11 +106,11 @@
   border-bottom: 1px solid var(--background-modifier-border-focus);
 }
 
-.codexidian-external-context-item:last-child {
+.codexian-external-context-item:last-child {
   border-bottom: none;
 }
 
-.codexidian-external-context-text {
+.codexian-external-context-text {
   flex: 1;
   font-size: 12px;
   font-family: var(--font-monospace);
@@ -120,7 +120,7 @@
   white-space: nowrap;
 }
 
-.codexidian-external-context-lock {
+.codexian-external-context-lock {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -133,26 +133,26 @@
   transition: all 0.15s ease;
 }
 
-.codexidian-external-context-lock:hover {
+.codexian-external-context-lock:hover {
   background: var(--background-modifier-hover);
   opacity: 0.8;
 }
 
-.codexidian-external-context-lock.locked {
-  color: var(--codexidian-brand);
+.codexian-external-context-lock.locked {
+  color: var(--codexian-brand);
   opacity: 0.9;
 }
 
-.codexidian-external-context-lock.locked:hover {
+.codexian-external-context-lock.locked:hover {
   opacity: 1;
 }
 
-.codexidian-external-context-lock svg {
+.codexian-external-context-lock svg {
   width: 12px;
   height: 12px;
 }
 
-.codexidian-external-context-remove {
+.codexian-external-context-remove {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -165,13 +165,13 @@
   transition: all 0.15s ease;
 }
 
-.codexidian-external-context-remove:hover {
-  background: rgba(var(--codexidian-error-rgb), 0.15);
-  color: var(--codexidian-error);
+.codexian-external-context-remove:hover {
+  background: rgba(var(--codexian-error-rgb), 0.15);
+  color: var(--codexian-error);
   opacity: 1;
 }
 
-.codexidian-external-context-remove svg {
+.codexian-external-context-remove svg {
   width: 14px;
   height: 14px;
 }

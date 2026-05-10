@@ -7,7 +7,7 @@ import {
 } from '../../../core/tools/toolNames';
 import type { ChatMessage, ImageAttachment, ToolCallInfo } from '../../../core/types';
 import { t } from '../../../i18n/i18n';
-import type CodexidianPlugin from '../../../main';
+import type CodexianPlugin from '../../../main';
 import { formatDurationMmSs } from '../../../utils/date';
 import { processFileLinks, registerFileLinkHandler } from '../../../utils/fileLink';
 import { replaceImageEmbedsWithHtml } from '../../../utils/imageEmbed';
@@ -31,7 +31,7 @@ export type RenderContentFn = (
 
 export class MessageRenderer {
   private app: App;
-  private plugin: CodexidianPlugin;
+  private plugin: CodexianPlugin;
   private component: Component;
   private messagesEl: HTMLElement;
   private rewindCallback?: (messageId: string) => Promise<void>;
@@ -44,7 +44,7 @@ export class MessageRenderer {
   private static readonly FORK_ICON = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><circle cx="18" cy="6" r="3"/><path d="M18 9v2c0 .6-.4 1-1 1H7c-.6 0-1-.4-1-1V9"/><path d="M12 12v3"/></svg>`;
 
   constructor(
-    plugin: CodexidianPlugin,
+    plugin: CodexianPlugin,
     component: Component,
     messagesEl: HTMLElement,
     rewindCallback?: (messageId: string) => Promise<void>,
@@ -109,19 +109,19 @@ export class MessageRenderer {
     }
 
     const msgEl = this.messagesEl.createDiv({
-      cls: `codexidian-message codexidian-message-${msg.role}`,
+      cls: `codexian-message codexian-message-${msg.role}`,
       attr: {
         'data-message-id': msg.id,
         'data-role': msg.role,
       },
     });
 
-    const contentEl = msgEl.createDiv({ cls: 'codexidian-message-content', attr: { dir: 'auto' } });
+    const contentEl = msgEl.createDiv({ cls: 'codexian-message-content', attr: { dir: 'auto' } });
 
     if (msg.role === 'user') {
       const textToShow = msg.displayContent ?? msg.content;
       if (textToShow) {
-        const textEl = contentEl.createDiv({ cls: 'codexidian-text-block' });
+        const textEl = contentEl.createDiv({ cls: 'codexian-text-block' });
         void this.renderContent(textEl, textToShow);
         this.addUserCopyButton(msgEl, textToShow);
       }
@@ -145,7 +145,7 @@ export class MessageRenderer {
       return;
     }
 
-    const contentEl = msgEl.querySelector('.codexidian-message-content') as HTMLElement | null;
+    const contentEl = msgEl.querySelector('.codexian-message-content') as HTMLElement | null;
     if (!contentEl) {
       return;
     }
@@ -154,13 +154,13 @@ export class MessageRenderer {
 
     const textToShow = msg.displayContent ?? msg.content;
     if (textToShow) {
-      const textEl = contentEl.createDiv({ cls: 'codexidian-text-block' });
+      const textEl = contentEl.createDiv({ cls: 'codexian-text-block' });
       void this.renderContent(textEl, textToShow);
     }
 
-    const toolbar = msgEl.querySelector('.codexidian-user-msg-actions') as HTMLElement | null;
+    const toolbar = msgEl.querySelector('.codexian-user-msg-actions') as HTMLElement | null;
     if (toolbar) {
-      toolbar.querySelectorAll('.codexidian-user-msg-copy-btn').forEach((el) => el.remove());
+      toolbar.querySelectorAll('.codexian-user-msg-copy-btn').forEach((el) => el.remove());
     }
 
     if (textToShow) {
@@ -197,8 +197,8 @@ export class MessageRenderer {
     this.liveMessageEls.clear();
 
     // Recreate welcome element after clearing
-    const newWelcomeEl = this.messagesEl.createDiv({ cls: 'codexidian-welcome' });
-    newWelcomeEl.createDiv({ cls: 'codexidian-welcome-greeting', text: getGreeting() });
+    const newWelcomeEl = this.messagesEl.createDiv({ cls: 'codexian-welcome' });
+    newWelcomeEl.createDiv({ cls: 'codexian-welcome-greeting', text: getGreeting() });
 
     for (let i = 0; i < messages.length; i++) {
       this.renderStoredMessage(messages[i], messages, i);
@@ -237,19 +237,19 @@ export class MessageRenderer {
     }
 
     const msgEl = this.messagesEl.createDiv({
-      cls: `codexidian-message codexidian-message-${msg.role}`,
+      cls: `codexian-message codexian-message-${msg.role}`,
       attr: {
         'data-message-id': msg.id,
         'data-role': msg.role,
       },
     });
 
-    const contentEl = msgEl.createDiv({ cls: 'codexidian-message-content', attr: { dir: 'auto' } });
+    const contentEl = msgEl.createDiv({ cls: 'codexian-message-content', attr: { dir: 'auto' } });
 
     if (msg.role === 'user') {
       const textToShow = msg.displayContent ?? msg.content;
       if (textToShow) {
-        const textEl = contentEl.createDiv({ cls: 'codexidian-text-block' });
+        const textEl = contentEl.createDiv({ cls: 'codexian-text-block' });
         void this.renderContent(textEl, textToShow);
         this.addUserCopyButton(msgEl, textToShow);
       }
@@ -283,14 +283,14 @@ export class MessageRenderer {
   }
 
   private renderInterruptMessage(): void {
-    const msgEl = this.messagesEl.createDiv({ cls: 'codexidian-message codexidian-message-assistant' });
-    const contentEl = msgEl.createDiv({ cls: 'codexidian-message-content', attr: { dir: 'auto' } });
+    const msgEl = this.messagesEl.createDiv({ cls: 'codexian-message codexian-message-assistant' });
+    const contentEl = msgEl.createDiv({ cls: 'codexian-message-content', attr: { dir: 'auto' } });
     this.appendInterruptIndicator(contentEl);
   }
 
   private appendInterruptIndicator(contentEl: HTMLElement): void {
-    const textEl = contentEl.createDiv({ cls: 'codexidian-text-block' });
-    textEl.innerHTML = '<span class="codexidian-interrupted">Interrupted</span> <span class="codexidian-interrupted-hint">· What should Codexidian do instead?</span>';
+    const textEl = contentEl.createDiv({ cls: 'codexian-text-block' });
+    textEl.innerHTML = '<span class="codexian-interrupted">Interrupted</span> <span class="codexian-interrupted-hint">· What should Codexian do instead?</span>';
   }
 
   /**
@@ -312,7 +312,7 @@ export class MessageRenderer {
           if (!block.content || !block.content.trim()) {
             continue;
           }
-          const textEl = contentEl.createDiv({ cls: 'codexidian-text-block' });
+          const textEl = contentEl.createDiv({ cls: 'codexian-text-block' });
           void this.renderContent(textEl, block.content);
           this.addTextCopyButton(textEl, block.content);
         } else if (block.type === 'tool_use') {
@@ -322,8 +322,8 @@ export class MessageRenderer {
             renderedToolIds.add(toolCall.id);
           }
         } else if (block.type === 'context_compacted') {
-          const boundaryEl = contentEl.createDiv({ cls: 'codexidian-compact-boundary' });
-          boundaryEl.createSpan({ cls: 'codexidian-compact-boundary-label', text: 'Conversation compacted' });
+          const boundaryEl = contentEl.createDiv({ cls: 'codexian-compact-boundary' });
+          boundaryEl.createSpan({ cls: 'codexian-compact-boundary-label', text: 'Conversation compacted' });
         }
       }
 
@@ -338,7 +338,7 @@ export class MessageRenderer {
     } else {
       // Fallback for old conversations without contentBlocks
       if (msg.content) {
-        const textEl = contentEl.createDiv({ cls: 'codexidian-text-block' });
+        const textEl = contentEl.createDiv({ cls: 'codexian-text-block' });
         void this.renderContent(textEl, msg.content);
         this.addTextCopyButton(textEl, msg.content);
       }
@@ -353,10 +353,10 @@ export class MessageRenderer {
     const hasCompactBoundary = msg.contentBlocks?.some(b => b.type === 'context_compacted');
     if (msg.durationSeconds && msg.durationSeconds > 0 && !hasCompactBoundary) {
       const flavorWord = msg.durationFlavorWord || 'Baked';
-      const footerEl = contentEl.createDiv({ cls: 'codexidian-response-footer' });
+      const footerEl = contentEl.createDiv({ cls: 'codexian-response-footer' });
       footerEl.createSpan({
         text: `* ${flavorWord} for ${formatDurationMmSs(msg.durationSeconds)}`,
-        cls: 'codexidian-baked-duration',
+        cls: 'codexian-baked-duration',
       });
     }
   }
@@ -409,10 +409,10 @@ export class MessageRenderer {
    * Renders image attachments above a message.
    */
   renderMessageImages(containerEl: HTMLElement, images: ImageAttachment[]): void {
-    const imagesEl = containerEl.createDiv({ cls: 'codexidian-message-images' });
+    const imagesEl = containerEl.createDiv({ cls: 'codexian-message-images' });
 
     for (const image of images) {
-      const imageWrapper = imagesEl.createDiv({ cls: 'codexidian-message-image' });
+      const imageWrapper = imagesEl.createDiv({ cls: 'codexian-message-image' });
       const imgEl = imageWrapper.createEl('img', {
         attr: {
           alt: image.name,
@@ -434,8 +434,8 @@ export class MessageRenderer {
   showFullImage(image: ImageAttachment): void {
     const dataUri = `data:${image.mediaType};base64,${image.data}`;
 
-    const overlay = document.body.createDiv({ cls: 'codexidian-image-modal-overlay' });
-    const modal = overlay.createDiv({ cls: 'codexidian-image-modal' });
+    const overlay = document.body.createDiv({ cls: 'codexian-image-modal-overlay' });
+    const modal = overlay.createDiv({ cls: 'codexian-image-modal' });
 
     modal.createEl('img', {
       attr: {
@@ -444,7 +444,7 @@ export class MessageRenderer {
       },
     });
 
-    const closeBtn = modal.createDiv({ cls: 'codexidian-image-modal-close' });
+    const closeBtn = modal.createDiv({ cls: 'codexian-image-modal-close' });
     closeBtn.setText('\u00D7');
 
     const handleEsc = (e: KeyboardEvent) => {
@@ -507,10 +507,10 @@ export class MessageRenderer {
       // Wrap pre elements and move buttons outside scroll area
       el.querySelectorAll('pre').forEach((pre) => {
         // Skip if already wrapped
-        if (pre.parentElement?.classList.contains('codexidian-code-wrapper')) return;
+        if (pre.parentElement?.classList.contains('codexian-code-wrapper')) return;
 
         // Create wrapper
-        const wrapper = createEl('div', { cls: 'codexidian-code-wrapper' });
+        const wrapper = createEl('div', { cls: 'codexian-code-wrapper' });
         pre.parentElement?.insertBefore(wrapper, pre);
         wrapper.appendChild(pre);
 
@@ -521,7 +521,7 @@ export class MessageRenderer {
           if (match) {
             wrapper.classList.add('has-language');
             const label = createEl('span', {
-              cls: 'codexidian-code-lang-label',
+              cls: 'codexian-code-lang-label',
               text: match[1],
             });
             wrapper.appendChild(label);
@@ -550,7 +550,7 @@ export class MessageRenderer {
       }
     } catch {
       el.createDiv({
-        cls: 'codexidian-render-error',
+        cls: 'codexian-render-error',
         text: 'Failed to render message content.',
       });
     }
@@ -570,7 +570,7 @@ export class MessageRenderer {
    * @param markdown The original markdown content to copy
    */
   addTextCopyButton(textEl: HTMLElement, markdown: string): void {
-    const copyBtn = textEl.createSpan({ cls: 'codexidian-text-copy-btn' });
+    const copyBtn = textEl.createSpan({ cls: 'codexian-text-copy-btn' });
     copyBtn.innerHTML = MessageRenderer.COPY_ICON;
 
     let feedbackTimeout: ReturnType<typeof setTimeout> | null = null;
@@ -609,32 +609,32 @@ export class MessageRenderer {
     const msgEl = this.liveMessageEls.get(msg.id);
     if (!msgEl) return;
 
-    if (this.rewindCallback && !msgEl.querySelector('.codexidian-message-rewind-btn')) {
+    if (this.rewindCallback && !msgEl.querySelector('.codexian-message-rewind-btn')) {
       this.addRewindButton(msgEl, msg.id);
     }
-    if (this.forkCallback && !msgEl.querySelector('.codexidian-message-fork-btn')) {
+    if (this.forkCallback && !msgEl.querySelector('.codexian-message-fork-btn')) {
       this.addForkButton(msgEl, msg.id);
     }
     this.cleanupLiveMessageEl(msg.id, msgEl);
   }
 
   private cleanupLiveMessageEl(msgId: string, msgEl: HTMLElement): void {
-    const needsRewind = this.rewindCallback && !msgEl.querySelector('.codexidian-message-rewind-btn');
-    const needsFork = this.forkCallback && !msgEl.querySelector('.codexidian-message-fork-btn');
+    const needsRewind = this.rewindCallback && !msgEl.querySelector('.codexian-message-rewind-btn');
+    const needsFork = this.forkCallback && !msgEl.querySelector('.codexian-message-fork-btn');
     if (!needsRewind && !needsFork) {
       this.liveMessageEls.delete(msgId);
     }
   }
 
   private getOrCreateActionsToolbar(msgEl: HTMLElement): HTMLElement {
-    const existing = msgEl.querySelector('.codexidian-user-msg-actions') as HTMLElement | null;
+    const existing = msgEl.querySelector('.codexian-user-msg-actions') as HTMLElement | null;
     if (existing) return existing;
-    return msgEl.createDiv({ cls: 'codexidian-user-msg-actions' });
+    return msgEl.createDiv({ cls: 'codexian-user-msg-actions' });
   }
 
   private addUserCopyButton(msgEl: HTMLElement, content: string): void {
     const toolbar = this.getOrCreateActionsToolbar(msgEl);
-    const copyBtn = toolbar.createSpan({ cls: 'codexidian-user-msg-copy-btn' });
+    const copyBtn = toolbar.createSpan({ cls: 'codexian-user-msg-copy-btn' });
     copyBtn.innerHTML = MessageRenderer.COPY_ICON;
     copyBtn.setAttribute('aria-label', 'Copy message');
 
@@ -662,7 +662,7 @@ export class MessageRenderer {
   private addRewindButton(msgEl: HTMLElement, messageId: string): void {
     if (!this.getCapabilities().supportsRewind) return;
     const toolbar = this.getOrCreateActionsToolbar(msgEl);
-    const btn = toolbar.createSpan({ cls: 'codexidian-message-rewind-btn' });
+    const btn = toolbar.createSpan({ cls: 'codexian-message-rewind-btn' });
     if (toolbar.firstChild !== btn) toolbar.insertBefore(btn, toolbar.firstChild);
     btn.innerHTML = MessageRenderer.REWIND_ICON;
     btn.setAttribute('aria-label', t('chat.rewind.ariaLabel'));
@@ -679,7 +679,7 @@ export class MessageRenderer {
   private addForkButton(msgEl: HTMLElement, messageId: string): void {
     if (!this.getCapabilities().supportsFork) return;
     const toolbar = this.getOrCreateActionsToolbar(msgEl);
-    const btn = toolbar.createSpan({ cls: 'codexidian-message-fork-btn' });
+    const btn = toolbar.createSpan({ cls: 'codexian-message-fork-btn' });
     if (toolbar.firstChild !== btn) toolbar.insertBefore(btn, toolbar.firstChild);
     btn.innerHTML = MessageRenderer.FORK_ICON;
     btn.setAttribute('aria-label', t('chat.fork.ariaLabel'));

@@ -27,18 +27,18 @@ export class InlinePlanApproval {
   }
 
   render(): void {
-    this.rootEl = this.containerEl.createDiv({ cls: 'codexidian-plan-approval-inline' });
+    this.rootEl = this.containerEl.createDiv({ cls: 'codexian-plan-approval-inline' });
 
-    this.rootEl.createDiv({ cls: 'codexidian-plan-inline-title', text: 'Plan complete' });
+    this.rootEl.createDiv({ cls: 'codexian-plan-inline-title', text: 'Plan complete' });
 
-    const actionsEl = this.rootEl.createDiv({ cls: 'codexidian-ask-list' });
+    const actionsEl = this.rootEl.createDiv({ cls: 'codexian-ask-list' });
 
     // 1. Implement
-    const implementRow = actionsEl.createDiv({ cls: 'codexidian-ask-item' });
+    const implementRow = actionsEl.createDiv({ cls: 'codexian-ask-item' });
     implementRow.addClass('is-focused');
-    implementRow.createSpan({ text: '\u203A', cls: 'codexidian-ask-cursor' });
-    implementRow.createSpan({ text: '1. ', cls: 'codexidian-ask-item-num' });
-    implementRow.createSpan({ text: 'Implement', cls: 'codexidian-ask-item-label' });
+    implementRow.createSpan({ text: '\u203A', cls: 'codexian-ask-cursor' });
+    implementRow.createSpan({ text: '1. ', cls: 'codexian-ask-item-num' });
+    implementRow.createSpan({ text: 'Implement', cls: 'codexian-ask-item-label' });
     implementRow.addEventListener('click', () => {
       this.focusedIndex = 0;
       this.updateFocus();
@@ -47,12 +47,12 @@ export class InlinePlanApproval {
     this.items.push(implementRow);
 
     // 2. Revise (with feedback input)
-    const reviseRow = actionsEl.createDiv({ cls: 'codexidian-ask-item codexidian-ask-custom-item' });
-    reviseRow.createSpan({ text: '\u00A0', cls: 'codexidian-ask-cursor' });
-    reviseRow.createSpan({ text: '2. ', cls: 'codexidian-ask-item-num' });
+    const reviseRow = actionsEl.createDiv({ cls: 'codexian-ask-item codexian-ask-custom-item' });
+    reviseRow.createSpan({ text: '\u00A0', cls: 'codexian-ask-cursor' });
+    reviseRow.createSpan({ text: '2. ', cls: 'codexian-ask-item-num' });
     this.feedbackInput = reviseRow.createEl('input', {
       type: 'text',
-      cls: 'codexidian-ask-custom-text',
+      cls: 'codexian-ask-custom-text',
       placeholder: 'Enter feedback to revise plan...',
     });
     this.feedbackInput.addEventListener('focus', () => { this.isInputFocused = true; });
@@ -64,10 +64,10 @@ export class InlinePlanApproval {
     this.items.push(reviseRow);
 
     // 3. Cancel
-    const cancelRow = actionsEl.createDiv({ cls: 'codexidian-ask-item' });
-    cancelRow.createSpan({ text: '\u00A0', cls: 'codexidian-ask-cursor' });
-    cancelRow.createSpan({ text: '3. ', cls: 'codexidian-ask-item-num' });
-    cancelRow.createSpan({ text: 'Cancel', cls: 'codexidian-ask-item-label' });
+    const cancelRow = actionsEl.createDiv({ cls: 'codexian-ask-item' });
+    cancelRow.createSpan({ text: '\u00A0', cls: 'codexian-ask-cursor' });
+    cancelRow.createSpan({ text: '3. ', cls: 'codexian-ask-item-num' });
+    cancelRow.createSpan({ text: 'Cancel', cls: 'codexian-ask-item-label' });
     cancelRow.addEventListener('click', () => {
       this.focusedIndex = 2;
       this.updateFocus();
@@ -75,7 +75,7 @@ export class InlinePlanApproval {
     });
     this.items.push(cancelRow);
 
-    this.rootEl.createDiv({ text: HINTS_TEXT, cls: 'codexidian-ask-hints' });
+    this.rootEl.createDiv({ text: HINTS_TEXT, cls: 'codexian-ask-hints' });
 
     this.rootEl.setAttribute('tabindex', '0');
     this.rootEl.addEventListener('keydown', this.boundKeyDown);
@@ -144,14 +144,14 @@ export class InlinePlanApproval {
   private updateFocus(): void {
     for (let i = 0; i < this.items.length; i++) {
       const item = this.items[i];
-      const cursor = item.querySelector('.codexidian-ask-cursor');
+      const cursor = item.querySelector('.codexian-ask-cursor');
       if (i === this.focusedIndex) {
         item.addClass('is-focused');
         if (cursor) cursor.textContent = '\u203A';
         item.scrollIntoView({ block: 'nearest' });
 
-        if (item.hasClass('codexidian-ask-custom-item')) {
-          const input = item.querySelector('.codexidian-ask-custom-text') as HTMLInputElement;
+        if (item.hasClass('codexian-ask-custom-item')) {
+          const input = item.querySelector('.codexian-ask-custom-text') as HTMLInputElement;
           if (input) {
             input.focus();
             this.isInputFocused = true;
@@ -161,8 +161,8 @@ export class InlinePlanApproval {
         item.removeClass('is-focused');
         if (cursor) cursor.textContent = '\u00A0';
 
-        if (item.hasClass('codexidian-ask-custom-item') && this.isInputFocused) {
-          const input = item.querySelector('.codexidian-ask-custom-text') as HTMLInputElement;
+        if (item.hasClass('codexian-ask-custom-item') && this.isInputFocused) {
+          const input = item.querySelector('.codexian-ask-custom-text') as HTMLInputElement;
           if (input) {
             input.blur();
             this.isInputFocused = false;

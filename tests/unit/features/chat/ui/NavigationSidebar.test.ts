@@ -216,7 +216,7 @@ describe('NavigationSidebar', () => {
         messagesEl as unknown as HTMLElement
       );
 
-      const container = parentEl.querySelector('.codexidian-nav-sidebar');
+      const container = parentEl.querySelector('.codexian-nav-sidebar');
       expect(container).not.toBeNull();
     });
 
@@ -226,7 +226,7 @@ describe('NavigationSidebar', () => {
         messagesEl as unknown as HTMLElement
       );
 
-      const container = parentEl.querySelector('.codexidian-nav-sidebar');
+      const container = parentEl.querySelector('.codexian-nav-sidebar');
       expect(container).not.toBeNull();
       expect(container!.children.length).toBe(4);
     });
@@ -237,7 +237,7 @@ describe('NavigationSidebar', () => {
         messagesEl as unknown as HTMLElement
       );
 
-      const container = parentEl.querySelector('.codexidian-nav-sidebar');
+      const container = parentEl.querySelector('.codexian-nav-sidebar');
       const buttons = container!.children;
 
       expect(buttons[0].getAttribute('aria-label')).toBe('Scroll to top');
@@ -252,7 +252,7 @@ describe('NavigationSidebar', () => {
         messagesEl as unknown as HTMLElement
       );
 
-      const container = parentEl.querySelector('.codexidian-nav-sidebar');
+      const container = parentEl.querySelector('.codexian-nav-sidebar');
       const buttons = container!.children;
 
       expect(buttons[0].getAttribute('data-icon')).toBe('chevrons-up');
@@ -272,7 +272,7 @@ describe('NavigationSidebar', () => {
         messagesEl as unknown as HTMLElement
       );
 
-      const container = parentEl.querySelector('.codexidian-nav-sidebar');
+      const container = parentEl.querySelector('.codexian-nav-sidebar');
       expect(container!.classList.contains('visible')).toBe(false);
     });
 
@@ -285,7 +285,7 @@ describe('NavigationSidebar', () => {
         messagesEl as unknown as HTMLElement
       );
 
-      const container = parentEl.querySelector('.codexidian-nav-sidebar');
+      const container = parentEl.querySelector('.codexian-nav-sidebar');
       expect(container!.classList.contains('visible')).toBe(true);
     });
 
@@ -298,7 +298,7 @@ describe('NavigationSidebar', () => {
         messagesEl as unknown as HTMLElement
       );
 
-      const container = parentEl.querySelector('.codexidian-nav-sidebar');
+      const container = parentEl.querySelector('.codexian-nav-sidebar');
       expect(container!.classList.contains('visible')).toBe(false);
 
       // Simulate content growth
@@ -318,7 +318,7 @@ describe('NavigationSidebar', () => {
         messagesEl as unknown as HTMLElement
       );
 
-      const container = parentEl.querySelector('.codexidian-nav-sidebar');
+      const container = parentEl.querySelector('.codexian-nav-sidebar');
       messagesEl.scrollHeight = 1000;
       sidebar.updateVisibility();
       sidebar.updateVisibility();
@@ -342,7 +342,7 @@ describe('NavigationSidebar', () => {
         messagesEl as unknown as HTMLElement
       );
 
-      const container = parentEl.querySelector('.codexidian-nav-sidebar');
+      const container = parentEl.querySelector('.codexian-nav-sidebar');
       const topBtn = container!.children[0];
       topBtn.click();
 
@@ -363,7 +363,7 @@ describe('NavigationSidebar', () => {
         messagesEl as unknown as HTMLElement
       );
 
-      const container = parentEl.querySelector('.codexidian-nav-sidebar');
+      const container = parentEl.querySelector('.codexian-nav-sidebar');
       const bottomBtn = container!.children[3];
       bottomBtn.click();
 
@@ -375,13 +375,13 @@ describe('NavigationSidebar', () => {
 
   describe('previous/next message navigation', () => {
     function addUserMessage(el: MockElement, offset: number): MockElement {
-      const msg = el.createDiv({ cls: 'codexidian-message codexidian-message-user' });
+      const msg = el.createDiv({ cls: 'codexian-message codexian-message-user' });
       msg.offsetTop = offset;
       return msg;
     }
 
     function addAssistantMessage(el: MockElement, offset: number): MockElement {
-      const msg = el.createDiv({ cls: 'codexidian-message codexidian-message-assistant' });
+      const msg = el.createDiv({ cls: 'codexian-message codexian-message-assistant' });
       msg.offsetTop = offset;
       return msg;
     }
@@ -399,7 +399,7 @@ describe('NavigationSidebar', () => {
     }
 
     function getButtons(parent: MockElement) {
-      const container = parent.querySelector('.codexidian-nav-sidebar')!;
+      const container = parent.querySelector('.codexian-nav-sidebar')!;
       return {
         prev: container.children[1],
         next: container.children[2],
@@ -531,11 +531,11 @@ describe('NavigationSidebar', () => {
         messagesEl as unknown as HTMLElement
       );
 
-      expect(parentEl.querySelector('.codexidian-nav-sidebar')).not.toBeNull();
+      expect(parentEl.querySelector('.codexian-nav-sidebar')).not.toBeNull();
 
       sidebar.destroy();
 
-      expect(parentEl.querySelector('.codexidian-nav-sidebar')).toBeNull();
+      expect(parentEl.querySelector('.codexian-nav-sidebar')).toBeNull();
     });
   });
 });

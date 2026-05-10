@@ -1,11 +1,11 @@
 /* Codex fast-mode / service-tier toggle */
-.codexidian-service-tier-toggle {
+.codexian-service-tier-toggle {
   display: flex;
   align-items: center;
   padding-left: 2px;
 }
 
-.codexidian-service-tier-button {
+.codexian-service-tier-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -19,21 +19,21 @@
   flex-shrink: 0;
 }
 
-.codexidian-service-tier-icon {
+.codexian-service-tier-icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
 }
 
-.codexidian-service-tier-icon svg {
+.codexian-service-tier-icon svg {
   width: 14px;
   height: 14px;
 }
 
-.codexidian-service-tier-button:hover {
+.codexian-service-tier-button:hover {
   background: var(--background-modifier-hover);
 }
 
-.codexidian-service-tier-button.active {
-  color: var(--codexidian-brand);
+.codexian-service-tier-button.active {
+  color: var(--codexian-brand);
 }

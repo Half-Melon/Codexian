@@ -23,16 +23,16 @@ function fireKeyDown(root: any, key: string): void {
 }
 
 function findRoot(container: any): any {
-  return container.querySelector('.codexidian-plan-approval-inline');
+  return container.querySelector('.codexian-plan-approval-inline');
 }
 
 function findItems(root: any): any[] {
-  return root.querySelectorAll('codexidian-ask-item');
+  return root.querySelectorAll('codexian-ask-item');
 }
 
 describe('InlineExitPlanMode', () => {
   it('resolves with approve-new-session and includes plan content when readable', () => {
-    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'codexidian-'));
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'codexian-'));
     const plansDir = path.join(tmpDir, '.codex', 'plans');
     fs.mkdirSync(plansDir, { recursive: true });
     const planFilePath = path.join(plansDir, 'plan.md');
@@ -59,7 +59,7 @@ describe('InlineExitPlanMode', () => {
     const root = findRoot(container);
     expect(root).toBeTruthy();
     expect(root.getEventListenerCount('keydown')).toBe(1);
-    expect(container.querySelector('.codexidian-plan-permissions-list')).toBeTruthy();
+    expect(container.querySelector('.codexian-plan-permissions-list')).toBeTruthy();
     expect(renderContent).toHaveBeenCalled();
 
     fireKeyDown(root, 'Enter');
@@ -89,7 +89,7 @@ describe('InlineExitPlanMode', () => {
 
     const root = findRoot(container);
     expect(root).toBeTruthy();
-    expect(container.querySelector('.codexidian-plan-read-error')).toBeTruthy();
+    expect(container.querySelector('.codexian-plan-read-error')).toBeTruthy();
 
     fireKeyDown(root, 'Enter');
     expect(resolve).toHaveBeenCalledWith({
@@ -115,7 +115,7 @@ describe('InlineExitPlanMode', () => {
 
     const root = findRoot(container);
     expect(root).toBeTruthy();
-    expect(container.querySelector('.codexidian-plan-read-error')).toBeTruthy();
+    expect(container.querySelector('.codexian-plan-read-error')).toBeTruthy();
 
     fireKeyDown(root, 'Enter');
     expect(resolve).toHaveBeenCalledWith({
@@ -156,7 +156,7 @@ describe('InlineExitPlanMode', () => {
 
     const items = findItems(root);
     const feedbackRow = items[2];
-    const feedbackInput = feedbackRow.querySelector('codexidian-ask-custom-text');
+    const feedbackInput = feedbackRow.querySelector('codexian-ask-custom-text');
 
     expect(resolve).not.toHaveBeenCalled();
 

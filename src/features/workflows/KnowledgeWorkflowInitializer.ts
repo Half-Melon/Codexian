@@ -43,13 +43,13 @@ const KNOWLEDGE_WORKFLOW_FOLDERS = [
 ];
 
 const FILE_TEMPLATES: Record<string, string> = {
-  [KNOWLEDGE_WORKFLOW_AGENTS_PATH]: `# Codexidian Knowledge Base Rules
+  [KNOWLEDGE_WORKFLOW_AGENTS_PATH]: `# Codexian Knowledge Base Rules
 
-本 vault 使用 Codexidian 运行 LLM 个人知识库工作流。执行知识库任务时，优先遵守本文件。
+本 vault 使用 Codexian 运行 LLM 个人知识库工作流。执行知识库任务时，优先遵守本文件。
 
 ## 三层边界
 
-- new/ 是新来源暂存区：用户把待编译的新资料放在这里，Codexidian 编译新来源时只从这里读取。
+- new/ 是新来源暂存区：用户把待编译的新资料放在这里，Codexian 编译新来源时只从这里读取。
 - raw/ 是来源层：保存原始资料，默认不改写、不总结到原文件里。
 - wiki/ 是知识层：保存 LLM 编译后的摘要、概念、索引和地图。
 - outputs/ 是运行输出层：保存问答沉淀、健康检查和报告。
@@ -146,7 +146,7 @@ status: active
 
   [KNOWLEDGE_WORKFLOW_MAP_PATH]: `# LLM Personal Knowledge Base Workflow
 
-这是 Codexidian 的知识库工作流入口。把新资料放入根目录 new/ 后，运行“Codexidian: 编译新来源”。
+这是 Codexian 的知识库工作流入口。把新资料放入根目录 new/ 后，运行“Codexian: 编译新来源”。
 
 ## new/ 使用说明
 
@@ -164,9 +164,9 @@ status: active
 
 ## 操作按钮
 
-- Codexidian: 编译新来源
-- Codexidian: 保存当前问答
-- Codexidian: 运行知识库健康检查
+- Codexian: 编译新来源
+- Codexian: 保存当前问答
+- Codexian: 运行知识库健康检查
 
 ## 开放问题
 
@@ -273,7 +273,7 @@ description: Undo the latest source archive operation from archive logs.
 
 # Undo Archive
 
-Use when the user asks to undo the latest Codexidian archive move.
+Use when the user asks to undo the latest Codexian archive move.
 
 Workflow:
 
@@ -286,12 +286,12 @@ Workflow:
 
   '.codex/skills/workflow-acceptance/SKILL.md': `---
 name: workflow-acceptance
-description: Run an end-to-end acceptance check for the Codexidian knowledge workflow.
+description: Run an end-to-end acceptance check for the Codexian knowledge workflow.
 ---
 
 # Workflow Acceptance
 
-Use when validating that the vault can sustainably run the Codexidian knowledge workflow.
+Use when validating that the vault can sustainably run the Codexian knowledge workflow.
 
 Write outputs/reports/YYYY-MM-DD-workflow-acceptance.md. Check:
 
@@ -326,7 +326,7 @@ Rules:
 
   '.codex/skills/save-qa/SKILL.md': `---
 name: save-qa
-description: Save reusable Codexidian conversations into outputs/qa.
+description: Save reusable Codexian conversations into outputs/qa.
 ---
 
 # Save QA

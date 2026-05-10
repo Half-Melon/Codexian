@@ -1,5 +1,5 @@
 /* @ Mention dropdown */
-.codexidian-mention-dropdown {
+.codexian-mention-dropdown {
   display: none;
   position: absolute;
   bottom: 100%;
@@ -17,17 +17,17 @@
   overflow-y: auto;
 }
 
-.codexidian-mention-dropdown.visible {
+.codexian-mention-dropdown.visible {
   display: block;
 }
 
 /* Fixed positioning for inline editor */
-.codexidian-mention-dropdown-fixed {
+.codexian-mention-dropdown-fixed {
   position: fixed;
   z-index: 10001;
 }
 
-.codexidian-mention-item {
+.codexian-mention-item {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -36,24 +36,24 @@
   transition: background 0.1s ease;
 }
 
-.codexidian-mention-item:hover,
-.codexidian-mention-item.selected {
+.codexian-mention-item:hover,
+.codexian-mention-item.selected {
   background: var(--background-modifier-hover);
 }
 
-.codexidian-mention-icon {
+.codexian-mention-icon {
   display: flex;
   align-items: center;
   color: var(--text-muted);
   flex-shrink: 0;
 }
 
-.codexidian-mention-icon svg {
+.codexian-mention-icon svg {
   width: 14px;
   height: 14px;
 }
 
-.codexidian-mention-path {
+.codexian-mention-path {
   font-size: 13px;
   color: var(--text-normal);
   overflow: hidden;
@@ -61,7 +61,7 @@
   white-space: nowrap;
 }
 
-.codexidian-mention-empty {
+.codexian-mention-empty {
   padding: 12px;
   text-align: center;
   color: var(--text-muted);
@@ -69,24 +69,24 @@
 }
 
 /* Scrollbar for mention dropdown */
-.codexidian-mention-dropdown::-webkit-scrollbar {
+.codexian-mention-dropdown::-webkit-scrollbar {
   width: 6px;
 }
 
-.codexidian-mention-dropdown::-webkit-scrollbar-track {
+.codexian-mention-dropdown::-webkit-scrollbar-track {
   background: transparent;
 }
 
-.codexidian-mention-dropdown::-webkit-scrollbar-thumb {
+.codexian-mention-dropdown::-webkit-scrollbar-thumb {
   background: var(--background-modifier-border);
   border-radius: 3px;
 }
 
-.codexidian-mention-item.vault-folder .codexidian-mention-icon {
+.codexian-mention-item.vault-folder .codexian-mention-icon {
   color: var(--text-muted);
 }
 
-.codexidian-mention-text {
+.codexian-mention-text {
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -94,13 +94,13 @@
   flex: 1;
 }
 
-.codexidian-mention-name {
+.codexian-mention-name {
   font-size: 13px;
   font-weight: 500;
   color: var(--interactive-accent);
 }
 
-.codexidian-mention-desc {
+.codexian-mention-desc {
   font-size: 11px;
   color: var(--text-muted);
   overflow: hidden;
@@ -109,17 +109,17 @@
 }
 
 /* Context file items in @-mention dropdown */
-.codexidian-mention-item.context-file .codexidian-mention-icon {
-  color: var(--codexidian-brand);
+.codexian-mention-item.context-file .codexian-mention-icon {
+  color: var(--codexian-brand);
 }
 
-.codexidian-mention-item.context-file .codexidian-mention-text {
+.codexian-mention-item.context-file .codexian-mention-text {
   flex-direction: row;
   overflow: hidden;
   white-space: nowrap;
 }
 
-.codexidian-mention-item.context-file .codexidian-mention-name-context {
+.codexian-mention-item.context-file .codexian-mention-name-context {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -127,35 +127,35 @@
 }
 
 /* Context folder filter items in @-mention dropdown */
-.codexidian-mention-item.context-folder .codexidian-mention-icon {
+.codexian-mention-item.context-folder .codexian-mention-icon {
   color: var(--text-muted);
 }
 
-.codexidian-mention-name-folder {
+.codexian-mention-name-folder {
   color: var(--text-normal);
   font-weight: 500;
 }
 
-.codexidian-mention-name-context {
+.codexian-mention-name-context {
   color: var(--text-normal);
 }
 
 /* Agent folder items in @-mention dropdown */
-.codexidian-mention-item.agent-folder .codexidian-mention-icon {
+.codexian-mention-item.agent-folder .codexian-mention-icon {
   color: var(--link-color);
 }
 
-.codexidian-mention-name-agent-folder {
+.codexian-mention-name-agent-folder {
   color: var(--link-color);
   font-weight: 600;
 }
 
 /* Agent items in @-mention dropdown (inside @Agents/) */
-.codexidian-mention-item.agent .codexidian-mention-icon {
+.codexian-mention-item.agent .codexian-mention-icon {
   color: var(--link-color);
 }
 
-.codexidian-mention-item.agent .codexidian-mention-text {
+.codexian-mention-item.agent .codexian-mention-text {
   flex-direction: row;
   align-items: baseline;
   gap: 6px;
@@ -163,13 +163,13 @@
   white-space: nowrap;
 }
 
-.codexidian-mention-item.agent .codexidian-mention-name-agent {
+.codexian-mention-item.agent .codexian-mention-name-agent {
   color: var(--text-normal);
   font-size: 13px;
   flex-shrink: 0;
 }
 
-.codexidian-mention-item.agent .codexidian-mention-agent-desc {
+.codexian-mention-item.agent .codexian-mention-agent-desc {
   font-size: 11px;
   color: var(--text-muted);
   overflow: hidden;
