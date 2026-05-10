@@ -42,6 +42,7 @@ import {
   registerKnowledgeWorkflowRibbonIcons,
 } from './features/workflows/knowledgeWorkflowCommands';
 import { KnowledgeWorkflowInitializer } from './features/workflows/KnowledgeWorkflowInitializer';
+import { KnowledgeWorkflowStatusService } from './features/workflows/KnowledgeWorkflowStatus';
 import { setLocale } from './i18n/i18n';
 import type { Locale } from './i18n/types';
 import { buildCursorContext } from './utils/editor';
@@ -289,9 +290,38 @@ export default class CodexidianPlugin extends Plugin {
     }
 
     await inputController.sendMessage({
-      content: buildKnowledgeWorkflowPrompt(kind),
+      content: buildKnowledgeWorkflowPrompt(kind, this.settings.knowledgeWorkflow),
     });
     new Notice(getKnowledgeWorkflowDefinition(kind).notice);
+  }
+
+  async openKnowledgeWorkflowStatus(): Promise<void> {
+    const statusService = new KnowledgeWorkflowStatusService(this.storage.getAdapter());
+    const status = await statusService.getStatus();
+    const lines = [
+      'Codexidian 知识库状态',
+      '',
+      `new/ 待编译来源：${status.pendingNewSourceCount}`,
+      status.latestArchiveLog
+        ? `最近归档日志：${status.latestArchiveLog.path}`
+        : '最近归档日志：无',
+      status.latestHealthCheck
+        ? `最近健康检查：${status.latestHealthCheck.path}`
+        : '最近健康检查：无',
+    ];
+
+    if (status.pendingNewSources.length > 0) {
+      lines.push('', '待编译来源：');
+      for (const source of status.pendingNewSources.slice(0, 10)) {
+        lines.push(`- ${source.path}`);
+      }
+      if (status.pendingNewSources.length > 10) {
+        lines.push(`- 以及 ${status.pendingNewSources.length - 10} 个更多文件`);
+      }
+    }
+
+    await this.storage.getAdapter().write('outputs/reports/knowledge-workflow-status.md', lines.join('\n'));
+    await this.app.workspace.openLinkText('outputs/reports/knowledge-workflow-status.md', '', false);
   }
 
   async openKnowledgeWorkflowMap(): Promise<void> {
@@ -333,6 +363,10 @@ export default class CodexidianPlugin extends Plugin {
       ...DEFAULT_CODEXIDIAN_SETTINGS,
       ...codexidian,
     } as CodexidianSettings;
+    this.settings.knowledgeWorkflow = {
+      ...DEFAULT_CODEXIDIAN_SETTINGS.knowledgeWorkflow,
+      ...this.settings.knowledgeWorkflow,
+    };
 
     // Plan mode is ephemeral — normalize back to normal on load so the app
     // doesn't start stuck in plan mode after a restart (prePlanPermissionMode is lost)

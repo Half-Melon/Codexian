@@ -64,6 +64,15 @@ export const CHAT_VIEW_PLACEMENTS = [
 /** Workspace location used when opening the Codexidian chat view. */
 export type ChatViewPlacement = typeof CHAT_VIEW_PLACEMENTS[number];
 
+/** Codexidian knowledge workflow prompt and runtime preferences. */
+export interface KnowledgeWorkflowSettings {
+  batchSize: number;
+  summaryTemplate: string;
+  conceptTemplate: string;
+  archiveRules: string;
+  archiveLogTemplate: string;
+}
+
 /** Result from instruction refinement agent query. */
 export interface InstructionRefineResult {
   success: boolean;
@@ -143,6 +152,7 @@ export interface CodexidianSettings {
   enableAutoScroll: boolean;
   deferMathRenderingDuringStreaming: boolean;
   chatViewPlacement: ChatViewPlacement;
+  knowledgeWorkflow: KnowledgeWorkflowSettings;
 
   // Provider command visibility
   hiddenProviderCommands: HiddenProviderCommands;

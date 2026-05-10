@@ -20,6 +20,8 @@ interface MockToggleComponent {
 }
 
 interface MockSliderComponent {
+  value: number;
+  onChangeCallback: ((value: number) => Promise<void> | void) | null;
   setLimits: jest.MockedFunction<(min: number, max: number, step: number) => MockSliderComponent>;
   setValue: jest.MockedFunction<(value: number) => MockSliderComponent>;
   setDynamicTooltip: jest.MockedFunction<() => MockSliderComponent>;
@@ -27,6 +29,9 @@ interface MockSliderComponent {
 }
 
 interface MockTextComponent {
+  value: string;
+  placeholder: string;
+  onChangeCallback: ((value: string) => Promise<void> | void) | null;
   inputEl: MockElement;
   setPlaceholder: jest.MockedFunction<(value: string) => MockTextComponent>;
   setValue: jest.MockedFunction<(value: string) => MockTextComponent>;
@@ -38,6 +43,8 @@ interface MockSettingEntry {
   desc: string;
   heading: boolean;
   buttons: MockButtonComponent[];
+  textAreas: MockTextComponent[];
+  sliders: MockSliderComponent[];
 }
 
 interface MockElement {
@@ -108,19 +115,40 @@ function createToggleComponent(): MockToggleComponent {
 
 function createSliderComponent(): MockSliderComponent {
   const component = {} as MockSliderComponent;
+  component.value = 0;
+  component.onChangeCallback = null;
   component.setLimits = jest.fn((_min: number, _max: number, _step: number) => component);
-  component.setValue = jest.fn((_value: number) => component);
+  component.setValue = jest.fn((value: number) => {
+    component.value = value;
+    return component;
+  });
   component.setDynamicTooltip = jest.fn(() => component);
-  component.onChange = jest.fn((_callback: (value: number) => Promise<void> | void) => component);
+  component.onChange = jest.fn((callback: (value: number) => Promise<void> | void) => {
+    component.onChangeCallback = callback;
+    return component;
+  });
   return component;
 }
 
 function createTextComponent(): MockTextComponent {
   const component = {} as MockTextComponent;
+  component.value = '';
+  component.placeholder = '';
+  component.onChangeCallback = null;
   component.inputEl = createElement();
-  component.setPlaceholder = jest.fn((_value: string) => component);
-  component.setValue = jest.fn((_value: string) => component);
-  component.onChange = jest.fn((_callback: (value: string) => Promise<void> | void) => component);
+  component.setPlaceholder = jest.fn((value: string) => {
+    component.placeholder = value;
+    return component;
+  });
+  component.setValue = jest.fn((value: string) => {
+    component.value = value;
+    component.inputEl.value = value;
+    return component;
+  });
+  component.onChange = jest.fn((callback: (value: string) => Promise<void> | void) => {
+    component.onChangeCallback = callback;
+    return component;
+  });
   return component;
 }
 
@@ -145,6 +173,8 @@ jest.mock('obsidian', () => {
         desc: '',
         heading: false,
         buttons: [],
+        textAreas: [],
+        sliders: [],
       };
       createdSettings.push(this.entry);
     }
@@ -177,7 +207,9 @@ jest.mock('obsidian', () => {
     }
 
     addSlider(callback: (slider: MockSliderComponent) => void) {
-      callback(createSliderComponent());
+      const component = createSliderComponent();
+      this.entry.sliders.push(component);
+      callback(component);
       return this;
     }
 
@@ -187,7 +219,9 @@ jest.mock('obsidian', () => {
     }
 
     addTextArea(callback: (text: MockTextComponent) => void) {
-      callback(createTextComponent());
+      const component = createTextComponent();
+      this.entry.textAreas.push(component);
+      callback(component);
       return this;
     }
 
@@ -254,6 +288,13 @@ function createPlugin() {
         scrollDownKey: 's',
         focusInputKey: 'i',
       },
+      knowledgeWorkflow: {
+        batchSize: 5,
+        summaryTemplate: 'existing summary template',
+        conceptTemplate: 'existing concept template',
+        archiveRules: 'existing archive rules',
+        archiveLogTemplate: 'existing archive log',
+      },
     },
     saveSettings: jest.fn().mockResolvedValue(undefined),
     initializeKnowledgeWorkflow: jest.fn().mockResolvedValue(undefined),
@@ -283,5 +324,42 @@ describe('CodexidianSettingTab', () => {
     await setting!.buttons[0].onClickCallback?.();
 
     expect(plugin.initializeKnowledgeWorkflow).toHaveBeenCalledTimes(1);
+  });
+
+  it('renders configurable knowledge workflow templates', async () => {
+    const plugin = createPlugin();
+    const tab = new CodexidianSettingTab({} as any, plugin as any);
+
+    tab.display();
+
+    const summarySetting = createdSettings.find(entry => entry.name === '摘要模板');
+    const conceptSetting = createdSettings.find(entry => entry.name === '概念模板');
+    const archiveRulesSetting = createdSettings.find(entry => entry.name === '归档分类规则');
+    const archiveLogSetting = createdSettings.find(entry => entry.name === '归档日志模板');
+
+    expect(summarySetting?.textAreas[0].value).toBe('existing summary template');
+    expect(conceptSetting?.textAreas[0].value).toBe('existing concept template');
+    expect(archiveRulesSetting?.textAreas[0].value).toBe('existing archive rules');
+    expect(archiveLogSetting?.textAreas[0].value).toBe('existing archive log');
+
+    await summarySetting!.textAreas[0].onChangeCallback?.('updated summary template');
+
+    expect(plugin.settings.knowledgeWorkflow.summaryTemplate).toBe('updated summary template');
+    expect(plugin.saveSettings).toHaveBeenCalledTimes(1);
+  });
+
+  it('renders configurable knowledge workflow batch size', async () => {
+    const plugin = createPlugin();
+    const tab = new CodexidianSettingTab({} as any, plugin as any);
+
+    tab.display();
+
+    const batchSetting = createdSettings.find(entry => entry.name === '每批最大来源数');
+    expect(batchSetting?.sliders[0].value).toBe(5);
+
+    await batchSetting!.sliders[0].onChangeCallback?.(8);
+
+    expect(plugin.settings.knowledgeWorkflow.batchSize).toBe(8);
+    expect(plugin.saveSettings).toHaveBeenCalledTimes(1);
   });
 });

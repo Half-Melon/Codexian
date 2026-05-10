@@ -35,6 +35,9 @@ const KNOWLEDGE_WORKFLOW_FOLDERS = [
   '.codex/skills/update-indexes',
   '.codex/skills/save-qa',
   '.codex/skills/health-check',
+  '.codex/skills/repair-health',
+  '.codex/skills/undo-archive',
+  '.codex/skills/workflow-acceptance',
 ];
 
 const FILE_TEMPLATES: Record<string, string> = {
@@ -234,11 +237,71 @@ Destination rules:
 Workflow:
 
 1. Move only sources from new/ that were successfully compiled in the current task.
-2. Do not migrate Clippings or unrelated raw files.
-3. Preserve the original filename unless a collision requires a minimal suffix.
-4. After moving a file, update the summary frontmatter source, summary body links, wiki/indexes/All-Sources.md, and any explicit links created or modified in this task.
-5. Write or update outputs/reports/YYYY-MM-DD-archive-log.md with original path, new path, classification, reason, links updated, and uncertainties.
-6. If any move or link update is risky, stop and ask for confirmation.
+2. 根据文档内容制定一个新的标题：更贴切文章主题、更清晰表示文档内容，标题可以适当长一些；use that title to create the archived filename.
+3. Do not migrate Clippings or unrelated raw files.
+4. If the target file already exists, append a short distinguishing suffix. 如果目标文件已存在，不要 overwrite.
+5. Preserve the original extension when possible.
+6. After moving a file, update the summary frontmatter source, summary body links, wiki/indexes/All-Sources.md, and any explicit links created or modified in this task.
+7. Write or update outputs/reports/YYYY-MM-DD-archive-log.md with original path, new path, classification, reason, links updated, collision handling, and uncertainties.
+8. If any move or link update is risky, stop and ask for confirmation.
+`,
+
+  '.codex/skills/repair-health/SKILL.md': `---
+name: repair-health
+description: Apply low-risk fixes from the latest knowledge-base health report.
+---
+
+# Repair Health
+
+Use after health-check has produced an outputs/health report.
+
+Workflow:
+
+1. Read the latest outputs/health/YYYY-MM-DD-health-check.md.
+2. Apply only low-risk fixes: missing index rows, obvious stale links, or metadata that is directly supported by existing summaries/concepts.
+3. Do not merge concepts, split concepts, delete files, batch rename, migrate directories, or reinterpret sources without user confirmation.
+4. Put risky changes under “需要用户确认”.
+5. Write outputs/reports/YYYY-MM-DD-health-fixes.md with applied fixes, skipped fixes, modified files, and confirmation items.
+`,
+
+  '.codex/skills/undo-archive/SKILL.md': `---
+name: undo-archive
+description: Undo the latest source archive operation from archive logs.
+---
+
+# Undo Archive
+
+Use when the user asks to undo the latest Codexidian archive move.
+
+Workflow:
+
+1. Read the latest outputs/reports/*archive-log.md.
+2. Build a 撤销计划 listing raw/ archived paths, original new/ paths, and link updates to reverse.
+3. If any destination already exists, the archive log is incomplete, or link scope is unclear, stop and ask for confirmation.
+4. When safe, move files back to new/ and revert summary source links, body links, All-Sources paths, and explicit links changed in the archived task.
+5. Write outputs/reports/YYYY-MM-DD-undo-archive.md with reverted files, reverted links, skipped items, and uncertainties.
+`,
+
+  '.codex/skills/workflow-acceptance/SKILL.md': `---
+name: workflow-acceptance
+description: Run an end-to-end acceptance check for the Codexidian knowledge workflow.
+---
+
+# Workflow Acceptance
+
+Use when validating that the vault can sustainably run the Codexidian knowledge workflow.
+
+Write outputs/reports/YYYY-MM-DD-workflow-acceptance.md. Check:
+
+1. Required folders and workflow files exist.
+2. new/ pending files are visible and reasonable.
+3. Recent summaries link to archived raw sources.
+4. All-Sources and All-Concepts align with summaries and concepts.
+5. archive-log files explain every recent source move.
+6. raw/inbox/ contains only uncertain classifications.
+7. outputs/qa and latest health-check are available for review.
+
+Only produce a report. Do not move, delete, or batch rewrite files during acceptance.
 `,
 
   '.codex/skills/update-indexes/SKILL.md': `---

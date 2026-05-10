@@ -76,6 +76,9 @@ describe('KnowledgeWorkflowInitializer', () => {
       '.codex/skills/update-indexes',
       '.codex/skills/save-qa',
       '.codex/skills/health-check',
+      '.codex/skills/repair-health',
+      '.codex/skills/undo-archive',
+      '.codex/skills/workflow-acceptance',
     ]);
     expect(result.createdFiles).toEqual([
       KNOWLEDGE_WORKFLOW_AGENTS_PATH,
@@ -84,6 +87,9 @@ describe('KnowledgeWorkflowInitializer', () => {
       KNOWLEDGE_WORKFLOW_CONCEPT_INDEX_PATH,
       '.codex/skills/compile-source/SKILL.md',
       '.codex/skills/archive-source/SKILL.md',
+      '.codex/skills/repair-health/SKILL.md',
+      '.codex/skills/undo-archive/SKILL.md',
+      '.codex/skills/workflow-acceptance/SKILL.md',
       '.codex/skills/update-indexes/SKILL.md',
       '.codex/skills/save-qa/SKILL.md',
       '.codex/skills/health-check/SKILL.md',
@@ -103,6 +109,11 @@ describe('KnowledgeWorkflowInitializer', () => {
     expect(files['.codex/skills/compile-source/SKILL.md']).toContain('new/ folder');
     expect(files['.codex/skills/archive-source/SKILL.md']).toContain('name: archive-source');
     expect(files['.codex/skills/archive-source/SKILL.md']).toContain('raw/inbox');
+    expect(files['.codex/skills/archive-source/SKILL.md']).toContain('根据文档内容制定一个新的标题');
+    expect(files['.codex/skills/archive-source/SKILL.md']).toContain('如果目标文件已存在');
+    expect(files['.codex/skills/repair-health/SKILL.md']).toContain('name: repair-health');
+    expect(files['.codex/skills/undo-archive/SKILL.md']).toContain('name: undo-archive');
+    expect(files['.codex/skills/workflow-acceptance/SKILL.md']).toContain('name: workflow-acceptance');
   });
 
   it('does not overwrite existing user files or report existing folders as created', async () => {

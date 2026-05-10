@@ -1,6 +1,7 @@
 import type { App } from 'obsidian';
 import { Notice, PluginSettingTab, Setting } from 'obsidian';
 
+import { DEFAULT_KNOWLEDGE_WORKFLOW_SETTINGS } from '../../app/settings/defaultSettings';
 import {
   getHiddenProviderCommands,
   normalizeHiddenCommandList,
@@ -193,6 +194,72 @@ export class CodexidianSettingTab extends PluginSettingTab {
           .onClick(async () => {
             await this.plugin.initializeKnowledgeWorkflow();
           });
+      });
+
+    new Setting(container)
+      .setName('每批最大来源数')
+      .setDesc('编译新来源时单次最多处理多少个 new/ 文件。')
+      .addSlider((slider) => {
+        slider
+          .setLimits(1, 20, 1)
+          .setValue(this.plugin.settings.knowledgeWorkflow?.batchSize ?? DEFAULT_KNOWLEDGE_WORKFLOW_SETTINGS.batchSize)
+          .setDynamicTooltip()
+          .onChange(async (value) => {
+            this.plugin.settings.knowledgeWorkflow = {
+              ...DEFAULT_KNOWLEDGE_WORKFLOW_SETTINGS,
+              ...this.plugin.settings.knowledgeWorkflow,
+              batchSize: value,
+            };
+            await this.plugin.saveSettings();
+          });
+      });
+
+    new Setting(container)
+      .setName('摘要模板')
+      .setDesc('编译 new/ 来源时生成 wiki/summaries/S-xxx 的默认结构。')
+      .addTextArea((text) => {
+        text
+          .setValue(this.getKnowledgeWorkflowSetting('summaryTemplate'))
+          .onChange(async (value) => {
+            await this.updateKnowledgeWorkflowSetting('summaryTemplate', value);
+          });
+        text.inputEl.rows = 8;
+      });
+
+    new Setting(container)
+      .setName('概念模板')
+      .setDesc('新建 wiki/concepts/C-xxx 时使用的默认结构。')
+      .addTextArea((text) => {
+        text
+          .setValue(this.getKnowledgeWorkflowSetting('conceptTemplate'))
+          .onChange(async (value) => {
+            await this.updateKnowledgeWorkflowSetting('conceptTemplate', value);
+          });
+        text.inputEl.rows = 8;
+      });
+
+    new Setting(container)
+      .setName('归档分类规则')
+      .setDesc('控制 new/ 来源编译后如何重命名并归档到 raw/。')
+      .addTextArea((text) => {
+        text
+          .setValue(this.getKnowledgeWorkflowSetting('archiveRules'))
+          .onChange(async (value) => {
+            await this.updateKnowledgeWorkflowSetting('archiveRules', value);
+          });
+        text.inputEl.rows = 8;
+      });
+
+    new Setting(container)
+      .setName('归档日志模板')
+      .setDesc('记录 new/ 到 raw/ 归档移动时使用的日志结构。')
+      .addTextArea((text) => {
+        text
+          .setValue(this.getKnowledgeWorkflowSetting('archiveLogTemplate'))
+          .onChange(async (value) => {
+            await this.updateKnowledgeWorkflowSetting('archiveLogTemplate', value);
+          });
+        text.inputEl.rows = 5;
       });
 
     // --- Display ---
@@ -478,6 +545,25 @@ export class CodexidianSettingTab extends PluginSettingTab {
       placeholder: 'PATH=/opt/homebrew/bin:/usr/local/bin\nHTTPS_PROXY=http://proxy.example.com:8080\nSSL_CERT_FILE=/path/to/cert.pem',
       renderCustomContextLimits: (target) => this.renderCustomContextLimits(target),
     });
+  }
+
+  private getKnowledgeWorkflowSetting(
+    key: 'summaryTemplate' | 'conceptTemplate' | 'archiveRules' | 'archiveLogTemplate',
+  ): string {
+    return this.plugin.settings.knowledgeWorkflow?.[key]
+      ?? DEFAULT_KNOWLEDGE_WORKFLOW_SETTINGS[key];
+  }
+
+  private async updateKnowledgeWorkflowSetting(
+    key: 'summaryTemplate' | 'conceptTemplate' | 'archiveRules' | 'archiveLogTemplate',
+    value: string,
+  ): Promise<void> {
+    this.plugin.settings.knowledgeWorkflow = {
+      ...DEFAULT_KNOWLEDGE_WORKFLOW_SETTINGS,
+      ...this.plugin.settings.knowledgeWorkflow,
+      [key]: value,
+    };
+    await this.plugin.saveSettings();
   }
 
   private renderHiddenProviderCommandSetting(

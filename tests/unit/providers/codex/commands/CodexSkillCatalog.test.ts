@@ -74,12 +74,15 @@ describe('CodexSkillCatalog', () => {
 
       const entries = await catalog.listDropdownEntries({ includeBuiltIns: false });
 
-      expect(entries).toHaveLength(5);
+      expect(entries).toHaveLength(8);
       expect(entries.some(e => e.name === 'compact')).toBe(false);
       expect(entries.map(e => e.name)).toEqual([
         'kb-compile-new',
         'kb-save-qa',
         'kb-health-check',
+        'kb-apply-health-fixes',
+        'kb-undo-last-archive',
+        'kb-acceptance-check',
         'my-skill',
         'home-skill',
       ]);
@@ -135,6 +138,9 @@ describe('CodexSkillCatalog', () => {
         'kb-compile-new',
         'kb-save-qa',
         'kb-health-check',
+        'kb-apply-health-fixes',
+        'kb-undo-last-archive',
+        'kb-acceptance-check',
         'enabled-skill',
       ]);
     });
@@ -151,6 +157,9 @@ describe('CodexSkillCatalog', () => {
         'kb-compile-new',
         'kb-save-qa',
         'kb-health-check',
+        'kb-apply-health-fixes',
+        'kb-undo-last-archive',
+        'kb-acceptance-check',
       ]);
       const compileEntry = entries.find(entry => entry.name === 'kb-compile-new');
       expect(compileEntry).toEqual(expect.objectContaining({

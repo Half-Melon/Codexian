@@ -51,11 +51,13 @@ On first load, Codexidian creates any missing knowledge-base scaffold files with
 - `wiki/indexes/All-Sources.md`
 - `wiki/indexes/All-Concepts.md`
 - `wiki/maps/LLM 个人知识库工作流.md`
-- `.codex/skills/compile-source`, `archive-source`, `update-indexes`, `save-qa`, and `health-check`
+- `.codex/skills/compile-source`, `archive-source`, `update-indexes`, `save-qa`, `health-check`, `repair-health`, `undo-archive`, and `workflow-acceptance`
 
 You can also run `Codexidian: 初始化知识库工作流` from the command palette or from Codexidian settings.
 
 Put new source files in the vault root `new/` folder, then click the left ribbon button `Codexidian: 编译新来源` or run the same command from the command palette. Codexidian compiles those sources into `wiki/summaries/`, updates concepts and indexes, archives successfully compiled originals into `raw/articles/`, `raw/posts/`, `raw/papers/`, `raw/transcripts/`, or `raw/inbox/`, and records the moves in `outputs/reports/YYYY-MM-DD-archive-log.md`.
+
+The workflow controls also include status review, health-check repair, archive undo, and end-to-end acceptance checks. Archive rules rename compiled files from their content with clearer titles, handle filename collisions without overwriting existing files, and keep source links aligned. Batch size, summary template, concept template, archive rules, and archive-log template are configurable in Codexidian settings.
 
 ## Storage
 
