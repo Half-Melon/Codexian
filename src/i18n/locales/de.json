@@ -1,0 +1,295 @@
+{
+  "common": {
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "delete": "Löschen",
+    "edit": "Bearbeiten",
+    "add": "Hinzufügen",
+    "remove": "Entfernen",
+    "clear": "Löschen",
+    "clearAll": "Alle löschen",
+    "loading": "Lädt",
+    "error": "Fehler",
+    "success": "Erfolg",
+    "warning": "Warnung",
+    "confirm": "Bestätigen",
+    "settings": "Einstellungen",
+    "advanced": "Erweitert",
+    "enabled": "Aktiviert",
+    "disabled": "Deaktiviert",
+    "platform": "Plattform",
+    "refresh": "Aktualisieren",
+    "rewind": "Zurückspulen"
+  },
+  "chat": {
+    "rewind": {
+      "confirmMessage": "Zu diesem Punkt zurückspulen? Dateiänderungen nach dieser Nachricht werden rückgängig gemacht. Das Zurückspulen betrifft keine manuell oder über Bash bearbeiteten Dateien.",
+      "confirmButton": "Zurückspulen",
+      "ariaLabel": "Hierher zurückspulen",
+      "notice": "Zurückgespult: {count} Datei(en) wiederhergestellt",
+      "noticeSaveFailed": "Zurückgespult: {count} Datei(en) wiederhergestellt, aber Status konnte nicht gespeichert werden: {error}",
+      "failed": "Zurückspulen fehlgeschlagen: {error}",
+      "cannot": "Zurückspulen nicht möglich: {error}",
+      "unavailableStreaming": "Zurückspulen während des Streamings nicht möglich",
+      "unavailableNoUuid": "Zurückspulen nicht möglich: Nachrichtenkennungen fehlen"
+    },
+    "fork": {
+      "ariaLabel": "Konversation verzweigen",
+      "chooseTarget": "Konversation verzweigen",
+      "targetNewTab": "Neuer Tab",
+      "targetCurrentTab": "Aktueller Tab",
+      "maxTabsReached": "Verzweigung nicht möglich: maximal {count} Tabs erreicht",
+      "notice": "In neuem Tab verzweigt",
+      "noticeCurrentTab": "Im aktuellen Tab verzweigt",
+      "failed": "Verzweigung fehlgeschlagen: {error}",
+      "unavailableStreaming": "Verzweigung während des Streamings nicht möglich",
+      "unavailableNoUuid": "Verzweigung nicht möglich: Nachrichtenkennungen fehlen",
+      "unavailableNoResponse": "Verzweigung nicht möglich: keine Antwort zum Verzweigen vorhanden",
+      "errorMessageNotFound": "Nachricht nicht gefunden",
+      "errorNoSession": "Keine Sitzungs-ID verfügbar",
+      "errorNoActiveTab": "Kein aktiver Tab",
+      "commandNoMessages": "Verzweigung nicht möglich: keine Nachrichten in der Konversation",
+      "commandNoAssistantUuid": "Verzweigung nicht möglich: keine Assistentenantwort mit Kennungen"
+    },
+    "bangBash": {
+      "placeholder": "> Einen Bash-Befehl ausführen...",
+      "commandPanel": "Befehlspanel",
+      "copyAriaLabel": "Neueste Befehlsausgabe kopieren",
+      "clearAriaLabel": "Bash-Ausgabe löschen",
+      "commandLabel": "{command}",
+      "statusLabel": "Status des Befehls: {status}",
+      "collapseOutput": "Befehlsausgabe einklappen",
+      "expandOutput": "Befehlsausgabe ausklappen",
+      "running": "Wird ausgeführt...",
+      "copyFailed": "Kopieren in die Zwischenablage fehlgeschlagen"
+    }
+  },
+  "settings": {
+    "title": "Codexidian Einstellungen",
+    "tabs": {
+      "general": "Allgemein",
+      "codex": "Codex"
+    },
+    "display": "Anzeige",
+    "conversations": "Unterhaltungen",
+    "content": "Inhalte",
+    "input": "Eingabe",
+    "setup": "Einrichtung",
+    "models": "Modelle",
+    "experimental": "Experimentell",
+    "userName": {
+      "name": "Wie soll Codexidian dich nennen?",
+      "desc": "Dein Name für personalisierte Begrüßungen (leer lassen für allgemeine Begrüßungen)"
+    },
+    "excludedTags": {
+      "name": "Ausgeschlossene Tags",
+      "desc": "Notizen mit diesen Tags werden nicht automatisch als Kontext geladen (einer pro Zeile, ohne #)"
+    },
+    "mediaFolder": {
+      "name": "Medienordner",
+      "desc": "Folder containing attachments/images. When notes use ![[image.jpg]], Codex will look here. Leave empty for vault root."
+    },
+    "systemPrompt": {
+      "name": "Benutzerdefinierter System-Prompt",
+      "desc": "Zusätzliche Anweisungen, die an den Standard-System-Prompt angehängt werden"
+    },
+    "autoTitle": {
+      "name": "Konversationstitel automatisch generieren",
+      "desc": "Generiert automatisch Konversationstitel nach der ersten Nutzernachricht."
+    },
+    "titleModel": {
+      "name": "Titel-Generierungsmodell",
+      "desc": "Modell zur automatischen Generierung von Konversationstiteln.",
+      "auto": "Automatisch (Haiku)"
+    },
+    "navMappings": {
+      "name": "Vim-Style Navigationszuordnungen",
+      "desc": "Eine Zuordnung pro Zeile. Format: \"map <Taste> <Aktion>\" (Aktionen: scrollUp, scrollDown, focusInput)."
+    },
+    "hotkeys": "Tastenkürzel",
+    "inlineEditHotkey": {
+      "name": "Inline-Bearbeitung",
+      "descWithKey": "Aktuelles Tastenkürzel: {hotkey}",
+      "descNoKey": "Kein Tastenkürzel festgelegt",
+      "btnChange": "Ändern",
+      "btnSet": "Festlegen"
+    },
+    "openChatHotkey": {
+      "name": "Chat öffnen",
+      "descWithKey": "Aktuelles Tastenkürzel: {hotkey}",
+      "descNoKey": "Kein Tastenkürzel festgelegt",
+      "btnChange": "Ändern",
+      "btnSet": "Festlegen"
+    },
+    "newSessionHotkey": {
+      "name": "Neue Sitzung",
+      "descWithKey": "Aktuelles Tastenkürzel: {hotkey}",
+      "descNoKey": "Kein Tastenkürzel festgelegt",
+      "btnChange": "Ändern",
+      "btnSet": "Festlegen"
+    },
+    "newTabHotkey": {
+      "name": "Neuer Tab",
+      "descWithKey": "Aktuelles Tastenkürzel: {hotkey}",
+      "descNoKey": "Kein Tastenkürzel festgelegt",
+      "btnChange": "Ändern",
+      "btnSet": "Festlegen"
+    },
+    "closeTabHotkey": {
+      "name": "Tab schließen",
+      "descWithKey": "Aktuelles Tastenkürzel: {hotkey}",
+      "descNoKey": "Kein Tastenkürzel festgelegt",
+      "btnChange": "Ändern",
+      "btnSet": "Festlegen"
+    },
+    "slashCommands": {
+      "name": "Commands and Skills",
+      "desc": "Manage vault-level Codex skills stored in .codex/skills/ and .agents/skills/. Triggered by $name."
+    },
+    "hiddenSlashCommands": {
+      "name": "Hidden Commands and Skills",
+      "desc": "Hide specific commands and skills from the dropdown. Enter names without the leading slash or dollar sign, one per line.",
+      "placeholder": "commit\nbuild\ntest"
+    },
+    "mcpServers": {
+      "name": "MCP Servers",
+      "desc": "Codex MCP servers are configured by the Codex CLI. Use codex mcp to manage them."
+    },
+    "plugins": {
+      "name": "Codex Plugins",
+      "desc": "Codexidian is Codex-only and does not manage third-party provider plugins."
+    },
+    "subagents": {
+      "name": "Sub-Agenten",
+      "desc": "Verwalte vaultweite Codex-Subagents in .codex/agents/. Jede TOML-Datei definiert einen eigenen Agenten.",
+      "noAgents": "Keine Sub-Agenten konfiguriert. Klicke auf +, um einen zu erstellen.",
+      "deleteConfirm": "Sub-Agent \"{name}\" löschen?",
+      "saveFailed": "Sub-Agent konnte nicht gespeichert werden: {message}",
+      "refreshFailed": "Sub-Agenten konnten nicht aktualisiert werden: {message}",
+      "deleteFailed": "Sub-Agent konnte nicht gelöscht werden: {message}",
+      "renameCleanupFailed": "Warnung: Alte Datei für \"{name}\" konnte nicht entfernt werden",
+      "created": "Sub-Agent \"{name}\" erstellt",
+      "updated": "Sub-Agent \"{name}\" aktualisiert",
+      "deleted": "Sub-Agent \"{name}\" gelöscht",
+      "duplicateName": "Ein Agent mit dem Namen \"{name}\" existiert bereits",
+      "descriptionRequired": "Beschreibung ist erforderlich",
+      "promptRequired": "System-Prompt ist erforderlich",
+      "modal": {
+        "titleEdit": "Sub-Agent bearbeiten",
+        "titleAdd": "Sub-Agent hinzufügen",
+        "name": "Name",
+        "nameDesc": "Nur Kleinbuchstaben, Zahlen und Bindestriche",
+        "namePlaceholder": "code-reviewer",
+        "description": "Beschreibung",
+        "descriptionDesc": "Kurzbeschreibung dieses Agenten",
+        "descriptionPlaceholder": "Prüft Code auf Fehler und Stil",
+        "advancedOptions": "Erweiterte Optionen",
+        "model": "Modell",
+        "modelDesc": "Modellüberschreibung für diesen Agenten",
+        "tools": "Tools",
+        "toolsDesc": "Kommagetrennte Liste zulässiger Tools (leer = alle)",
+        "disallowedTools": "Nicht erlaubte Tools",
+        "disallowedToolsDesc": "Kommagetrennte Liste der zu verbietenden Tools",
+        "skills": "Fähigkeiten",
+        "skillsDesc": "Kommagetrennte Liste von Fähigkeiten",
+        "prompt": "System-Prompt",
+        "promptDesc": "Anweisungen für den Agenten",
+        "promptPlaceholder": "Du bist ein Code-Reviewer. Analysiere den angegebenen Code auf..."
+      }
+    },
+    "safety": "Sicherheit",
+    "loadUserSettings": {
+      "name": "Load user Codex settings",
+      "desc": "Codex reads its own CLI configuration. Codexidian keeps provider settings under this vault."
+    },
+    "codexSafeMode": {
+      "name": "Safe mode",
+      "desc": "Sandbox mode used when the Safe toggle is active."
+    },
+    "environment": "Umgebung",
+    "customVariables": {
+      "name": "Benutzerdefinierte Variablen",
+      "desc": "Environment variables for the active provider (KEY=VALUE format, one per line). Shell export prefix supported."
+    },
+    "envSnippets": {
+      "name": "Snippets",
+      "addBtn": "Snippet hinzufügen",
+      "noSnippets": "Keine gespeicherten Umgebungsvariablen-Snippets. Klicken Sie auf +, um Ihre aktuelle Konfiguration zu speichern.",
+      "nameRequired": "Bitte geben Sie einen Namen für das Snippet ein",
+      "modal": {
+        "titleEdit": "Snippet bearbeiten",
+        "titleSave": "Snippet speichern",
+        "name": "Name",
+        "namePlaceholder": "Ein beschreibender Name für diese Umgebungskonfiguration",
+        "description": "Beschreibung",
+        "descPlaceholder": "Optionale Beschreibung",
+        "envVars": "Umgebungsvariablen",
+        "envVarsPlaceholder": "KEY=VALUE-Format, eine pro Zeile (export-Präfix unterstützt)",
+        "save": "Speichern",
+        "update": "Aktualisieren",
+        "cancel": "Abbrechen"
+      }
+    },
+    "customContextLimits": {
+      "name": "Benutzerdefinierte Kontextlimits",
+      "desc": "Legen Sie die Kontextfenstergrößen für Ihre benutzerdefinierten Modelle fest. Leer lassen für den Standardwert (200k Token).",
+      "invalid": "Ungültiges Format. Verwenden Sie: 256k, 1m oder exakte Anzahl (1000-10000000)."
+    },
+    "customModels": {
+      "name": "Custom models",
+      "desc": "Append additional Codex model IDs to the picker, one per line. Environment model overrides still replace the picker.",
+      "placeholder": "gpt-5.4\ngpt-5.3-codex"
+    },
+    "enableChrome": {
+      "name": "Browser integration",
+      "desc": "Browser integration is provider-specific. Codexidian does not manage a separate Chrome extension here."
+    },
+    "enableBangBash": {
+      "name": "Bash-Modus (!) aktivieren",
+      "desc": "Gib ! in ein leeres Eingabefeld ein, um den Bash-Modus zu starten. Führt Befehle direkt über Node.js child_process aus. Die Ansicht muss neu geöffnet werden.",
+      "validation": {
+        "noNode": "Node.js wurde auf PATH nicht gefunden. Installiere Node.js oder prüfe deine PATH-Konfiguration."
+      }
+    },
+    "maxTabs": {
+      "name": "Maximale Chat-Tabs",
+      "desc": "Maximum number of chat tabs open simultaneously (3-10). Each tab uses a separate Codex session.",
+      "warning": "Mehr als 5 Tabs können Leistung und Speichernutzung beeinträchtigen."
+    },
+    "tabBarPosition": {
+      "name": "Tab-Leiste Position",
+      "desc": "Wählen Sie, wo Tab-Badges und Aktionsschaltflächen angezeigt werden",
+      "input": "Über Eingabefeld (Standard)",
+      "header": "In Kopfzeile"
+    },
+    "enableAutoScroll": {
+      "name": "Automatisches Scrollen während Streaming",
+      "desc": "Automatically scroll down while Codex streams responses. Disable to stay at the top and read from the beginning."
+    },
+    "deferMathRenderingDuringStreaming": {
+      "name": "Mathe-Rendering während Streaming aufschieben",
+      "desc": "LaTeX während des Streamings roh anzeigen und Mathematik einmal rendern, wenn der Textblock abgeschlossen ist."
+    },
+    "chatViewPlacement": {
+      "name": "Codexidian öffnen in",
+      "desc": "Wählen Sie, wo das Chat-Panel beim Erstellen geöffnet wird",
+      "rightSidebar": "Rechte Seitenleiste",
+      "leftSidebar": "Linke Seitenleiste",
+      "mainTab": "Haupteditor-Tab"
+    },
+    "cliPath": {
+      "name": "Codex CLI path",
+      "desc": "Custom path to Codex CLI. Leave empty for auto-detection.",
+      "descWindows": "For native Windows, use codex.exe. For WSL, use a Linux command or Linux absolute path inside the selected distro.",
+      "descUnix": "Paste the output of \"which codex\", or leave empty for PATH lookup.",
+      "validation": {
+        "notExist": "Pfad existiert nicht",
+        "isDirectory": "Pfad ist ein Verzeichnis, keine Datei"
+      }
+    },
+    "language": {
+      "name": "Sprache",
+      "desc": "Anzeigesprache der Plugin-Oberfläche ändern"
+    }
+  }
+}

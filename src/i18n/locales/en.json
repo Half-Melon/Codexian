@@ -1,0 +1,295 @@
+{
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "remove": "Remove",
+    "clear": "Clear",
+    "clearAll": "Clear all",
+    "loading": "Loading",
+    "error": "Error",
+    "success": "Success",
+    "warning": "Warning",
+    "confirm": "Confirm",
+    "settings": "Settings",
+    "advanced": "Advanced",
+    "enabled": "Enabled",
+    "disabled": "Disabled",
+    "platform": "Platform",
+    "refresh": "Refresh",
+    "rewind": "Rewind"
+  },
+  "chat": {
+    "rewind": {
+      "confirmMessage": "Rewind to this point? File changes after this message will be reverted. Rewinding does not affect files edited manually or via bash.",
+      "confirmButton": "Rewind",
+      "ariaLabel": "Rewind to here",
+      "notice": "Rewound: {count} file(s) reverted",
+      "noticeSaveFailed": "Rewound: {count} file(s) reverted, but failed to save state: {error}",
+      "failed": "Rewind failed: {error}",
+      "cannot": "Cannot rewind: {error}",
+      "unavailableStreaming": "Cannot rewind while streaming",
+      "unavailableNoUuid": "Cannot rewind: missing message identifiers"
+    },
+    "fork": {
+      "ariaLabel": "Fork conversation",
+      "chooseTarget": "Fork conversation",
+      "targetNewTab": "New tab",
+      "targetCurrentTab": "Current tab",
+      "maxTabsReached": "Cannot fork: maximum {count} tabs reached",
+      "notice": "Forked to new tab",
+      "noticeCurrentTab": "Forked in current tab",
+      "failed": "Fork failed: {error}",
+      "unavailableStreaming": "Cannot fork while streaming",
+      "unavailableNoUuid": "Cannot fork: missing message identifiers",
+      "unavailableNoResponse": "Cannot fork: no response to fork from",
+      "errorMessageNotFound": "Message not found",
+      "errorNoSession": "No session ID available",
+      "errorNoActiveTab": "No active tab",
+      "commandNoMessages": "Cannot fork: no messages in conversation",
+      "commandNoAssistantUuid": "Cannot fork: no assistant response with identifiers"
+    },
+    "bangBash": {
+      "placeholder": "> Run a bash command...",
+      "commandPanel": "Command panel",
+      "copyAriaLabel": "Copy latest command output",
+      "clearAriaLabel": "Clear bash output",
+      "commandLabel": "{command}",
+      "statusLabel": "Status: {status}",
+      "collapseOutput": "Collapse command output",
+      "expandOutput": "Expand command output",
+      "running": "Running...",
+      "copyFailed": "Failed to copy to clipboard"
+    }
+  },
+  "settings": {
+    "title": "Codexidian Settings",
+    "tabs": {
+      "general": "General",
+      "codex": "Codex"
+    },
+    "display": "Display",
+    "conversations": "Conversations",
+    "content": "Content",
+    "input": "Input",
+    "setup": "Setup",
+    "models": "Models",
+    "experimental": "Experimental",
+    "userName": {
+      "name": "What should Codexidian call you?",
+      "desc": "Your name for personalized greetings (leave empty for generic greetings)"
+    },
+    "excludedTags": {
+      "name": "Excluded tags",
+      "desc": "Notes with these tags will not auto-load as context (one per line, without #)"
+    },
+    "mediaFolder": {
+      "name": "Media folder",
+      "desc": "Folder containing attachments/images. When notes use ![[image.jpg]], Codex will look here. Leave empty for vault root."
+    },
+    "systemPrompt": {
+      "name": "Custom system prompt",
+      "desc": "Additional instructions appended to the default system prompt"
+    },
+    "autoTitle": {
+      "name": "Auto-generate conversation titles",
+      "desc": "Automatically generate conversation titles after the first user message is sent."
+    },
+    "titleModel": {
+      "name": "Title generation model",
+      "desc": "Model used for auto-generating conversation titles.",
+      "auto": "Auto"
+    },
+    "navMappings": {
+      "name": "Vim-style navigation mappings",
+      "desc": "One mapping per line. Format: \"map <key> <action>\" (actions: scrollUp, scrollDown, focusInput)."
+    },
+    "hotkeys": "Hotkeys",
+    "inlineEditHotkey": {
+      "name": "Inline Edit",
+      "descWithKey": "Current hotkey: {hotkey}",
+      "descNoKey": "No hotkey set",
+      "btnChange": "Change",
+      "btnSet": "Set hotkey"
+    },
+    "openChatHotkey": {
+      "name": "Open Chat",
+      "descWithKey": "Current hotkey: {hotkey}",
+      "descNoKey": "No hotkey set",
+      "btnChange": "Change",
+      "btnSet": "Set hotkey"
+    },
+    "newSessionHotkey": {
+      "name": "New Session",
+      "descWithKey": "Current hotkey: {hotkey}",
+      "descNoKey": "No hotkey set",
+      "btnChange": "Change",
+      "btnSet": "Set hotkey"
+    },
+    "newTabHotkey": {
+      "name": "New Tab",
+      "descWithKey": "Current hotkey: {hotkey}",
+      "descNoKey": "No hotkey set",
+      "btnChange": "Change",
+      "btnSet": "Set hotkey"
+    },
+    "closeTabHotkey": {
+      "name": "Close Tab",
+      "descWithKey": "Current hotkey: {hotkey}",
+      "descNoKey": "No hotkey set",
+      "btnChange": "Change",
+      "btnSet": "Set hotkey"
+    },
+    "slashCommands": {
+      "name": "Commands and Skills",
+      "desc": "Manage vault-level Codex skills stored in .codex/skills/ and .agents/skills/. Triggered by $name."
+    },
+    "hiddenSlashCommands": {
+      "name": "Hidden Commands and Skills",
+      "desc": "Hide specific commands and skills from the dropdown. Enter names without the leading slash or dollar sign, one per line.",
+      "placeholder": "commit\nbuild\ntest"
+    },
+    "mcpServers": {
+      "name": "MCP Servers",
+      "desc": "Codex MCP servers are configured by the Codex CLI. Use codex mcp to manage them."
+    },
+    "plugins": {
+      "name": "Codex Plugins",
+      "desc": "Codexidian is Codex-only and does not manage third-party provider plugins."
+    },
+    "subagents": {
+      "name": "Subagents",
+      "desc": "Manage vault-level Codex subagents stored in .codex/agents/. Each TOML file defines one custom agent.",
+      "noAgents": "No subagents configured. Click + to create one.",
+      "deleteConfirm": "Delete subagent \"{name}\"?",
+      "saveFailed": "Failed to save subagent: {message}",
+      "refreshFailed": "Failed to refresh subagents: {message}",
+      "deleteFailed": "Failed to delete subagent: {message}",
+      "renameCleanupFailed": "Warning: could not remove old file for \"{name}\"",
+      "created": "Subagent \"{name}\" created",
+      "updated": "Subagent \"{name}\" updated",
+      "deleted": "Subagent \"{name}\" deleted",
+      "duplicateName": "An agent named \"{name}\" already exists",
+      "descriptionRequired": "Description is required",
+      "promptRequired": "System prompt is required",
+      "modal": {
+        "titleEdit": "Edit Subagent",
+        "titleAdd": "Add Subagent",
+        "name": "Name",
+        "nameDesc": "Lowercase letters, numbers, and hyphens only",
+        "namePlaceholder": "code-reviewer",
+        "description": "Description",
+        "descriptionDesc": "Brief description of this agent",
+        "descriptionPlaceholder": "Reviews code for bugs and style",
+        "advancedOptions": "Advanced options",
+        "model": "Model",
+        "modelDesc": "Model override for this agent",
+        "tools": "Tools",
+        "toolsDesc": "Comma-separated list of allowed tools (empty = all)",
+        "disallowedTools": "Disallowed tools",
+        "disallowedToolsDesc": "Comma-separated list of tools to disallow",
+        "skills": "Skills",
+        "skillsDesc": "Comma-separated list of skills",
+        "prompt": "System prompt",
+        "promptDesc": "Instructions for the agent",
+        "promptPlaceholder": "You are a code reviewer. Analyze the given code for..."
+      }
+    },
+    "safety": "Safety",
+    "loadUserSettings": {
+      "name": "Load user Codex settings",
+      "desc": "Codex reads its own CLI configuration. Codexidian keeps provider settings under this vault."
+    },
+    "codexSafeMode": {
+      "name": "Safe mode",
+      "desc": "Sandbox mode used when the Safe toggle is active."
+    },
+    "environment": "Environment",
+    "customVariables": {
+      "name": "Custom variables",
+      "desc": "Environment variables for the active provider (KEY=VALUE format, one per line). Shell export prefix supported."
+    },
+    "envSnippets": {
+      "name": "Snippets",
+      "addBtn": "Add snippet",
+      "noSnippets": "No saved environment snippets yet. Click + to save your current environment configuration.",
+      "nameRequired": "Please enter a name for the snippet",
+      "modal": {
+        "titleEdit": "Edit snippet",
+        "titleSave": "Save snippet",
+        "name": "Name",
+        "namePlaceholder": "A descriptive name for this environment configuration",
+        "description": "Description",
+        "descPlaceholder": "Optional description",
+        "envVars": "Environment variables",
+        "envVarsPlaceholder": "KEY=VALUE format, one per line (export prefix supported)",
+        "save": "Save",
+        "update": "Update",
+        "cancel": "Cancel"
+      }
+    },
+    "customContextLimits": {
+      "name": "Custom Context Limits",
+      "desc": "Set context window sizes for your custom models. Leave empty to use the default (200k tokens).",
+      "invalid": "Invalid format. Use: 256k, 1m, or exact count (1000-10000000)."
+    },
+    "customModels": {
+      "name": "Custom models",
+      "desc": "Append additional Codex model IDs to the picker, one per line. Environment model overrides still replace the picker.",
+      "placeholder": "gpt-5.4\ngpt-5.3-codex"
+    },
+    "enableChrome": {
+      "name": "Browser integration",
+      "desc": "Browser integration is provider-specific. Codexidian does not manage a separate Chrome extension here."
+    },
+    "enableBangBash": {
+      "name": "Enable bash mode (!)",
+      "desc": "Type ! on empty input to enter bash mode. Runs commands directly via Node.js child_process. Requires view reopen.",
+      "validation": {
+        "noNode": "Node.js not found on PATH. Install Node.js or check your PATH configuration."
+      }
+    },
+    "maxTabs": {
+      "name": "Maximum chat tabs",
+      "desc": "Maximum number of chat tabs open simultaneously (3-10). Each tab uses a separate Codex session.",
+      "warning": "More than 5 tabs may impact performance and memory usage."
+    },
+    "tabBarPosition": {
+      "name": "Tab bar position",
+      "desc": "Choose where to display tab badges and action buttons",
+      "input": "Above input (default)",
+      "header": "In header"
+    },
+    "enableAutoScroll": {
+      "name": "Auto-scroll during streaming",
+      "desc": "Automatically scroll down while Codex streams responses. Disable to stay at the top and read from the beginning."
+    },
+    "deferMathRenderingDuringStreaming": {
+      "name": "Defer math rendering during streaming",
+      "desc": "Show raw LaTeX while responses stream, then render math once when each text block completes."
+    },
+    "chatViewPlacement": {
+      "name": "Open Codexidian in",
+      "desc": "Choose where the chat panel opens when it is created",
+      "rightSidebar": "Right sidebar",
+      "leftSidebar": "Left sidebar",
+      "mainTab": "Main editor tab"
+    },
+    "cliPath": {
+      "name": "Codex CLI path",
+      "desc": "Custom path to Codex CLI. Leave empty for auto-detection.",
+      "descWindows": "For native Windows, use codex.exe. For WSL, use a Linux command or Linux absolute path inside the selected distro.",
+      "descUnix": "Paste the output of \"which codex\", or leave empty for PATH lookup.",
+      "validation": {
+        "notExist": "Path does not exist",
+        "isDirectory": "Path is a directory, not a file"
+      }
+    },
+    "language": {
+      "name": "Language",
+      "desc": "Change the display language of the plugin interface"
+    }
+  }
+}

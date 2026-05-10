@@ -1,0 +1,88 @@
+.codexidian-thinking {
+  color: var(--codexidian-brand);
+  font-style: italic;
+  padding: 4px 0;
+  text-align: start;
+  animation: thinking-pulse 1.5s ease-in-out infinite;
+}
+
+.codexidian-thinking.codexidian-thinking--compact {
+  color: var(--codexidian-compact);
+}
+
+.codexidian-thinking-hint {
+  color: var(--text-muted);
+  font-style: normal;
+  font-variant-numeric: tabular-nums;
+}
+
+.codexidian-thinking-block {
+  margin: 8px 0;
+}
+
+.codexidian-text-block+.codexidian-thinking-block {
+  margin-top: 8px;
+}
+
+.codexidian-thinking-block+.codexidian-text-block {
+  margin-top: 8px;
+}
+
+.codexidian-thinking-block+.codexidian-tool-call {
+  margin-top: 8px;
+}
+
+.codexidian-tool-call+.codexidian-thinking-block {
+  margin-top: 8px;
+}
+
+.codexidian-thinking-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.codexidian-thinking-label {
+  flex: 1;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--codexidian-brand);
+}
+
+/* Thinking block content - tree-branch style */
+.codexidian-thinking-content {
+  padding: 4px 0;
+  padding-inline-start: 24px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-muted);
+  max-height: 400px;
+  overflow-y: auto;
+  border-inline-start: 2px solid var(--background-modifier-border);
+  margin-inline-start: 7px;
+}
+
+.codexidian-thinking-content p {
+  margin: 0 0 8px 0;
+}
+
+.codexidian-thinking-content p:last-child {
+  margin-bottom: 0;
+}
+
+.codexidian-thinking-content .codexidian-code-wrapper {
+  margin: 8px 0;
+}
+
+.codexidian-thinking-content .codexidian-code-wrapper pre {
+  padding: 8px 10px;
+  border-radius: 4px;
+}
+
+.codexidian-thinking-content code {
+  font-family: var(--font-monospace);
+  font-size: 12px;
+}

@@ -1,0 +1,40 @@
+/* Accessibility - Focus Visible Styles */
+
+/* outline + offset + border-radius */
+.codexidian-tool-header:focus-visible,
+.codexidian-thinking-header:focus-visible,
+.codexidian-subagent-header:focus-visible,
+.codexidian-header-btn:focus-visible,
+.codexidian-model-btn:focus-visible,
+.codexidian-thinking-current:focus-visible {
+  outline: 2px solid var(--interactive-accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* outline + offset only */
+.codexidian-action-btn:focus-visible,
+.codexidian-toggle-switch:focus-visible,
+.codexidian-file-chip:focus-visible,
+.codexidian-image-chip:focus-visible,
+.codexidian-file-chip-remove:focus-visible,
+.codexidian-image-remove:focus-visible,
+.codexidian-image-modal-close:focus-visible,
+.codexidian-approved-remove-btn:focus-visible,
+.codexidian-save-env-btn:focus-visible,
+.codexidian-restore-snippet-btn:focus-visible,
+.codexidian-edit-snippet-btn:focus-visible,
+.codexidian-delete-snippet-btn:focus-visible,
+.codexidian-cancel-btn:focus-visible,
+.codexidian-save-btn:focus-visible,
+.codexidian-code-lang-label:focus-visible {
+  outline: 2px solid var(--interactive-accent);
+  outline-offset: 2px;
+}
+
+/* outline + negative offset + border-radius */
+.codexidian-history-item-content:focus-visible {
+  outline: 2px solid var(--interactive-accent);
+  outline-offset: -2px;
+  border-radius: 4px;
+}

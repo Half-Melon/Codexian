@@ -1,0 +1,22 @@
+/* Clickable file links that open files in Obsidian */
+.codexidian-file-link {
+  color: var(--text-accent);
+  text-decoration: none;
+  cursor: pointer;
+  border-radius: 3px;
+  transition: color 0.15s ease;
+}
+
+.codexidian-file-link:hover {
+  color: var(--text-accent-hover);
+  text-decoration: underline;
+}
+
+/* File link inside inline code */
+code .codexidian-file-link {
+  color: var(--text-accent);
+}
+
+code .codexidian-file-link:hover {
+  color: var(--text-accent-hover);
+}

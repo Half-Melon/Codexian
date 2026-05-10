@@ -1,0 +1,179 @@
+/* @ Mention dropdown */
+.codexidian-mention-dropdown {
+  display: none;
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  right: 0;
+  margin-bottom: 4px;
+  background: var(--background-secondary);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 6px;
+  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+.codexidian-mention-dropdown.visible {
+  display: block;
+}
+
+/* Fixed positioning for inline editor */
+.codexidian-mention-dropdown-fixed {
+  position: fixed;
+  z-index: 10001;
+}
+
+.codexidian-mention-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: background 0.1s ease;
+}
+
+.codexidian-mention-item:hover,
+.codexidian-mention-item.selected {
+  background: var(--background-modifier-hover);
+}
+
+.codexidian-mention-icon {
+  display: flex;
+  align-items: center;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.codexidian-mention-icon svg {
+  width: 14px;
+  height: 14px;
+}
+
+.codexidian-mention-path {
+  font-size: 13px;
+  color: var(--text-normal);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.codexidian-mention-empty {
+  padding: 12px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+/* Scrollbar for mention dropdown */
+.codexidian-mention-dropdown::-webkit-scrollbar {
+  width: 6px;
+}
+
+.codexidian-mention-dropdown::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.codexidian-mention-dropdown::-webkit-scrollbar-thumb {
+  background: var(--background-modifier-border);
+  border-radius: 3px;
+}
+
+.codexidian-mention-item.vault-folder .codexidian-mention-icon {
+  color: var(--text-muted);
+}
+
+.codexidian-mention-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
+}
+
+.codexidian-mention-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--interactive-accent);
+}
+
+.codexidian-mention-desc {
+  font-size: 11px;
+  color: var(--text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Context file items in @-mention dropdown */
+.codexidian-mention-item.context-file .codexidian-mention-icon {
+  color: var(--codexidian-brand);
+}
+
+.codexidian-mention-item.context-file .codexidian-mention-text {
+  flex-direction: row;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.codexidian-mention-item.context-file .codexidian-mention-name-context {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+/* Context folder filter items in @-mention dropdown */
+.codexidian-mention-item.context-folder .codexidian-mention-icon {
+  color: var(--text-muted);
+}
+
+.codexidian-mention-name-folder {
+  color: var(--text-normal);
+  font-weight: 500;
+}
+
+.codexidian-mention-name-context {
+  color: var(--text-normal);
+}
+
+/* Agent folder items in @-mention dropdown */
+.codexidian-mention-item.agent-folder .codexidian-mention-icon {
+  color: var(--link-color);
+}
+
+.codexidian-mention-name-agent-folder {
+  color: var(--link-color);
+  font-weight: 600;
+}
+
+/* Agent items in @-mention dropdown (inside @Agents/) */
+.codexidian-mention-item.agent .codexidian-mention-icon {
+  color: var(--link-color);
+}
+
+.codexidian-mention-item.agent .codexidian-mention-text {
+  flex-direction: row;
+  align-items: baseline;
+  gap: 6px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.codexidian-mention-item.agent .codexidian-mention-name-agent {
+  color: var(--text-normal);
+  font-size: 13px;
+  flex-shrink: 0;
+}
+
+.codexidian-mention-item.agent .codexidian-mention-agent-desc {
+  font-size: 11px;
+  color: var(--text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}

@@ -1,0 +1,295 @@
+{
+  "common": {
+    "save": "保存",
+    "cancel": "キャンセル",
+    "delete": "削除",
+    "edit": "編集",
+    "add": "追加",
+    "remove": "削除",
+    "clear": "クリア",
+    "clearAll": "すべてクリア",
+    "loading": "読み込み中",
+    "error": "エラー",
+    "success": "成功",
+    "warning": "警告",
+    "confirm": "確認",
+    "settings": "設定",
+    "advanced": "詳細",
+    "enabled": "有効",
+    "disabled": "無効",
+    "platform": "プラットフォーム",
+    "refresh": "更新",
+    "rewind": "巻き戻し"
+  },
+  "chat": {
+    "rewind": {
+      "confirmMessage": "この時点に巻き戻しますか？このメッセージ以降のファイル変更が元に戻されます。手動またはbashで編集されたファイルには影響しません。",
+      "confirmButton": "巻き戻す",
+      "ariaLabel": "ここに巻き戻す",
+      "notice": "巻き戻し完了：{count} 個のファイルを復元",
+      "noticeSaveFailed": "巻き戻し完了：{count} 個のファイルを復元しましたが、状態を保存できませんでした：{error}",
+      "failed": "巻き戻しに失敗：{error}",
+      "cannot": "巻き戻しできません：{error}",
+      "unavailableStreaming": "ストリーミング中は巻き戻しできません",
+      "unavailableNoUuid": "巻き戻しできません：メッセージ識別子がありません"
+    },
+    "fork": {
+      "ariaLabel": "会話を分岐",
+      "chooseTarget": "会話を分岐",
+      "targetNewTab": "新しいタブ",
+      "targetCurrentTab": "現在のタブ",
+      "maxTabsReached": "分岐できません：最大 {count} タブに達しました",
+      "notice": "新しいタブに分岐しました",
+      "noticeCurrentTab": "現在のタブで分岐しました",
+      "failed": "分岐に失敗：{error}",
+      "unavailableStreaming": "ストリーミング中は分岐できません",
+      "unavailableNoUuid": "分岐できません：メッセージ識別子がありません",
+      "unavailableNoResponse": "分岐できません：分岐元の応答がありません",
+      "errorMessageNotFound": "メッセージが見つかりません",
+      "errorNoSession": "セッション ID がありません",
+      "errorNoActiveTab": "アクティブなタブがありません",
+      "commandNoMessages": "フォークできません: 会話にメッセージがありません",
+      "commandNoAssistantUuid": "フォークできません: 識別子付きのアシスタント応答がありません"
+    },
+    "bangBash": {
+      "placeholder": "> bash コマンドを実行...",
+      "commandPanel": "コマンドパネル",
+      "copyAriaLabel": "最新のコマンド出力をコピー",
+      "clearAriaLabel": "bash 出力をクリア",
+      "commandLabel": "{command}",
+      "statusLabel": "状態: {status}",
+      "collapseOutput": "コマンド出力を折りたたむ",
+      "expandOutput": "コマンド出力を展開",
+      "running": "実行中...",
+      "copyFailed": "クリップボードへのコピーに失敗しました"
+    }
+  },
+  "settings": {
+    "title": "Codexidian 設定",
+    "tabs": {
+      "general": "一般",
+      "codex": "Codex"
+    },
+    "display": "表示",
+    "conversations": "会話",
+    "content": "コンテンツ",
+    "input": "入力",
+    "setup": "セットアップ",
+    "models": "モデル",
+    "experimental": "実験的機能",
+    "userName": {
+      "name": "Codexidian はどのように呼びますか？",
+      "desc": "パーソナライズされた挨拶に使用する名前（空欄で一般の挨拶）"
+    },
+    "excludedTags": {
+      "name": "除外タグ",
+      "desc": "これらのタグを含むノートは自動的にコンテキストとして読み込まれません（1行に1つ、#なし）"
+    },
+    "mediaFolder": {
+      "name": "メディアフォルダ",
+      "desc": "Folder containing attachments/images. When notes use ![[image.jpg]], Codex will look here. Leave empty for vault root."
+    },
+    "systemPrompt": {
+      "name": "カスタムシステムプロンプト",
+      "desc": "デフォルトのシステムプロンプトに追加される追加指示"
+    },
+    "autoTitle": {
+      "name": "会話タイトルを自動生成",
+      "desc": "最初のユーザーメッセージ送信後に会話タイトルを自動的に生成します。"
+    },
+    "titleModel": {
+      "name": "タイトル生成モデル",
+      "desc": "会話タイトルを自動生成するために使用されるモデル。",
+      "auto": "自動 (Haiku)"
+    },
+    "navMappings": {
+      "name": "Vimスタイルナビゲーションマッピング",
+      "desc": "1行に1つのマッピング。形式：\"map <キー> <アクション>\"（アクション：scrollUp, scrollDown, focusInput）。"
+    },
+    "hotkeys": "ホットキー",
+    "inlineEditHotkey": {
+      "name": "インライン編集",
+      "descWithKey": "現在のホットキー: {hotkey}",
+      "descNoKey": "ホットキー未設定",
+      "btnChange": "変更",
+      "btnSet": "設定"
+    },
+    "openChatHotkey": {
+      "name": "チャットを開く",
+      "descWithKey": "現在のホットキー: {hotkey}",
+      "descNoKey": "ホットキー未設定",
+      "btnChange": "変更",
+      "btnSet": "設定"
+    },
+    "newSessionHotkey": {
+      "name": "新規セッション",
+      "descWithKey": "現在のホットキー: {hotkey}",
+      "descNoKey": "ホットキー未設定",
+      "btnChange": "変更",
+      "btnSet": "設定"
+    },
+    "newTabHotkey": {
+      "name": "新規タブ",
+      "descWithKey": "現在のホットキー: {hotkey}",
+      "descNoKey": "ホットキー未設定",
+      "btnChange": "変更",
+      "btnSet": "設定"
+    },
+    "closeTabHotkey": {
+      "name": "タブを閉じる",
+      "descWithKey": "現在のホットキー: {hotkey}",
+      "descNoKey": "ホットキー未設定",
+      "btnChange": "変更",
+      "btnSet": "設定"
+    },
+    "slashCommands": {
+      "name": "Commands and Skills",
+      "desc": "Manage vault-level Codex skills stored in .codex/skills/ and .agents/skills/. Triggered by $name."
+    },
+    "hiddenSlashCommands": {
+      "name": "Hidden Commands and Skills",
+      "desc": "Hide specific commands and skills from the dropdown. Enter names without the leading slash or dollar sign, one per line.",
+      "placeholder": "commit\nbuild\ntest"
+    },
+    "mcpServers": {
+      "name": "MCP Servers",
+      "desc": "Codex MCP servers are configured by the Codex CLI. Use codex mcp to manage them."
+    },
+    "plugins": {
+      "name": "Codex Plugins",
+      "desc": "Codexidian is Codex-only and does not manage third-party provider plugins."
+    },
+    "subagents": {
+      "name": "サブエージェント",
+      "desc": ".codex/agents/ に保存される保管庫単位の Codex サブエージェントを管理します。各 TOML ファイルが 1 つのカスタムエージェントを定義します。",
+      "noAgents": "サブエージェントが設定されていません。+ をクリックして作成してください。",
+      "deleteConfirm": "サブエージェント「{name}」を削除しますか？",
+      "saveFailed": "サブエージェントの保存に失敗しました: {message}",
+      "refreshFailed": "サブエージェントを更新できませんでした: {message}",
+      "deleteFailed": "サブエージェントの削除に失敗しました: {message}",
+      "renameCleanupFailed": "警告: 「{name}」の古いファイルを削除できませんでした",
+      "created": "サブエージェント「{name}」を作成しました",
+      "updated": "サブエージェント「{name}」を更新しました",
+      "deleted": "サブエージェント「{name}」を削除しました",
+      "duplicateName": "「{name}」という名前のエージェントは既に存在します",
+      "descriptionRequired": "説明は必須です",
+      "promptRequired": "システムプロンプトは必須です",
+      "modal": {
+        "titleEdit": "サブエージェントを編集",
+        "titleAdd": "サブエージェントを追加",
+        "name": "名前",
+        "nameDesc": "小文字、数字、ハイフンのみ使用できます",
+        "namePlaceholder": "code-reviewer",
+        "description": "説明",
+        "descriptionDesc": "このエージェントの簡単な説明",
+        "descriptionPlaceholder": "コードのバグやスタイルをレビューします",
+        "advancedOptions": "詳細オプション",
+        "model": "モデル",
+        "modelDesc": "このエージェントのモデル上書き",
+        "tools": "ツール",
+        "toolsDesc": "許可するツールのカンマ区切りリスト（空欄 = すべて）",
+        "disallowedTools": "禁止ツール",
+        "disallowedToolsDesc": "禁止するツールのカンマ区切りリスト",
+        "skills": "スキル",
+        "skillsDesc": "スキルのカンマ区切りリスト",
+        "prompt": "システムプロンプト",
+        "promptDesc": "エージェントへの指示",
+        "promptPlaceholder": "あなたはコードレビュアーです。与えられたコードを分析して..."
+      }
+    },
+    "safety": "セキュリティ",
+    "loadUserSettings": {
+      "name": "Load user Codex settings",
+      "desc": "Codex reads its own CLI configuration. Codexidian keeps provider settings under this vault."
+    },
+    "codexSafeMode": {
+      "name": "Safe mode",
+      "desc": "Sandbox mode used when the Safe toggle is active."
+    },
+    "environment": "環境",
+    "customVariables": {
+      "name": "カスタム変数",
+      "desc": "Environment variables for the active provider (KEY=VALUE format, one per line). Shell export prefix supported."
+    },
+    "envSnippets": {
+      "name": "スニペット",
+      "addBtn": "スニペットを追加",
+      "noSnippets": "保存された環境変数スニペットはありません。+をクリックして現在の設定を保存してください。",
+      "nameRequired": "スニペットの名前を入力してください",
+      "modal": {
+        "titleEdit": "スニペットを編集",
+        "titleSave": "スニペットを保存",
+        "name": "名前",
+        "namePlaceholder": "この設定のわかりやすい名前",
+        "description": "説明",
+        "descPlaceholder": "任意の説明",
+        "envVars": "環境変数",
+        "envVarsPlaceholder": "KEY=VALUE形式、1行に1つ（exportプレフィックス対応）",
+        "save": "保存",
+        "update": "更新",
+        "cancel": "キャンセル"
+      }
+    },
+    "customContextLimits": {
+      "name": "カスタムコンテキスト制限",
+      "desc": "カスタムモデルのコンテキストウィンドウサイズを設定します。デフォルト（200kトークン）を使用する場合は空欄のままにしてください。",
+      "invalid": "無効な形式です。使用：256k、1m、または正確な数値（1000-10000000）。"
+    },
+    "customModels": {
+      "name": "Custom models",
+      "desc": "Append additional Codex model IDs to the picker, one per line. Environment model overrides still replace the picker.",
+      "placeholder": "gpt-5.4\ngpt-5.3-codex"
+    },
+    "enableChrome": {
+      "name": "Browser integration",
+      "desc": "Browser integration is provider-specific. Codexidian does not manage a separate Chrome extension here."
+    },
+    "enableBangBash": {
+      "name": "bash モード (!) を有効化",
+      "desc": "入力欄が空の状態で ! を入力すると bash モードに入ります。Node.js の child_process 経由でコマンドを直接実行します。ビューの再オープンが必要です。",
+      "validation": {
+        "noNode": "PATH に Node.js が見つかりません。Node.js をインストールするか、PATH 設定を確認してください。"
+      }
+    },
+    "maxTabs": {
+      "name": "最大チャットタブ数",
+      "desc": "Maximum number of chat tabs open simultaneously (3-10). Each tab uses a separate Codex session.",
+      "warning": "5 タブを超えるとパフォーマンスやメモリ使用量に影響する可能性があります。"
+    },
+    "tabBarPosition": {
+      "name": "タブバーの位置",
+      "desc": "タブバッジとアクションボタンの表示位置を選択",
+      "input": "入力欄の上（デフォルト）",
+      "header": "ヘッダー内"
+    },
+    "enableAutoScroll": {
+      "name": "ストリーミング中の自動スクロール",
+      "desc": "Automatically scroll down while Codex streams responses. Disable to stay at the top and read from the beginning."
+    },
+    "deferMathRenderingDuringStreaming": {
+      "name": "ストリーミング中の数式レンダリングを遅延",
+      "desc": "応答のストリーミング中は生の LaTeX を表示し、各テキストブロックの完了時に一度だけ数式をレンダリングします。"
+    },
+    "chatViewPlacement": {
+      "name": "Codexidian を開く場所",
+      "desc": "チャットパネルを作成するときに開く場所を選択します",
+      "rightSidebar": "右サイドバー",
+      "leftSidebar": "左サイドバー",
+      "mainTab": "メインエディタタブ"
+    },
+    "cliPath": {
+      "name": "Codex CLI path",
+      "desc": "Custom path to Codex CLI. Leave empty for auto-detection.",
+      "descWindows": "For native Windows, use codex.exe. For WSL, use a Linux command or Linux absolute path inside the selected distro.",
+      "descUnix": "Paste the output of \"which codex\", or leave empty for PATH lookup.",
+      "validation": {
+        "notExist": "パスが存在しません",
+        "isDirectory": "パスはディレクトリでファイルではありません"
+      }
+    },
+    "language": {
+      "name": "言語",
+      "desc": "プラグインインターフェースの表示言語を変更"
+    }
+  }
+}
