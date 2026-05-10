@@ -182,7 +182,7 @@ Codex 本身是否访问网络，取决于用户的 Codex CLI 配置和账号。
 
 ## 作者
 
-Codexian 由 HalfMelon 创建并维护，项目在 Codexian 仓库中开发。
+Codexian 由 HalfMelon 创建并维护，项目地址：https://github.com/Half-Melon/Codexian。
 
 ## 致谢
 

@@ -182,7 +182,7 @@ The plugin can work with external context directories and local MCP tools when t
 
 ## Author
 
-Codexian is created and maintained by HalfMelon. The project is developed in the Codexian repository.
+Codexian is created and maintained by HalfMelon. The project is developed at https://github.com/Half-Melon/Codexian.
 
 ## Acknowledgements
 
