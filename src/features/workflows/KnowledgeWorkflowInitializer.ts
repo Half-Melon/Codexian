@@ -11,6 +11,8 @@ export interface KnowledgeWorkflowInitializationResult {
   createdFolders: string[];
 }
 
+const LEGACY_KNOWLEDGE_WORKFLOW_MAP_PATH = 'wiki/maps/LLM 个人知识库工作流.md';
+
 const KNOWLEDGE_WORKFLOW_FOLDERS = [
   'new',
   'raw',
@@ -65,7 +67,7 @@ const FILE_TEMPLATES: Record<string, string> = {
 - wiki/concepts/：可复用概念，命名为 C-001 概念名.md。
 - wiki/indexes/All-Sources.md：来源索引。
 - wiki/indexes/All-Concepts.md：概念索引。
-- wiki/maps/LLM 个人知识库工作流.md：工作流入口和运行说明。
+- wiki/maps/LLM Personal Knowledge Base Workflow.md：工作流入口和运行说明。
 - outputs/qa/：复杂问答落文件。
 - outputs/health/：知识库健康检查。
 
@@ -142,7 +144,7 @@ status: active
 不要删除用户文件，不要迁移 Clippings，不要做超出本次 new/ 已编译来源的批量重命名或目录迁移，除非用户明确确认。不要上来就搭 RAG；先使用轻量索引，等规模和检索需求证明必要后再升级。
 `,
 
-  [KNOWLEDGE_WORKFLOW_MAP_PATH]: `# LLM 个人知识库工作流
+  [KNOWLEDGE_WORKFLOW_MAP_PATH]: `# LLM Personal Knowledge Base Workflow
 
 这是 Codexidian 的知识库工作流入口。把新资料放入根目录 new/ 后，运行“Codexidian: 编译新来源”。
 
@@ -208,7 +210,7 @@ Use when the user asks to compile raw sources into the LLM knowledge base.
 
 Workflow:
 
-1. Read AGENTS.md and wiki/maps/LLM 个人知识库工作流.md.
+1. Read AGENTS.md and wiki/maps/LLM Personal Knowledge Base Workflow.md.
 2. Read all Markdown and readable text source files from the vault root new/ folder. If new/ is empty, report that there are no new sources and stop.
 3. Read each source directly.
 4. Create the next wiki/summaries/S-xxx file for each source.
@@ -365,8 +367,11 @@ Only produce a report. Put risky fixes under “需要用户确认的修改”.
 `,
 };
 
+type KnowledgeWorkflowInitializerAdapter = Pick<VaultFileAdapter, 'ensureFolder' | 'exists' | 'write'> &
+  Partial<Pick<VaultFileAdapter, 'rename'>>;
+
 export class KnowledgeWorkflowInitializer {
-  constructor(private adapter: Pick<VaultFileAdapter, 'ensureFolder' | 'exists' | 'write'>) {}
+  constructor(private adapter: KnowledgeWorkflowInitializerAdapter) {}
 
   async initialize(): Promise<KnowledgeWorkflowInitializationResult> {
     const createdFolders: string[] = [];
@@ -377,6 +382,14 @@ export class KnowledgeWorkflowInitializer {
         await this.adapter.ensureFolder(folder);
         createdFolders.push(folder);
       }
+    }
+
+    if (
+      !(await this.adapter.exists(KNOWLEDGE_WORKFLOW_MAP_PATH))
+      && await this.adapter.exists(LEGACY_KNOWLEDGE_WORKFLOW_MAP_PATH)
+      && this.adapter.rename
+    ) {
+      await this.adapter.rename(LEGACY_KNOWLEDGE_WORKFLOW_MAP_PATH, KNOWLEDGE_WORKFLOW_MAP_PATH);
     }
 
     for (const [path, content] of Object.entries(FILE_TEMPLATES)) {

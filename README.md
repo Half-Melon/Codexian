@@ -21,6 +21,7 @@ Codexidian connects that work to Codex inside the vault. The plugin keeps the in
 - Multi-tab conversations, conversation history, fork, resume, and compact.
 - Plan mode and permission controls through the shared toolbar.
 - Instruction mode with `#`.
+- English and Simplified Chinese interface. The default language follows Obsidian's language setting, and it can be overridden in Codexidian settings.
 - Codex CLI-managed MCP support. Configure servers with `codex mcp`.
 - Knowledge-base workflow controls from the ribbon and command palette:
   - Compile new sources from `new/`.
@@ -65,11 +66,11 @@ outputs/
 AGENTS.md
 wiki/indexes/All-Sources.md
 wiki/indexes/All-Concepts.md
-wiki/maps/LLM 个人知识库工作流.md
+wiki/maps/LLM Personal Knowledge Base Workflow.md
 .codex/skills/
 ```
 
-Put source files into the vault root `new/` folder, then click the ribbon action or run `Codexidian: 编译新来源` from the command palette. Codexidian sends Codex a workflow prompt that reads the new files, creates summaries, updates indexes and concepts, then archives the compiled originals into `raw/articles/`, `raw/posts/`, `raw/papers/`, `raw/transcripts/`, or `raw/inbox/`.
+Put source files into the vault root `new/` folder, then click the ribbon action or run `Codexidian: Compile new sources` from the command palette. Codexidian sends Codex a workflow prompt that reads the new files, creates summaries, updates indexes and concepts, then archives the compiled originals into `raw/articles/`, `raw/posts/`, `raw/papers/`, `raw/transcripts/`, or `raw/inbox/`.
 
 Compiled source files are renamed from their content with clearer, topic-specific titles. Filename collisions are handled without overwriting existing files, and archive moves are recorded in `outputs/reports/YYYY-MM-DD-archive-log.md`.
 
@@ -142,6 +143,7 @@ Codexidian stores plugin settings in:
 The settings page includes:
 
 - Codex CLI path.
+- Language: auto, English, or Simplified Chinese.
 - Provider and runtime options.
 - Knowledge-base initializer.
 - Compile batch size.

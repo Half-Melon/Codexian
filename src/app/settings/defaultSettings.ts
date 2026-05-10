@@ -96,7 +96,7 @@ export const DEFAULT_CODEXIDIAN_SETTINGS: CodexidianSettings = {
     focusInputKey: 'i',
   },
 
-  locale: 'en',
+  locale: 'auto',
 
   providerConfigs: getBuiltInProviderDefaultConfigs(),
 

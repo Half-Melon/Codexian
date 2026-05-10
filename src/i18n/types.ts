@@ -1,5 +1,7 @@
 export type Locale = 'en' | 'zh-CN' | 'zh-TW' | 'ja' | 'ko' | 'de' | 'fr' | 'es' | 'ru' | 'pt';
 
+export type UserLanguagePreference = 'auto' | 'en' | 'zh-CN';
+
 export type TranslationKey =
   // Common UI elements
   | 'common.save'
@@ -86,6 +88,21 @@ export type TranslationKey =
   | 'settings.titleModel.auto'
   | 'settings.navMappings.name'
   | 'settings.navMappings.desc'
+
+  // Settings - Knowledge Workflow
+  | 'settings.knowledgeWorkflow.initialize.name'
+  | 'settings.knowledgeWorkflow.initialize.desc'
+  | 'settings.knowledgeWorkflow.initialize.button'
+  | 'settings.knowledgeWorkflow.batchSize.name'
+  | 'settings.knowledgeWorkflow.batchSize.desc'
+  | 'settings.knowledgeWorkflow.summaryTemplate.name'
+  | 'settings.knowledgeWorkflow.summaryTemplate.desc'
+  | 'settings.knowledgeWorkflow.conceptTemplate.name'
+  | 'settings.knowledgeWorkflow.conceptTemplate.desc'
+  | 'settings.knowledgeWorkflow.archiveRules.name'
+  | 'settings.knowledgeWorkflow.archiveRules.desc'
+  | 'settings.knowledgeWorkflow.archiveLogTemplate.name'
+  | 'settings.knowledgeWorkflow.archiveLogTemplate.desc'
 
   // Settings - Hotkeys
   | 'settings.hotkeys'
@@ -231,4 +248,38 @@ export type TranslationKey =
 
   // Settings - Language
   | 'settings.language.name'
-  | 'settings.language.desc';
+  | 'settings.language.desc'
+
+  // Knowledge workflow UI
+  | 'knowledgeWorkflow.notReady'
+  | 'knowledgeWorkflow.status.title'
+  | 'knowledgeWorkflow.status.pendingNewSources'
+  | 'knowledgeWorkflow.status.latestArchiveLog'
+  | 'knowledgeWorkflow.status.latestHealthCheck'
+  | 'knowledgeWorkflow.status.none'
+  | 'knowledgeWorkflow.status.pendingSources'
+  | 'knowledgeWorkflow.status.moreFiles'
+  | 'knowledgeWorkflow.initialized.ready'
+  | 'knowledgeWorkflow.initialized.created'
+  | 'knowledgeWorkflow.initialized.failed'
+  | 'knowledgeWorkflow.commands.initialize.name'
+  | 'knowledgeWorkflow.commands.compileNewSources.name'
+  | 'knowledgeWorkflow.commands.compileNewSources.description'
+  | 'knowledgeWorkflow.commands.compileNewSources.notice'
+  | 'knowledgeWorkflow.commands.saveCurrentQa.name'
+  | 'knowledgeWorkflow.commands.saveCurrentQa.description'
+  | 'knowledgeWorkflow.commands.saveCurrentQa.notice'
+  | 'knowledgeWorkflow.commands.healthCheck.name'
+  | 'knowledgeWorkflow.commands.healthCheck.description'
+  | 'knowledgeWorkflow.commands.healthCheck.notice'
+  | 'knowledgeWorkflow.commands.applyHealthFixes.name'
+  | 'knowledgeWorkflow.commands.applyHealthFixes.description'
+  | 'knowledgeWorkflow.commands.applyHealthFixes.notice'
+  | 'knowledgeWorkflow.commands.undoLastArchive.name'
+  | 'knowledgeWorkflow.commands.undoLastArchive.description'
+  | 'knowledgeWorkflow.commands.undoLastArchive.notice'
+  | 'knowledgeWorkflow.commands.workflowAcceptance.name'
+  | 'knowledgeWorkflow.commands.workflowAcceptance.description'
+  | 'knowledgeWorkflow.commands.workflowAcceptance.notice'
+  | 'knowledgeWorkflow.commands.openStatus.name'
+  | 'knowledgeWorkflow.commands.openMap.name';

@@ -9,6 +9,9 @@ interface MockButtonComponent {
 }
 
 interface MockDropdownComponent {
+  options: Record<string, string>;
+  value: string;
+  onChangeCallback: ((value: string) => Promise<void> | void) | null;
   addOption: jest.MockedFunction<(value: string, label: string) => MockDropdownComponent>;
   setValue: jest.MockedFunction<(value: string) => MockDropdownComponent>;
   onChange: jest.MockedFunction<(callback: (value: string) => Promise<void> | void) => MockDropdownComponent>;
@@ -43,6 +46,7 @@ interface MockSettingEntry {
   desc: string;
   heading: boolean;
   buttons: MockButtonComponent[];
+  dropdowns: MockDropdownComponent[];
   textAreas: MockTextComponent[];
   sliders: MockSliderComponent[];
 }
@@ -100,9 +104,21 @@ function createButtonComponent(): MockButtonComponent {
 
 function createDropdownComponent(): MockDropdownComponent {
   const component = {} as MockDropdownComponent;
-  component.addOption = jest.fn((_value: string, _label: string) => component);
-  component.setValue = jest.fn((_value: string) => component);
-  component.onChange = jest.fn((_callback: (value: string) => Promise<void> | void) => component);
+  component.options = {};
+  component.value = '';
+  component.onChangeCallback = null;
+  component.addOption = jest.fn((value: string, label: string) => {
+    component.options[value] = label;
+    return component;
+  });
+  component.setValue = jest.fn((value: string) => {
+    component.value = value;
+    return component;
+  });
+  component.onChange = jest.fn((callback: (value: string) => Promise<void> | void) => {
+    component.onChangeCallback = callback;
+    return component;
+  });
   return component;
 }
 
@@ -173,6 +189,7 @@ jest.mock('obsidian', () => {
         desc: '',
         heading: false,
         buttons: [],
+        dropdowns: [],
         textAreas: [],
         sliders: [],
       };
@@ -202,7 +219,9 @@ jest.mock('obsidian', () => {
     }
 
     addDropdown(callback: (dropdown: MockDropdownComponent) => void) {
-      callback(createDropdownComponent());
+      const component = createDropdownComponent();
+      this.entry.dropdowns.push(component);
+      callback(component);
       return this;
     }
 
@@ -260,10 +279,32 @@ jest.mock('@/features/settings/ui/EnvironmentSettingsSection', () => ({
 }));
 
 jest.mock('@/i18n/i18n', () => ({
-  getAvailableLocales: jest.fn(() => ['en']),
-  getLocaleDisplayName: jest.fn(() => 'English'),
+  getUserLanguageOptions: jest.fn(() => [
+    { value: 'auto', label: 'Auto' },
+    { value: 'en', label: 'English' },
+    { value: 'zh-CN', label: '简体中文' },
+  ]),
+  resolveLocalePreference: jest.fn((preference: string, obsidianLocale?: string) => {
+    if (preference === 'en' || preference === 'zh-CN') return preference;
+    return obsidianLocale?.startsWith('zh') ? 'zh-CN' : 'en';
+  }),
   setLocale: (locale: string) => mockSetLocale(locale),
-  t: (key: string) => key,
+  t: (key: string) => ({
+    'settings.knowledgeWorkflow.initialize.name': '初始化知识库工作流',
+    'settings.knowledgeWorkflow.initialize.desc':
+      '创建缺失的 new/raw/wiki/outputs 目录、AGENTS.md、索引、工作流入口和 Codex Skills；不会覆盖已有文件。',
+    'settings.knowledgeWorkflow.initialize.button': '初始化',
+    'settings.knowledgeWorkflow.batchSize.name': '每批最大来源数',
+    'settings.knowledgeWorkflow.batchSize.desc': '编译新来源时单次最多处理多少个 new/ 文件。',
+    'settings.knowledgeWorkflow.summaryTemplate.name': '摘要模板',
+    'settings.knowledgeWorkflow.summaryTemplate.desc': '编译 new/ 来源时生成 wiki/summaries/S-xxx 的默认结构。',
+    'settings.knowledgeWorkflow.conceptTemplate.name': '概念模板',
+    'settings.knowledgeWorkflow.conceptTemplate.desc': '新建 wiki/concepts/C-xxx 时使用的默认结构。',
+    'settings.knowledgeWorkflow.archiveRules.name': '归档分类规则',
+    'settings.knowledgeWorkflow.archiveRules.desc': '控制 new/ 来源编译后如何重命名并归档到 raw/。',
+    'settings.knowledgeWorkflow.archiveLogTemplate.name': '归档日志模板',
+    'settings.knowledgeWorkflow.archiveLogTemplate.desc': '记录 new/ 到 raw/ 归档移动时使用的日志结构。',
+  }[key] ?? key),
 }));
 
 import { CodexidianSettingTab } from '@/features/settings/CodexidianSettings';
@@ -324,6 +365,30 @@ describe('CodexidianSettingTab', () => {
     await setting!.buttons[0].onClickCallback?.();
 
     expect(plugin.initializeKnowledgeWorkflow).toHaveBeenCalledTimes(1);
+  });
+
+  it('renders auto, English, and Simplified Chinese language choices', async () => {
+    const plugin = createPlugin();
+    plugin.settings.locale = 'auto';
+    const tab = new CodexidianSettingTab({ vault: { getConfig: jest.fn(() => 'zh-CN') } } as any, plugin as any);
+
+    tab.display();
+
+    const setting = createdSettings.find(entry => entry.name === 'settings.language.name');
+    expect(setting).toBeDefined();
+    expect(setting!.dropdowns[0].options).toEqual({
+      auto: 'Auto',
+      en: 'English',
+      'zh-CN': '简体中文',
+    });
+    expect(setting!.dropdowns[0].value).toBe('auto');
+    expect(mockSetLocale).toHaveBeenCalledWith('zh-CN');
+
+    await setting!.dropdowns[0].onChangeCallback?.('en');
+
+    expect(plugin.settings.locale).toBe('en');
+    expect(mockSetLocale).toHaveBeenCalledWith('en');
+    expect(plugin.saveSettings).toHaveBeenCalledTimes(1);
   });
 
   it('renders configurable knowledge workflow templates', async () => {

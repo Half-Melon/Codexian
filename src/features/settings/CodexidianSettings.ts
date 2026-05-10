@@ -10,8 +10,8 @@ import { ProviderRegistry } from '../../core/providers/ProviderRegistry';
 import { ProviderWorkspaceRegistry } from '../../core/providers/ProviderWorkspaceRegistry';
 import type { ProviderId } from '../../core/providers/types';
 import type { ChatViewPlacement } from '../../core/types/settings';
-import { getAvailableLocales, getLocaleDisplayName, setLocale, t } from '../../i18n/i18n';
-import type { Locale, TranslationKey } from '../../i18n/types';
+import { getUserLanguageOptions, resolveLocalePreference, setLocale, t } from '../../i18n/i18n';
+import type { TranslationKey, UserLanguagePreference } from '../../i18n/types';
 import type CodexidianPlugin from '../../main';
 import { formatContextLimit, parseContextLimit, parseEnvironmentVariables } from '../../utils/env';
 import { buildNavMappingText, parseNavMappings } from './keyboardNavigation';
@@ -82,6 +82,12 @@ function addHotkeySettingRow(
   item.addEventListener('click', () => openHotkeySettings(app));
 }
 
+function getObsidianLocale(app: App): string | undefined {
+  const vault = app.vault as { getConfig?: (key: string) => unknown } | undefined;
+  const locale = vault?.getConfig?.('locale');
+  return typeof locale === 'string' ? locale : undefined;
+}
+
 export class CodexidianSettingTab extends PluginSettingTab {
   plugin: CodexidianPlugin;
   private activeTab: SettingsTabId = 'general';
@@ -96,7 +102,7 @@ export class CodexidianSettingTab extends PluginSettingTab {
     containerEl.empty();
     containerEl.addClass('codexidian-settings');
 
-    setLocale(this.plugin.settings.locale as Locale);
+    setLocale(resolveLocalePreference(this.plugin.settings.locale, getObsidianLocale(this.app)));
 
     const providerTabs = ProviderRegistry.getRegisteredProviderIds();
     const tabIds: SettingsTabId[] = ['general', ...providerTabs];
@@ -163,19 +169,19 @@ export class CodexidianSettingTab extends PluginSettingTab {
       .setName(t('settings.language.name'))
       .setDesc(t('settings.language.desc'))
       .addDropdown((dropdown) => {
-        const locales = getAvailableLocales();
-        for (const locale of locales) {
-          dropdown.addOption(locale, getLocaleDisplayName(locale));
+        for (const option of getUserLanguageOptions()) {
+          dropdown.addOption(option.value, option.label);
         }
         dropdown
           .setValue(this.plugin.settings.locale)
           .onChange(async (value) => {
-            const locale = value as Locale;
+            const preference = value as UserLanguagePreference;
+            const locale = resolveLocalePreference(preference, getObsidianLocale(this.app));
             if (!setLocale(locale)) {
               dropdown.setValue(this.plugin.settings.locale);
               return;
             }
-            this.plugin.settings.locale = locale;
+            this.plugin.settings.locale = preference;
             await this.plugin.saveSettings();
             this.display();
           });
@@ -186,19 +192,19 @@ export class CodexidianSettingTab extends PluginSettingTab {
     new Setting(container).setName(t('settings.setup')).setHeading();
 
     new Setting(container)
-      .setName('初始化知识库工作流')
-      .setDesc('创建缺失的 new/raw/wiki/outputs 目录、AGENTS.md、索引、工作流入口和 Codex Skills；不会覆盖已有文件。')
+      .setName(t('settings.knowledgeWorkflow.initialize.name' as TranslationKey))
+      .setDesc(t('settings.knowledgeWorkflow.initialize.desc' as TranslationKey))
       .addButton((button) => {
         button
-          .setButtonText('初始化')
+          .setButtonText(t('settings.knowledgeWorkflow.initialize.button' as TranslationKey))
           .onClick(async () => {
             await this.plugin.initializeKnowledgeWorkflow();
           });
       });
 
     new Setting(container)
-      .setName('每批最大来源数')
-      .setDesc('编译新来源时单次最多处理多少个 new/ 文件。')
+      .setName(t('settings.knowledgeWorkflow.batchSize.name' as TranslationKey))
+      .setDesc(t('settings.knowledgeWorkflow.batchSize.desc' as TranslationKey))
       .addSlider((slider) => {
         slider
           .setLimits(1, 20, 1)
@@ -215,8 +221,8 @@ export class CodexidianSettingTab extends PluginSettingTab {
       });
 
     new Setting(container)
-      .setName('摘要模板')
-      .setDesc('编译 new/ 来源时生成 wiki/summaries/S-xxx 的默认结构。')
+      .setName(t('settings.knowledgeWorkflow.summaryTemplate.name' as TranslationKey))
+      .setDesc(t('settings.knowledgeWorkflow.summaryTemplate.desc' as TranslationKey))
       .addTextArea((text) => {
         text
           .setValue(this.getKnowledgeWorkflowSetting('summaryTemplate'))
@@ -227,8 +233,8 @@ export class CodexidianSettingTab extends PluginSettingTab {
       });
 
     new Setting(container)
-      .setName('概念模板')
-      .setDesc('新建 wiki/concepts/C-xxx 时使用的默认结构。')
+      .setName(t('settings.knowledgeWorkflow.conceptTemplate.name' as TranslationKey))
+      .setDesc(t('settings.knowledgeWorkflow.conceptTemplate.desc' as TranslationKey))
       .addTextArea((text) => {
         text
           .setValue(this.getKnowledgeWorkflowSetting('conceptTemplate'))
@@ -239,8 +245,8 @@ export class CodexidianSettingTab extends PluginSettingTab {
       });
 
     new Setting(container)
-      .setName('归档分类规则')
-      .setDesc('控制 new/ 来源编译后如何重命名并归档到 raw/。')
+      .setName(t('settings.knowledgeWorkflow.archiveRules.name' as TranslationKey))
+      .setDesc(t('settings.knowledgeWorkflow.archiveRules.desc' as TranslationKey))
       .addTextArea((text) => {
         text
           .setValue(this.getKnowledgeWorkflowSetting('archiveRules'))
@@ -251,8 +257,8 @@ export class CodexidianSettingTab extends PluginSettingTab {
       });
 
     new Setting(container)
-      .setName('归档日志模板')
-      .setDesc('记录 new/ 到 raw/ 归档移动时使用的日志结构。')
+      .setName(t('settings.knowledgeWorkflow.archiveLogTemplate.name' as TranslationKey))
+      .setDesc(t('settings.knowledgeWorkflow.archiveLogTemplate.desc' as TranslationKey))
       .addTextArea((text) => {
         text
           .setValue(this.getKnowledgeWorkflowSetting('archiveLogTemplate'))

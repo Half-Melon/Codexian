@@ -5,8 +5,13 @@ import {
   registerKnowledgeWorkflowCommands,
   registerKnowledgeWorkflowRibbonIcons,
 } from '@/features/workflows/knowledgeWorkflowCommands';
+import { setLocale } from '@/i18n/i18n';
 
 describe('knowledge workflow commands', () => {
+  beforeEach(() => {
+    setLocale('en');
+  });
+
   it('builds a compile prompt for new sources from the new folder', () => {
     const prompt = buildKnowledgeWorkflowPrompt('compile-new-sources');
 
@@ -104,7 +109,7 @@ describe('knowledge workflow commands', () => {
   });
 
   it('keeps the workflow map path stable for the Obsidian open command', () => {
-    expect(KNOWLEDGE_WORKFLOW_MAP_PATH).toBe('wiki/maps/LLM 个人知识库工作流.md');
+    expect(KNOWLEDGE_WORKFLOW_MAP_PATH).toBe('wiki/maps/LLM Personal Knowledge Base Workflow.md');
   });
 
   it('registers the Obsidian command palette actions', async () => {
@@ -133,15 +138,15 @@ describe('knowledge workflow commands', () => {
       'open-knowledge-workflow-map',
     ]);
     expect(commands.map(command => command.name)).toEqual([
-      '初始化知识库工作流',
-      '编译新来源',
-      '保存当前问答',
-      '运行知识库健康检查',
-      '应用健康检查建议',
-      '撤销上次归档',
-      '运行知识库工作流验收',
-      '查看知识库状态',
-      '打开知识库工作流入口',
+      'Initialize knowledge-base workflow',
+      'Compile new sources',
+      'Save current Q&A',
+      'Run knowledge-base health check',
+      'Apply health-check suggestions',
+      'Undo last archive',
+      'Run knowledge-base workflow acceptance check',
+      'View knowledge-base status',
+      'Open knowledge-base workflow map',
     ]);
 
     await commands[0].callback();
@@ -170,14 +175,14 @@ describe('knowledge workflow commands', () => {
     registerKnowledgeWorkflowRibbonIcons(host);
 
     expect(icons.map(item => item.title)).toEqual([
-      'Codexidian: 编译新来源',
-      'Codexidian: 保存当前问答',
-      'Codexidian: 运行知识库健康检查',
-      'Codexidian: 应用健康检查建议',
-      'Codexidian: 撤销上次归档',
-      'Codexidian: 运行知识库工作流验收',
-      'Codexidian: 查看知识库状态',
-      'Codexidian: 打开知识库工作流入口',
+      'Codexidian: Compile new sources',
+      'Codexidian: Save current Q&A',
+      'Codexidian: Run knowledge-base health check',
+      'Codexidian: Apply health-check suggestions',
+      'Codexidian: Undo last archive',
+      'Codexidian: Run knowledge-base workflow acceptance check',
+      'Codexidian: View knowledge-base status',
+      'Codexidian: Open knowledge-base workflow map',
     ]);
     expect(icons.map(item => item.icon)).toEqual([
       'file-plus-2',
@@ -198,5 +203,33 @@ describe('knowledge workflow commands', () => {
     expect(host.runKnowledgeWorkflow).toHaveBeenCalledWith('compile-new-sources');
     expect(host.openKnowledgeWorkflowStatus).toHaveBeenCalledTimes(1);
     expect(host.openKnowledgeWorkflowMap).toHaveBeenCalledTimes(1);
+  });
+
+  it('registers Chinese command names when the locale is Simplified Chinese', () => {
+    setLocale('zh-CN');
+    const commands: Array<{ id: string; name: string; callback: () => void | Promise<void> }> = [];
+    const host = {
+      addCommand: jest.fn((command) => {
+        commands.push(command);
+      }),
+      initializeKnowledgeWorkflow: jest.fn().mockResolvedValue(undefined),
+      runKnowledgeWorkflow: jest.fn().mockResolvedValue(undefined),
+      openKnowledgeWorkflowStatus: jest.fn().mockResolvedValue(undefined),
+      openKnowledgeWorkflowMap: jest.fn().mockResolvedValue(undefined),
+    };
+
+    registerKnowledgeWorkflowCommands(host);
+
+    expect(commands.map(command => command.name)).toEqual([
+      '初始化知识库工作流',
+      '编译新来源',
+      '保存当前问答',
+      '运行知识库健康检查',
+      '应用健康检查建议',
+      '撤销上次归档',
+      '运行知识库工作流验收',
+      '查看知识库状态',
+      '打开知识库工作流入口',
+    ]);
   });
 });

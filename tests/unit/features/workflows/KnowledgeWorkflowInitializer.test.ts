@@ -41,6 +41,11 @@ function createMockAdapter(existing: Record<string, string> = {}) {
         files[path] = content;
         markFolder(path.slice(0, path.lastIndexOf('/')));
       }),
+      rename: jest.fn(async (oldPath: string, newPath: string) => {
+        files[newPath] = files[oldPath];
+        delete files[oldPath];
+        markFolder(newPath.slice(0, newPath.lastIndexOf('/')));
+      }),
     },
   };
 }
@@ -100,6 +105,7 @@ describe('KnowledgeWorkflowInitializer', () => {
     expect(files[KNOWLEDGE_WORKFLOW_AGENTS_PATH]).toContain('new/ 是新来源暂存区');
     expect(files[KNOWLEDGE_WORKFLOW_AGENTS_PATH]).toContain('raw/ 是来源层');
     expect(files[KNOWLEDGE_WORKFLOW_AGENTS_PATH]).toContain('raw/inbox/');
+    expect(files[KNOWLEDGE_WORKFLOW_AGENTS_PATH]).toContain('wiki/maps/LLM Personal Knowledge Base Workflow.md');
     expect(files[KNOWLEDGE_WORKFLOW_AGENTS_PATH]).toContain('outputs/reports/YYYY-MM-DD-archive-log.md');
     expect(files[KNOWLEDGE_WORKFLOW_MAP_PATH]).toContain('new/ 使用说明');
     expect(files[KNOWLEDGE_WORKFLOW_MAP_PATH]).toContain('编译新来源');
@@ -128,6 +134,33 @@ describe('KnowledgeWorkflowInitializer', () => {
     expect(files[KNOWLEDGE_WORKFLOW_AGENTS_PATH]).toBe('custom agents');
     expect(files[KNOWLEDGE_WORKFLOW_MAP_PATH]).toBe('custom map');
     expect(result.createdFiles).not.toContain(KNOWLEDGE_WORKFLOW_AGENTS_PATH);
+    expect(result.createdFiles).not.toContain(KNOWLEDGE_WORKFLOW_MAP_PATH);
+  });
+
+  it('does not create the legacy Chinese workflow map path for new vaults', async () => {
+    const { adapter, files } = createMockAdapter();
+    const initializer = new KnowledgeWorkflowInitializer(adapter);
+
+    await initializer.initialize();
+
+    expect(files['wiki/maps/LLM 个人知识库工作流.md']).toBeUndefined();
+    expect(files[KNOWLEDGE_WORKFLOW_MAP_PATH]).toBeDefined();
+  });
+
+  it('renames the legacy Chinese workflow map to the English path when possible', async () => {
+    const { adapter, files } = createMockAdapter({
+      'wiki/maps/LLM 个人知识库工作流.md': 'legacy map',
+    });
+    const initializer = new KnowledgeWorkflowInitializer(adapter);
+
+    const result = await initializer.initialize();
+
+    expect(files['wiki/maps/LLM 个人知识库工作流.md']).toBeUndefined();
+    expect(files[KNOWLEDGE_WORKFLOW_MAP_PATH]).toBe('legacy map');
+    expect(adapter.rename).toHaveBeenCalledWith(
+      'wiki/maps/LLM 个人知识库工作流.md',
+      KNOWLEDGE_WORKFLOW_MAP_PATH,
+    );
     expect(result.createdFiles).not.toContain(KNOWLEDGE_WORKFLOW_MAP_PATH);
   });
 });

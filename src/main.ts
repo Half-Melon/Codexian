@@ -43,8 +43,7 @@ import {
 } from './features/workflows/knowledgeWorkflowCommands';
 import { KnowledgeWorkflowInitializer } from './features/workflows/KnowledgeWorkflowInitializer';
 import { KnowledgeWorkflowStatusService } from './features/workflows/KnowledgeWorkflowStatus';
-import { setLocale } from './i18n/i18n';
-import type { Locale } from './i18n/types';
+import { resolveLocalePreference, setLocale, t } from './i18n/i18n';
 import { buildCursorContext } from './utils/editor';
 import { getVaultPath } from './utils/path';
 
@@ -52,6 +51,17 @@ function isCodexidianView(value: unknown): value is CodexidianView {
   return !!value
     && typeof value === 'object'
     && typeof (value as { getTabManager?: unknown }).getTabManager === 'function';
+}
+
+function getObsidianLocale(app: unknown): string | undefined {
+  const vault = app && typeof app === 'object'
+    ? (app as { vault?: unknown }).vault
+    : undefined;
+  const getConfig = vault && typeof vault === 'object'
+    ? (vault as { getConfig?: (key: string) => unknown }).getConfig
+    : undefined;
+  const locale = getConfig?.call(vault, 'locale');
+  return typeof locale === 'string' ? locale : undefined;
 }
 
 export default class CodexidianPlugin extends Plugin {
@@ -285,7 +295,7 @@ export default class CodexidianPlugin extends Plugin {
     const tab = view?.getActiveTab();
     const inputController = tab?.controllers.inputController;
     if (!inputController) {
-      new Notice('Codexidian 还没准备好，请先打开聊天面板后再试一次。');
+      new Notice(t('knowledgeWorkflow.notReady'));
       return;
     }
 
@@ -299,24 +309,26 @@ export default class CodexidianPlugin extends Plugin {
     const statusService = new KnowledgeWorkflowStatusService(this.storage.getAdapter());
     const status = await statusService.getStatus();
     const lines = [
-      'Codexidian 知识库状态',
+      t('knowledgeWorkflow.status.title'),
       '',
-      `new/ 待编译来源：${status.pendingNewSourceCount}`,
+      `${t('knowledgeWorkflow.status.pendingNewSources')}：${status.pendingNewSourceCount}`,
       status.latestArchiveLog
-        ? `最近归档日志：${status.latestArchiveLog.path}`
-        : '最近归档日志：无',
+        ? `${t('knowledgeWorkflow.status.latestArchiveLog')}：${status.latestArchiveLog.path}`
+        : `${t('knowledgeWorkflow.status.latestArchiveLog')}：${t('knowledgeWorkflow.status.none')}`,
       status.latestHealthCheck
-        ? `最近健康检查：${status.latestHealthCheck.path}`
-        : '最近健康检查：无',
+        ? `${t('knowledgeWorkflow.status.latestHealthCheck')}：${status.latestHealthCheck.path}`
+        : `${t('knowledgeWorkflow.status.latestHealthCheck')}：${t('knowledgeWorkflow.status.none')}`,
     ];
 
     if (status.pendingNewSources.length > 0) {
-      lines.push('', '待编译来源：');
+      lines.push('', `${t('knowledgeWorkflow.status.pendingSources')}：`);
       for (const source of status.pendingNewSources.slice(0, 10)) {
         lines.push(`- ${source.path}`);
       }
       if (status.pendingNewSources.length > 10) {
-        lines.push(`- 以及 ${status.pendingNewSources.length - 10} 个更多文件`);
+        lines.push(`- ${t('knowledgeWorkflow.status.moreFiles', {
+          count: status.pendingNewSources.length - 10,
+        })}`);
       }
     }
 
@@ -341,15 +353,18 @@ export default class CodexidianPlugin extends Plugin {
       if (!options.silent) {
         const createdCount = result.createdFiles.length + result.createdFolders.length;
         const message = createdCount === 0
-          ? 'Codexidian 知识库工作流已就绪，没有需要新建的文件。'
-          : `Codexidian 知识库工作流已初始化：新建 ${result.createdFolders.length} 个目录、${result.createdFiles.length} 个文件。`;
+          ? t('knowledgeWorkflow.initialized.ready')
+          : t('knowledgeWorkflow.initialized.created', {
+            folders: result.createdFolders.length,
+            files: result.createdFiles.length,
+          });
         new Notice(message);
       }
     } catch (error) {
       console.error('Failed to initialize Codexidian knowledge workflow', error);
       if (!options.silent) {
         const message = error instanceof Error ? error.message : String(error);
-        new Notice(`Codexidian 知识库工作流初始化失败：${message}`);
+        new Notice(t('knowledgeWorkflow.initialized.failed', { message }));
       }
     }
   }
@@ -412,7 +427,7 @@ export default class CodexidianPlugin extends Plugin {
     }).sort(
       (a, b) => (b.lastResponseAt ?? b.updatedAt) - (a.lastResponseAt ?? a.updatedAt)
     );
-    setLocale(this.settings.locale as Locale);
+    setLocale(resolveLocalePreference(this.settings.locale, getObsidianLocale(this.app)));
 
     const backfilledConversations = this.backfillConversationResponseTimestamps();
 

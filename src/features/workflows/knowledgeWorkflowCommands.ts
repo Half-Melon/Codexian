@@ -1,9 +1,11 @@
 import { DEFAULT_KNOWLEDGE_WORKFLOW_SETTINGS } from '../../app/settings/defaultSettings';
 import type { ProviderCommandEntry } from '../../core/providers/commands/ProviderCommandEntry';
 import type { KnowledgeWorkflowSettings } from '../../core/types/settings';
+import { t } from '../../i18n/i18n';
+import type { TranslationKey } from '../../i18n/types';
 
 export const KNOWLEDGE_WORKFLOW_AGENTS_PATH = 'AGENTS.md';
-export const KNOWLEDGE_WORKFLOW_MAP_PATH = 'wiki/maps/LLM 个人知识库工作流.md';
+export const KNOWLEDGE_WORKFLOW_MAP_PATH = 'wiki/maps/LLM Personal Knowledge Base Workflow.md';
 export const KNOWLEDGE_WORKFLOW_SOURCE_INDEX_PATH = 'wiki/indexes/All-Sources.md';
 export const KNOWLEDGE_WORKFLOW_CONCEPT_INDEX_PATH = 'wiki/indexes/All-Concepts.md';
 
@@ -15,19 +17,28 @@ export type KnowledgeWorkflowKind =
   | 'undo-last-archive'
   | 'workflow-acceptance-check';
 
-interface KnowledgeWorkflowDefinition {
+interface KnowledgeWorkflowDefinitionSpec {
   kind: KnowledgeWorkflowKind;
   commandId: string;
-  commandName: string;
+  commandNameKey: TranslationKey;
   dropdownName: string;
-  description: string;
+  descriptionKey: TranslationKey;
   ribbonIcon: string;
-  notice: string;
+  noticeKey: TranslationKey;
   buildPrompt: (options: KnowledgeWorkflowSettings) => string;
 }
 
+interface KnowledgeWorkflowDefinition extends Omit<
+  KnowledgeWorkflowDefinitionSpec,
+  'commandNameKey' | 'descriptionKey' | 'noticeKey'
+> {
+  commandName: string;
+  description: string;
+  notice: string;
+}
+
 const COMMON_CONTEXT = [
-  '请先读取 AGENTS.md、wiki/maps/LLM 个人知识库工作流.md、wiki/indexes/All-Sources.md 和 wiki/indexes/All-Concepts.md。',
+  `请先读取 AGENTS.md、${KNOWLEDGE_WORKFLOW_MAP_PATH}、wiki/indexes/All-Sources.md 和 wiki/indexes/All-Concepts.md。`,
   '遵守 vault 里的边界：new/ 是新来源暂存区，raw/ 与 Clippings/ 是来源归档层，wiki/ 是可复用知识层，outputs/ 是运行输出层。',
 ].join('\n');
 
@@ -53,15 +64,15 @@ function buildWorkflowOptionsBlock(options: KnowledgeWorkflowSettings): string {
   ].join('\n\n');
 }
 
-const KNOWLEDGE_WORKFLOWS: Record<KnowledgeWorkflowKind, KnowledgeWorkflowDefinition> = {
+const KNOWLEDGE_WORKFLOWS: Record<KnowledgeWorkflowKind, KnowledgeWorkflowDefinitionSpec> = {
   'compile-new-sources': {
     kind: 'compile-new-sources',
     commandId: 'workflow-compile-new-sources',
-    commandName: '编译新来源',
+    commandNameKey: 'knowledgeWorkflow.commands.compileNewSources.name',
     dropdownName: 'kb-compile-new',
-    description: '编译根目录 new/ 文件夹里的新来源',
+    descriptionKey: 'knowledgeWorkflow.commands.compileNewSources.description',
     ribbonIcon: 'file-plus-2',
-    notice: '已发送：编译新来源',
+    noticeKey: 'knowledgeWorkflow.commands.compileNewSources.notice',
     buildPrompt: (options) => [
       '使用 compile-source、archive-source 和 update-indexes，编译新来源并归档已编译原文。',
       COMMON_CONTEXT,
@@ -80,11 +91,11 @@ const KNOWLEDGE_WORKFLOWS: Record<KnowledgeWorkflowKind, KnowledgeWorkflowDefini
   'save-current-qa': {
     kind: 'save-current-qa',
     commandId: 'workflow-save-current-qa',
-    commandName: '保存当前问答',
+    commandNameKey: 'knowledgeWorkflow.commands.saveCurrentQa.name',
     dropdownName: 'kb-save-qa',
-    description: '把当前对话中可复用的结论保存到 outputs/qa',
+    descriptionKey: 'knowledgeWorkflow.commands.saveCurrentQa.description',
     ribbonIcon: 'save',
-    notice: '已发送：保存当前问答',
+    noticeKey: 'knowledgeWorkflow.commands.saveCurrentQa.notice',
     buildPrompt: () => [
       '使用 save-qa，把当前这次对话中具有长期复用价值的结论保存到 outputs/qa。',
       COMMON_CONTEXT,
@@ -97,11 +108,11 @@ const KNOWLEDGE_WORKFLOWS: Record<KnowledgeWorkflowKind, KnowledgeWorkflowDefini
   'health-check': {
     kind: 'health-check',
     commandId: 'workflow-health-check',
-    commandName: '运行知识库健康检查',
+    commandNameKey: 'knowledgeWorkflow.commands.healthCheck.name',
     dropdownName: 'kb-health-check',
-    description: '生成一次知识库健康检查报告',
+    descriptionKey: 'knowledgeWorkflow.commands.healthCheck.description',
     ribbonIcon: 'activity',
-    notice: '已发送：运行知识库健康检查',
+    noticeKey: 'knowledgeWorkflow.commands.healthCheck.notice',
     buildPrompt: () => [
       '使用 health-check，运行一次知识库健康检查。',
       COMMON_CONTEXT,
@@ -114,11 +125,11 @@ const KNOWLEDGE_WORKFLOWS: Record<KnowledgeWorkflowKind, KnowledgeWorkflowDefini
   'apply-health-fixes': {
     kind: 'apply-health-fixes',
     commandId: 'workflow-apply-health-fixes',
-    commandName: '应用健康检查建议',
+    commandNameKey: 'knowledgeWorkflow.commands.applyHealthFixes.name',
     dropdownName: 'kb-apply-health-fixes',
-    description: '根据最近的健康检查报告执行低风险修复',
+    descriptionKey: 'knowledgeWorkflow.commands.applyHealthFixes.description',
     ribbonIcon: 'wrench',
-    notice: '已发送：应用健康检查建议',
+    noticeKey: 'knowledgeWorkflow.commands.applyHealthFixes.notice',
     buildPrompt: () => [
       '使用 repair-health，根据最近的 outputs/health 健康检查报告应用低风险修复。',
       COMMON_CONTEXT,
@@ -131,11 +142,11 @@ const KNOWLEDGE_WORKFLOWS: Record<KnowledgeWorkflowKind, KnowledgeWorkflowDefini
   'undo-last-archive': {
     kind: 'undo-last-archive',
     commandId: 'workflow-undo-last-archive',
-    commandName: '撤销上次归档',
+    commandNameKey: 'knowledgeWorkflow.commands.undoLastArchive.name',
     dropdownName: 'kb-undo-last-archive',
-    description: '根据最近的归档日志生成并执行撤销方案',
+    descriptionKey: 'knowledgeWorkflow.commands.undoLastArchive.description',
     ribbonIcon: 'undo-2',
-    notice: '已发送：撤销上次归档',
+    noticeKey: 'knowledgeWorkflow.commands.undoLastArchive.notice',
     buildPrompt: () => [
       '使用 undo-archive，根据最近的 outputs/reports/*archive-log.md 撤销上次归档。',
       COMMON_CONTEXT,
@@ -147,11 +158,11 @@ const KNOWLEDGE_WORKFLOWS: Record<KnowledgeWorkflowKind, KnowledgeWorkflowDefini
   'workflow-acceptance-check': {
     kind: 'workflow-acceptance-check',
     commandId: 'workflow-acceptance-check',
-    commandName: '运行知识库工作流验收',
+    commandNameKey: 'knowledgeWorkflow.commands.workflowAcceptance.name',
     dropdownName: 'kb-acceptance-check',
-    description: '对当前 vault 运行一次端到端知识库工作流验收',
+    descriptionKey: 'knowledgeWorkflow.commands.workflowAcceptance.description',
     ribbonIcon: 'check-check',
-    notice: '已发送：运行知识库工作流验收',
+    noticeKey: 'knowledgeWorkflow.commands.workflowAcceptance.notice',
     buildPrompt: () => [
       '使用 workflow-acceptance，运行一次端到端验收。',
       COMMON_CONTEXT,
@@ -162,8 +173,23 @@ const KNOWLEDGE_WORKFLOWS: Record<KnowledgeWorkflowKind, KnowledgeWorkflowDefini
   },
 };
 
+function localizeWorkflowDefinition(spec: KnowledgeWorkflowDefinitionSpec): KnowledgeWorkflowDefinition {
+  const {
+    commandNameKey,
+    descriptionKey,
+    noticeKey,
+    ...rest
+  } = spec;
+  return {
+    ...rest,
+    commandName: t(commandNameKey),
+    description: t(descriptionKey),
+    notice: t(noticeKey),
+  };
+}
+
 export function getKnowledgeWorkflowDefinitions(): KnowledgeWorkflowDefinition[] {
-  return Object.values(KNOWLEDGE_WORKFLOWS);
+  return Object.values(KNOWLEDGE_WORKFLOWS).map(localizeWorkflowDefinition);
 }
 
 export function buildKnowledgeWorkflowPrompt(
@@ -174,7 +200,7 @@ export function buildKnowledgeWorkflowPrompt(
 }
 
 export function getKnowledgeWorkflowDefinition(kind: KnowledgeWorkflowKind): KnowledgeWorkflowDefinition {
-  return KNOWLEDGE_WORKFLOWS[kind];
+  return localizeWorkflowDefinition(KNOWLEDGE_WORKFLOWS[kind]);
 }
 
 export function getKnowledgeWorkflowCommandEntries(): ProviderCommandEntry[] {
@@ -220,7 +246,7 @@ export interface KnowledgeWorkflowRibbonHost {
 export function registerKnowledgeWorkflowCommands(host: KnowledgeWorkflowCommandHost): void {
   host.addCommand({
     id: 'initialize-knowledge-workflow',
-    name: '初始化知识库工作流',
+    name: t('knowledgeWorkflow.commands.initialize.name'),
     callback: () => host.initializeKnowledgeWorkflow(),
   });
 
@@ -234,13 +260,13 @@ export function registerKnowledgeWorkflowCommands(host: KnowledgeWorkflowCommand
 
   host.addCommand({
     id: 'open-knowledge-workflow-status',
-    name: '查看知识库状态',
+    name: t('knowledgeWorkflow.commands.openStatus.name'),
     callback: () => host.openKnowledgeWorkflowStatus(),
   });
 
   host.addCommand({
     id: 'open-knowledge-workflow-map',
-    name: '打开知识库工作流入口',
+    name: t('knowledgeWorkflow.commands.openMap.name'),
     callback: () => host.openKnowledgeWorkflowMap(),
   });
 }
@@ -256,13 +282,13 @@ export function registerKnowledgeWorkflowRibbonIcons(host: KnowledgeWorkflowRibb
 
   host.addRibbonIcon(
     'list-checks',
-    'Codexidian: 查看知识库状态',
+    `Codexidian: ${t('knowledgeWorkflow.commands.openStatus.name')}`,
     () => host.openKnowledgeWorkflowStatus(),
   );
 
   host.addRibbonIcon(
     'map',
-    'Codexidian: 打开知识库工作流入口',
+    `Codexidian: ${t('knowledgeWorkflow.commands.openMap.name')}`,
     () => host.openKnowledgeWorkflowMap(),
   );
 }

@@ -290,6 +290,91 @@
     "language": {
       "name": "言語",
       "desc": "プラグインインターフェースの表示言語を変更"
+    },
+    "knowledgeWorkflow": {
+      "initialize": {
+        "name": "Initialize knowledge-base workflow",
+        "desc": "Create missing new/raw/wiki/outputs folders, AGENTS.md, indexes, workflow map, and Codex skills without overwriting existing files.",
+        "button": "Initialize"
+      },
+      "batchSize": {
+        "name": "Maximum sources per batch",
+        "desc": "Maximum number of files from new/ to process when compiling new sources."
+      },
+      "summaryTemplate": {
+        "name": "Summary template",
+        "desc": "Default structure for wiki/summaries/S-xxx files created from new/ sources."
+      },
+      "conceptTemplate": {
+        "name": "Concept template",
+        "desc": "Default structure for new wiki/concepts/C-xxx files."
+      },
+      "archiveRules": {
+        "name": "Archive classification rules",
+        "desc": "Controls how compiled new/ sources are renamed and archived into raw/."
+      },
+      "archiveLogTemplate": {
+        "name": "Archive log template",
+        "desc": "Log structure used when recording new/ to raw/ archive moves."
+      }
+    }
+  },
+  "knowledgeWorkflow": {
+    "notReady": "Codexidian is not ready yet. Open the chat panel and try again.",
+    "status": {
+      "title": "Codexidian knowledge-base status",
+      "pendingNewSources": "Pending new/ sources",
+      "latestArchiveLog": "Latest archive log",
+      "latestHealthCheck": "Latest health check",
+      "none": "None",
+      "pendingSources": "Pending sources",
+      "moreFiles": "{count} more file(s)"
+    },
+    "initialized": {
+      "ready": "Codexidian knowledge-base workflow is ready. No new files were needed.",
+      "created": "Codexidian knowledge-base workflow initialized: created {folders} folder(s) and {files} file(s).",
+      "failed": "Failed to initialize Codexidian knowledge-base workflow: {message}"
+    },
+    "commands": {
+      "initialize": {
+        "name": "Initialize knowledge-base workflow"
+      },
+      "compileNewSources": {
+        "name": "Compile new sources",
+        "description": "Compile new sources from the vault root new/ folder",
+        "notice": "Sent: compile new sources"
+      },
+      "saveCurrentQa": {
+        "name": "Save current Q&A",
+        "description": "Save reusable conclusions from the current conversation to outputs/qa",
+        "notice": "Sent: save current Q&A"
+      },
+      "healthCheck": {
+        "name": "Run knowledge-base health check",
+        "description": "Generate a knowledge-base health report",
+        "notice": "Sent: run knowledge-base health check"
+      },
+      "applyHealthFixes": {
+        "name": "Apply health-check suggestions",
+        "description": "Apply low-risk fixes from the latest health-check report",
+        "notice": "Sent: apply health-check suggestions"
+      },
+      "undoLastArchive": {
+        "name": "Undo last archive",
+        "description": "Build and run an undo plan from the latest archive log",
+        "notice": "Sent: undo last archive"
+      },
+      "workflowAcceptance": {
+        "name": "Run knowledge-base workflow acceptance check",
+        "description": "Run an end-to-end acceptance check for the current vault knowledge workflow",
+        "notice": "Sent: run knowledge-base workflow acceptance check"
+      },
+      "openStatus": {
+        "name": "View knowledge-base status"
+      },
+      "openMap": {
+        "name": "Open knowledge-base workflow map"
+      }
     }
   }
 }

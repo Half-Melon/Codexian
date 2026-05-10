@@ -2,6 +2,8 @@ import {
   getAvailableLocales,
   getLocale,
   getLocaleDisplayName,
+  getUserLanguageOptions,
+  resolveLocalePreference,
   setLocale,
   t,
 } from '@/i18n/i18n';
@@ -134,6 +136,43 @@ describe('i18n', () => {
     it('returns exactly 10 locales', () => {
       const locales = getAvailableLocales();
       expect(locales).toHaveLength(10);
+    });
+  });
+
+  describe('resolveLocalePreference', () => {
+    it('keeps an explicit English preference', () => {
+      expect(resolveLocalePreference('en', 'zh-CN')).toBe('en');
+    });
+
+    it('keeps an explicit Simplified Chinese preference', () => {
+      expect(resolveLocalePreference('zh-CN', 'en')).toBe('zh-CN');
+    });
+
+    it('resolves auto to Simplified Chinese for Chinese Obsidian locales', () => {
+      expect(resolveLocalePreference('auto', 'zh')).toBe('zh-CN');
+      expect(resolveLocalePreference('auto', 'zh-CN')).toBe('zh-CN');
+      expect(resolveLocalePreference('auto', 'zh-TW')).toBe('zh-CN');
+    });
+
+    it('resolves auto to English for non-Chinese or missing Obsidian locales', () => {
+      expect(resolveLocalePreference('auto', 'en')).toBe('en');
+      expect(resolveLocalePreference('auto', 'ja')).toBe('en');
+      expect(resolveLocalePreference('auto', undefined)).toBe('en');
+    });
+
+    it('treats unknown saved preferences as auto', () => {
+      expect(resolveLocalePreference('de', 'zh-CN')).toBe('zh-CN');
+      expect(resolveLocalePreference('fr', 'en')).toBe('en');
+    });
+  });
+
+  describe('getUserLanguageOptions', () => {
+    it('exposes only auto, English, and Simplified Chinese to users', () => {
+      expect(getUserLanguageOptions()).toEqual([
+        { value: 'auto', label: 'Auto' },
+        { value: 'en', label: 'English' },
+        { value: 'zh-CN', label: '简体中文' },
+      ]);
     });
   });
 

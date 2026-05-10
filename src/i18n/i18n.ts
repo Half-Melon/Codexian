@@ -15,7 +15,7 @@ import * as pt from './locales/pt.json';
 import * as ru from './locales/ru.json';
 import * as zhCN from './locales/zh-CN.json';
 import * as zhTW from './locales/zh-TW.json';
-import type { Locale, TranslationKey } from './types';
+import type { Locale, TranslationKey, UserLanguagePreference } from './types';
 
 const translations: Record<Locale, typeof en> = {
   en,
@@ -32,6 +32,36 @@ const translations: Record<Locale, typeof en> = {
 
 const DEFAULT_LOCALE: Locale = 'en';
 let currentLocale: Locale = DEFAULT_LOCALE;
+
+const USER_LANGUAGE_OPTIONS: Array<{ value: UserLanguagePreference; label: string }> = [
+  { value: 'auto', label: 'Auto' },
+  { value: 'en', label: 'English' },
+  { value: 'zh-CN', label: '简体中文' },
+];
+
+export function isUserLanguagePreference(value: unknown): value is UserLanguagePreference {
+  return value === 'auto' || value === 'en' || value === 'zh-CN';
+}
+
+export function normalizeLanguagePreference(value: unknown): UserLanguagePreference {
+  return isUserLanguagePreference(value) ? value : 'auto';
+}
+
+export function resolveLocalePreference(
+  preference: unknown,
+  obsidianLocale?: string,
+): Locale {
+  const normalized = normalizeLanguagePreference(preference);
+  if (normalized === 'en' || normalized === 'zh-CN') {
+    return normalized;
+  }
+
+  return obsidianLocale?.toLowerCase().startsWith('zh') ? 'zh-CN' : DEFAULT_LOCALE;
+}
+
+export function getUserLanguageOptions(): Array<{ value: UserLanguagePreference; label: string }> {
+  return [...USER_LANGUAGE_OPTIONS];
+}
 
 /**
  * Get a translation by key with optional parameters
@@ -136,4 +166,3 @@ export function getLocaleDisplayName(locale: Locale): string {
   };
   return names[locale] || locale;
 }
-

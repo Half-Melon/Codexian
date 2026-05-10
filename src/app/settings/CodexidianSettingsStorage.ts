@@ -14,6 +14,7 @@ import {
   type EnvSnippet,
   type ProviderConfigMap,
 } from '../../core/types/settings';
+import { normalizeLanguagePreference } from '../../i18n/i18n';
 import {
   getCodexProviderSettings,
   updateCodexProviderSettings,
@@ -125,8 +126,10 @@ export class CodexidianSettingsStorage {
     const envSnippets = normalizeEnvSnippets(stored.envSnippets);
     const providerConfigs = normalizeProviderConfigs(stored.providerConfigs);
     const chatViewPlacement = normalizeChatViewPlacement(stored.chatViewPlacement);
+    const locale = normalizeLanguagePreference(stored.locale);
     const normalizedSettings = {
       ...stored,
+      locale,
       sharedEnvironmentVariables: getSharedEnvironmentVariables(stored),
       envSnippets,
       hiddenProviderCommands,
@@ -146,6 +149,7 @@ export class CodexidianSettingsStorage {
 
     if (
       stored.chatViewPlacement !== chatViewPlacement
+      || stored.locale !== locale
       || JSON.stringify(envSnippets) !== JSON.stringify(stored.envSnippets ?? [])
     ) {
       await this.save(merged);
