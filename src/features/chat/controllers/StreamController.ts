@@ -153,7 +153,7 @@ export class StreamController {
       }
 
       case 'tool_result': {
-        await this.handleToolResult(chunk, msg);
+        this.handleToolResult(chunk, msg);
         break;
       }
 
@@ -549,10 +549,10 @@ export class StreamController {
     return false;
   }
 
-  private async handleToolResult(
+  private handleToolResult(
     chunk: { type: 'tool_result'; id: string; content: string; isError?: boolean; toolUseResult?: SDKToolUseResult },
     msg: ChatMessage
-  ): Promise<void> {
+  ): void {
     const { state } = this.deps;
     const normalizedContent = this.normalizeToolResultContent(chunk.content);
 
@@ -623,9 +623,9 @@ export class StreamController {
   // Text Block Management
   // ============================================
 
-  async appendText(text: string): Promise<void> {
+  appendText(text: string): Promise<void> {
     const { state } = this.deps;
-    if (!state.currentContentEl) return;
+    if (!state.currentContentEl) return Promise.resolve();
 
     this.hideThinkingIndicator();
 
@@ -636,6 +636,7 @@ export class StreamController {
 
     state.currentTextContent += text;
     void this.scheduleCurrentTextRender();
+    return Promise.resolve();
   }
 
   async finalizeCurrentTextBlock(msg?: ChatMessage): Promise<void> {
@@ -771,9 +772,9 @@ export class StreamController {
   // Thinking Block Management
   // ============================================
 
-  async appendThinking(content: string): Promise<void> {
+  appendThinking(content: string): Promise<void> {
     const { state, renderer } = this.deps;
-    if (!state.currentContentEl) return;
+    if (!state.currentContentEl) return Promise.resolve();
 
     this.hideThinkingIndicator();
     if (!state.currentThinkingState) {
@@ -785,6 +786,7 @@ export class StreamController {
 
     state.currentThinkingState.content += content;
     void this.scheduleCurrentThinkingRender();
+    return Promise.resolve();
   }
 
   async finalizeCurrentThinkingBlock(msg?: ChatMessage): Promise<void> {

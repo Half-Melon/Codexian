@@ -764,8 +764,9 @@ export default class CodexianPlugin extends Plugin {
     const conversation = this.conversations.find(c => c.id === id);
     if (!conversation) return;
 
-    // providerId is immutable — strip it from updates to prevent accidental mutation
-    const { providerId: _, ...safeUpdates } = updates;
+    // providerId is immutable — copy only mutable fields to prevent accidental mutation.
+    const safeUpdates = { ...updates };
+    delete safeUpdates.providerId;
     Object.assign(conversation, safeUpdates, { updatedAt: Date.now() });
 
     await this.storage.sessions.saveMetadata(

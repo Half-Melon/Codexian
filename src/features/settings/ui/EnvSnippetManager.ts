@@ -290,7 +290,7 @@ export class EnvSnippetManager {
     }
   }
 
-  private async saveCurrentEnv() {
+  private saveCurrentEnv(): Promise<void> {
     const modal = new EnvSnippetModal(
       this.plugin.app,
       this.plugin,
@@ -304,6 +304,7 @@ export class EnvSnippetManager {
         }
     );
     modal.open();
+    return Promise.resolve();
   }
 
   private async insertSnippet(snippet: EnvSnippet) {

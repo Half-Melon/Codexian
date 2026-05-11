@@ -60,9 +60,9 @@ const staleBangBashDesc =
 
 const cjkPattern = /[\u3400-\u9fff]/;
 const staleEnglishZhPhrases = [
-  'Open in New Tab',
-  'Open in Background Tab',
-  'Switch to Open Session',
+  'Open in new tab',
+  'Open in background tab',
+  'Switch to open session',
   'Drop image here',
   'Conversation compacted',
   'Writing...',
@@ -123,7 +123,7 @@ describe('locale files', () => {
   });
 
   it('uses commands-and-skills copy for hidden Codex entries', () => {
-    expect(english['settings.hiddenSlashCommands.name']).toBe('Hidden Commands and Skills');
+    expect(english['settings.hiddenSlashCommands.name']).toBe('Hidden commands and skills');
     expect(english['settings.hiddenSlashCommands.desc']).toBe(
       'Hide specific commands and skills from the dropdown. Enter names without the leading slash or dollar sign, one per line.',
     );

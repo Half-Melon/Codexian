@@ -10,7 +10,7 @@
     "build": "node scripts/build.mjs production",
     "typecheck": "tsc --noEmit",
     "lint": "eslint \"{src,tests}/**/*.ts\"",
-    "lint:obsidian": "eslint -c eslint.obsidian.config.mjs \"src/**/*.ts\" package.json",
+    "lint:obsidian": "eslint -c eslint.obsidian.config.mjs \"src/**/*.ts\" \"src/i18n/locales/en.json\" package.json",
     "lint:fix": "npm run lint -- --fix",
     "test": "node scripts/run-jest.js",
     "test:watch": "node scripts/run-jest.js --watch",

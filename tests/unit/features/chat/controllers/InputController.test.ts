@@ -391,7 +391,7 @@ describe('InputController - Message Queue', () => {
       controller.updateQueueIndicator();
 
       const queueIndicatorEl = deps.state.queueIndicatorEl as any;
-      expect(queueIndicatorEl.querySelector('.codexian-queue-indicator-action')?.textContent).toBe('Steer Now');
+      expect(queueIndicatorEl.querySelector('.codexian-queue-indicator-action')?.textContent).toBe('Steer now');
     });
 
     it('should steer the queued Codex message when the action is clicked', async () => {

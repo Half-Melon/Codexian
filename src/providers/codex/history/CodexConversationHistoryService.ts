@@ -25,10 +25,15 @@ function readSessionTurns(sessionFilePath: string): CodexParsedTurn[] {
 export class CodexConversationHistoryService implements ProviderConversationHistoryService {
   private hydratedConversationPaths = new Map<string, string>();
 
-  async hydrateConversationHistory(
+  hydrateConversationHistory(
     conversation: Conversation,
     _vaultPath: string | null,
   ): Promise<void> {
+    this.hydrateConversationHistorySync(conversation);
+    return Promise.resolve();
+  }
+
+  private hydrateConversationHistorySync(conversation: Conversation): void {
     const state = getCodexState(conversation.providerState);
     const transcriptRootPath = state.transcriptRootPath
       ?? deriveCodexSessionsRootFromSessionPath(state.sessionFilePath);

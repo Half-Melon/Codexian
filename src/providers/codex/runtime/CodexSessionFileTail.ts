@@ -594,13 +594,13 @@ export class CodexFileTailEngine {
     return this._usageEmitted;
   }
 
-  async primeCursor(sessionId: string, sessionFilePath?: string): Promise<boolean> {
+  primeCursor(sessionId: string, sessionFilePath?: string): Promise<boolean> {
     const filePath = this.findSessionFile(sessionId, sessionFilePath);
-    if (!filePath) return false;
+    if (!filePath) return Promise.resolve(false);
 
     const lines = this.readFileLines(filePath);
     this.tailLineCursor = lines.length;
-    return true;
+    return Promise.resolve(true);
   }
 
   startPolling(sessionId: string, sessionFilePath?: string): boolean {

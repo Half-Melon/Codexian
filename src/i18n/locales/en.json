@@ -34,9 +34,9 @@
     "history": {
       "title": "Conversations",
       "empty": "No conversations",
-      "openInNewTab": "Open in New Tab",
-      "openInBackgroundTab": "Open in Background Tab",
-      "switchToOpenSession": "Switch to Open Session",
+      "openInNewTab": "Open in new tab",
+      "openInBackgroundTab": "Open in background tab",
+      "switchToOpenSession": "Switch to open session",
       "currentSession": "Current session",
       "generatingTitle": "Generating title...",
       "regenerateTitle": "Regenerate title"
@@ -53,7 +53,7 @@
       "queued": "Queued",
       "steering": "Steering",
       "steeringButton": "Steering...",
-      "steerNow": "Steer Now",
+      "steerNow": "Steer now",
       "images": "images",
       "queuedPrefix": "Queued: {message}",
       "steeringPrefix": "Steering: {message}"
@@ -100,7 +100,7 @@
       "permissionDenied": "Permission denied"
     },
     "externalContexts": {
-      "title": "External Contexts",
+      "title": "External contexts",
       "empty": "Click folder icon to add",
       "selectTitle": "Select external context",
       "persisted": "Persistent (click to make session-only)",
@@ -263,55 +263,55 @@
     },
     "hotkeys": "Hotkeys",
     "inlineEditHotkey": {
-      "name": "Inline Edit",
+      "name": "Inline edit",
       "descWithKey": "Current hotkey: {hotkey}",
       "descNoKey": "No hotkey set",
       "btnChange": "Change",
       "btnSet": "Set hotkey"
     },
     "openChatHotkey": {
-      "name": "Open Chat",
+      "name": "Open chat",
       "descWithKey": "Current hotkey: {hotkey}",
       "descNoKey": "No hotkey set",
       "btnChange": "Change",
       "btnSet": "Set hotkey"
     },
     "newSessionHotkey": {
-      "name": "New Session",
+      "name": "New session",
       "descWithKey": "Current hotkey: {hotkey}",
       "descNoKey": "No hotkey set",
       "btnChange": "Change",
       "btnSet": "Set hotkey"
     },
     "newTabHotkey": {
-      "name": "New Tab",
+      "name": "New tab",
       "descWithKey": "Current hotkey: {hotkey}",
       "descNoKey": "No hotkey set",
       "btnChange": "Change",
       "btnSet": "Set hotkey"
     },
     "closeTabHotkey": {
-      "name": "Close Tab",
+      "name": "Close tab",
       "descWithKey": "Current hotkey: {hotkey}",
       "descNoKey": "No hotkey set",
       "btnChange": "Change",
       "btnSet": "Set hotkey"
     },
     "slashCommands": {
-      "name": "Commands and Skills",
+      "name": "Commands and skills",
       "desc": "Manage vault-level Codex skills stored in .codex/skills/ and .agents/skills/. Triggered by $name."
     },
     "hiddenSlashCommands": {
-      "name": "Hidden Commands and Skills",
+      "name": "Hidden commands and skills",
       "desc": "Hide specific commands and skills from the dropdown. Enter names without the leading slash or dollar sign, one per line.",
       "placeholder": "commit\nbuild\ntest"
     },
     "mcpServers": {
-      "name": "MCP Servers",
+      "name": "MCP servers",
       "desc": "Codex MCP servers are configured by the Codex CLI. Use codex mcp to manage them."
     },
     "plugins": {
-      "name": "Codex Plugins",
+      "name": "Codex plugins",
       "desc": "Codexian is Codex-only and does not manage third-party provider plugins."
     },
     "subagents": {
@@ -330,8 +330,8 @@
       "descriptionRequired": "Description is required",
       "promptRequired": "System prompt is required",
       "modal": {
-        "titleEdit": "Edit Subagent",
-        "titleAdd": "Add Subagent",
+        "titleEdit": "Edit subagent",
+        "titleAdd": "Add subagent",
         "name": "Name",
         "nameDesc": "Lowercase letters, numbers, and hyphens only",
         "namePlaceholder": "code-reviewer",
@@ -386,7 +386,7 @@
       }
     },
     "customContextLimits": {
-      "name": "Custom Context Limits",
+      "name": "Custom context limits",
       "desc": "Set context window sizes for your custom models. Leave empty to use the default (200k tokens).",
       "invalid": "Invalid format. Use: 256k, 1m, or exact count (1000-10000000)."
     },
@@ -548,7 +548,7 @@
     "failedToOpenFile": "Failed to open file: {message}"
   },
   "inlineInstruction": {
-    "title": "Add Custom Instruction",
+    "title": "Add custom instruction",
     "yourInput": "Your input:",
     "processing": "Processing your instruction...",
     "yourResponse": "Your response:",
@@ -605,15 +605,15 @@
         "none": "Off"
       },
       "skills": {
-        "heading": "Codex Skills",
+        "heading": "Codex skills",
         "desc": "Manage vault-level Codex skills stored in .codex/skills/ or .agents/skills/. Home-level skills are excluded here."
       },
       "hiddenSkills": {
-        "name": "Hidden Skills",
+        "name": "Hidden skills",
         "desc": "Hide specific Codex skills from the dropdown. Enter skill names without the leading $, one per line."
       },
       "subagents": {
-        "heading": "Codex Subagents",
+        "heading": "Codex subagents",
         "desc": "Manage vault-level Codex subagents stored in .codex/agents/. Each TOML file defines one custom agent."
       },
       "mcp": {
@@ -649,8 +649,8 @@
     },
     "skills": {
       "modal": {
-        "titleEdit": "Edit Codex Skill",
-        "titleAdd": "Add Codex Skill",
+        "titleEdit": "Edit Codex skill",
+        "titleAdd": "Add Codex skill",
         "directory": "Directory",
         "directoryDesc": "Where to store the skill",
         "name": "Skill name",
@@ -663,7 +663,7 @@
       },
       "instructionsRequired": "Instructions are required",
       "saveFailed": "Failed to save Codex skill",
-      "header": "Codex Skills",
+      "header": "Codex skills",
       "empty": "No Codex skills in vault. Click + to create one.",
       "deleted": "Codex skill \"$${name}\" deleted",
       "deleteFailed": "Failed to delete Codex skill",
@@ -673,8 +673,8 @@
     },
     "subagents": {
       "modal": {
-        "titleEdit": "Edit Codex Subagent",
-        "titleAdd": "Add Codex Subagent",
+        "titleEdit": "Edit Codex subagent",
+        "titleAdd": "Add Codex subagent",
         "name": "Name",
         "nameDesc": "Agent name Codex uses when spawning (lowercase, hyphens, underscores)",
         "description": "Description",
@@ -704,7 +704,7 @@
       "instructionsRequired": "Developer instructions are required",
       "duplicateName": "A subagent named \"{name}\" already exists",
       "saveFailed": "Failed to save subagent: {message}",
-      "header": "Codex Subagents",
+      "header": "Codex subagents",
       "empty": "No Codex subagents in vault. Click + to create one.",
       "deleteConfirm": "Delete subagent \"{name}\"?",
       "deleted": "Subagent \"{name}\" deleted",

@@ -1163,7 +1163,7 @@ export function initializeTabControllers(
       getStatusPanel: () => ui.statusPanel,
       getAgentService: () => tab.service, // Use tab's service instead of plugin's
       dismissPendingInlinePrompts: () => tab.controllers.inputController?.dismissPendingApproval(),
-      ensureServiceForConversation: async (conversation) => {
+      ensureServiceForConversation: (conversation) => {
         const nextProviderId = getTabProviderId(tab, plugin, conversation);
         const providerChanged = tab.providerId !== nextProviderId;
         tab.providerId = nextProviderId;
@@ -1189,6 +1189,7 @@ export function initializeTabControllers(
 
         refreshTabProviderUI(tab, plugin);
         applyProviderUIGating(tab, plugin);
+        return Promise.resolve();
       },
     },
     {
@@ -1457,9 +1458,8 @@ export function deactivateTab(tab: TabData): void {
 
 /**
  * Cleans up a tab and releases all resources.
- * Made async to ensure proper cleanup ordering.
  */
-export async function destroyTab(tab: TabData): Promise<void> {
+export function destroyTab(tab: TabData): Promise<void> {
   tab.lifecycleState = 'closing';
 
   tab.controllers.selectionController?.stop();
@@ -1506,6 +1506,7 @@ export async function destroyTab(tab: TabData): Promise<void> {
   tab.service?.cleanup();
   tab.service = null;
   tab.dom.contentEl.remove();
+  return Promise.resolve();
 }
 
 /**
@@ -1519,7 +1520,7 @@ export function getTabTitle(tab: TabData, plugin: CodexianPlugin): string {
       return conversation.title;
     }
   }
-  return 'New Chat';
+  return 'New chat';
 }
 
 /** Shared between Tab.ts and TabManager.ts to avoid duplication. */

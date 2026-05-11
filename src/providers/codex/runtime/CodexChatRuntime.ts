@@ -732,8 +732,8 @@ export class CodexChatRuntime implements ChatRuntime {
     };
   }
 
-  async getSupportedCommands(): Promise<SlashCommand[]> {
-    return [];
+  getSupportedCommands(): Promise<SlashCommand[]> {
+    return Promise.resolve([]);
   }
 
   cleanup(): void {
@@ -742,11 +742,11 @@ export class CodexChatRuntime implements ChatRuntime {
     this.readyListeners.clear();
   }
 
-  async rewind(
+  rewind(
     _userMessageId: string,
     _assistantMessageId: string,
   ): Promise<ChatRewindResult> {
-    return { canRewind: false, error: 'Codex does not support rewind' };
+    return Promise.resolve({ canRewind: false, error: 'Codex does not support rewind' });
   }
 
   setApprovalCallback(callback: ApprovalCallback | null): void {
