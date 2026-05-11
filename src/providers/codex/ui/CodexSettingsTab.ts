@@ -16,6 +16,8 @@ import { DEFAULT_CODEX_PRIMARY_MODEL } from '../types/models';
 import { CodexSkillSettings } from './CodexSkillSettings';
 import { CodexSubagentSettings } from './CodexSubagentSettings';
 
+const CUSTOM_MODELS_PLACEHOLDER = ['gpt-5.4', 'gpt-5.3-codex-spark'].join('\n');
+
 export const codexSettingsTabRenderer: ProviderSettingsTabRenderer = {
   render(container, context) {
     const codexWorkspace = getCodexWorkspaceServices();
@@ -335,7 +337,7 @@ export const codexSettingsTabRenderer: ProviderSettingsTabRenderer = {
         };
 
         text
-          .setPlaceholder('gpt-5.4\ngpt-5.3-codex-spark')
+          .setPlaceholder(CUSTOM_MODELS_PLACEHOLDER)
           .setValue(codexSettings.customModels)
           .onChange((value) => {
             pendingCustomModels = value;
