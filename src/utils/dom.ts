@@ -59,7 +59,69 @@ export function isElementVisible(el: Element | null | undefined): boolean {
 }
 
 export function createActiveDocumentFragment(): DocumentFragment {
-  return (activeDocument as Document & { createFragment: () => DocumentFragment }).createFragment();
+  const documentWithHelpers = activeDocument as Document & {
+    createFragment?: () => DocumentFragment;
+  };
+  if (typeof documentWithHelpers.createFragment === 'function') {
+    return documentWithHelpers.createFragment();
+  }
+  if (typeof createFragment === 'function') {
+    return createFragment();
+  }
+  const createNativeFragment = activeDocument[
+    'createDocumentFragment'
+  ].bind(activeDocument);
+  return createNativeFragment();
+}
+
+type DetachedElementOptions = {
+  attr?: Record<string, string>;
+  cls?: string;
+  text?: string;
+};
+
+function applyDetachedElementOptions(
+  el: HTMLElement,
+  options?: DetachedElementOptions,
+): void {
+  if (options?.cls) {
+    el.classList.add(...options.cls.split(/\s+/).filter(Boolean));
+  }
+  if (options?.text) {
+    el.textContent = options.text;
+  }
+  if (options?.attr) {
+    for (const [key, value] of Object.entries(options.attr)) {
+      el.setAttribute(key, value);
+    }
+  }
+}
+
+export function createDetachedEl<K extends keyof HTMLElementTagNameMap>(
+  tag: K,
+  options?: DetachedElementOptions,
+): HTMLElementTagNameMap[K] {
+  const el = createEl(tag);
+  applyDetachedElementOptions(el, options);
+  return el;
+}
+
+export function createDetachedDiv(options?: DetachedElementOptions): HTMLDivElement {
+  const el = createDiv();
+  applyDetachedElementOptions(el, options);
+  return el;
+}
+
+export function createDetachedSpan(options?: DetachedElementOptions): HTMLSpanElement {
+  const el = createSpan();
+  applyDetachedElementOptions(el, options);
+  return el;
+}
+
+export function createDetachedSvg<K extends keyof SVGElementTagNameMap>(
+  tag: K,
+): SVGElementTagNameMap[K] {
+  return createSvg(tag);
 }
 
 export function runAsync(

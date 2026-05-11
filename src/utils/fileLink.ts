@@ -7,7 +7,7 @@
 
 import type { App, Component } from 'obsidian';
 
-import { createActiveDocumentFragment } from './dom';
+import { createActiveDocumentFragment, createDetachedEl } from './dom';
 
 /**
  * Regex pattern to match Obsidian wikilinks in text content.
@@ -113,7 +113,7 @@ function createWikilink(
   linkTarget: string,
   displayText: string
 ): HTMLElement {
-  const link = activeDocument.createEl('a');
+  const link = createDetachedEl('a');
   link.className = 'codexian-file-link internal-link';
   link.textContent = displayText;
   link.setAttribute('data-href', linkTarget);

@@ -3,7 +3,12 @@ import * as path from 'path';
 
 import type { ImageAttachment, ImageMediaType } from '../../../core/types';
 import { t } from '../../../i18n/i18n';
-import { hideElement, runAsync, showElement } from '../../../utils/dom';
+import {
+  createDetachedSvg,
+  hideElement,
+  runAsync,
+  showElement,
+} from '../../../utils/dom';
 
 const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
 
@@ -88,18 +93,18 @@ export class ImageContextManager {
 
     this.dropOverlay = inputWrapper.createDiv({ cls: 'codexian-drop-overlay' });
     const dropContent = this.dropOverlay.createDiv({ cls: 'codexian-drop-content' });
-    const svg = activeDocument.createSvg('svg');
+    const svg = createDetachedSvg('svg');
     svg.setAttribute('viewBox', '0 0 24 24');
     svg.setAttribute('width', '32');
     svg.setAttribute('height', '32');
     svg.setAttribute('fill', 'none');
     svg.setAttribute('stroke', 'currentColor');
     svg.setAttribute('stroke-width', '2');
-    const pathEl = activeDocument.createSvg('path');
+    const pathEl = createDetachedSvg('path');
     pathEl.setAttribute('d', 'M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4');
-    const polyline = activeDocument.createSvg('polyline');
+    const polyline = createDetachedSvg('polyline');
     polyline.setAttribute('points', '17 8 12 3 7 8');
-    const line = activeDocument.createSvg('line');
+    const line = createDetachedSvg('line');
     line.setAttribute('x1', '12');
     line.setAttribute('y1', '3');
     line.setAttribute('x2', '12');

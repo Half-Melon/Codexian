@@ -6,7 +6,12 @@ import type { Conversation } from '../../../core/types';
 import { t } from '../../../i18n/i18n';
 import type CodexianPlugin from '../../../main';
 import { confirm } from '../../../shared/modals/ConfirmModal';
-import { hideElement, runAsync, showElement } from '../../../utils/dom';
+import {
+  createDetachedEl,
+  hideElement,
+  runAsync,
+  showElement,
+} from '../../../utils/dom';
 import type { MessageRenderer } from '../rendering/MessageRenderer';
 import { cleanupThinkingBlock } from '../rendering/ThinkingBlockRenderer';
 import { findRewindContext } from '../rewind';
@@ -731,7 +736,7 @@ export class ConversationController {
     const titleEl = item.querySelector('.codexian-history-item-title') as HTMLElement;
     if (!titleEl) return;
 
-    const input = activeDocument.createEl('input');
+    const input = createDetachedEl('input');
     input.type = 'text';
     input.className = 'codexian-rename-input';
     input.value = currentTitle;

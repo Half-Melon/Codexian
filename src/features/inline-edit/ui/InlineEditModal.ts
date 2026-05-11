@@ -22,7 +22,14 @@ import {
   normalizeMentionPath,
   resolveExternalMentionAtIndex,
 } from '../../../utils/contextMentionResolver';
-import { hideElement, runAsync, showElement } from '../../../utils/dom';
+import {
+  createDetachedDiv,
+  createDetachedEl,
+  createDetachedSpan,
+  hideElement,
+  runAsync,
+  showElement,
+} from '../../../utils/dom';
 import { type CursorContext, getEditorView } from '../../../utils/editor';
 import { buildExternalContextDisplayEntries } from '../../../utils/externalContext';
 import { externalContextScanner } from '../../../utils/externalContextScanner';
@@ -60,20 +67,20 @@ class DiffWidget extends WidgetType {
     super();
   }
   toDOM(): HTMLElement {
-    const span = activeDocument.createSpan();
+    const span = createDetachedSpan();
     span.className = 'codexian-inline-diff-replace';
     renderDiffOps(span, this.diffOps);
 
-    const btns = activeDocument.createSpan();
+    const btns = createDetachedSpan();
     btns.className = 'codexian-inline-diff-buttons';
 
-    const rejectBtn = activeDocument.createEl('button');
+    const rejectBtn = createDetachedEl('button');
     rejectBtn.className = 'codexian-inline-diff-btn reject';
     rejectBtn.textContent = '✕';
     rejectBtn.title = 'Reject (esc)';
     rejectBtn.onclick = () => this.controller.reject();
 
-    const acceptBtn = activeDocument.createEl('button');
+    const acceptBtn = createDetachedEl('button');
     acceptBtn.className = 'codexian-inline-diff-btn accept';
     acceptBtn.textContent = '✓';
     acceptBtn.title = 'Accept (enter)';
@@ -423,20 +430,20 @@ class InlineEditController {
   }
 
   createInputDOM(): HTMLElement {
-    const container = activeDocument.createDiv();
+    const container = createDetachedDiv();
     container.className = 'codexian-inline-input-container';
     this.containerEl = container;
 
-    this.agentReplyEl = activeDocument.createDiv();
+    this.agentReplyEl = createDetachedDiv();
     this.agentReplyEl.className = 'codexian-inline-agent-reply';
     hideElement(this.agentReplyEl);
     container.appendChild(this.agentReplyEl);
 
-    const inputWrap = activeDocument.createDiv();
+    const inputWrap = createDetachedDiv();
     inputWrap.className = 'codexian-inline-input-wrap';
     container.appendChild(inputWrap);
 
-    this.inputEl = activeDocument.createEl('input');
+    this.inputEl = createDetachedEl('input');
     this.inputEl.type = 'text';
     this.inputEl.className = 'codexian-inline-input';
     this.inputEl.placeholder = this.mode === 'cursor'
@@ -445,7 +452,7 @@ class InlineEditController {
     this.inputEl.spellcheck = false;
     inputWrap.appendChild(this.inputEl);
 
-    this.spinnerEl = activeDocument.createDiv();
+    this.spinnerEl = createDetachedDiv();
     this.spinnerEl.className = 'codexian-inline-spinner';
     hideElement(this.spinnerEl);
     inputWrap.appendChild(this.spinnerEl);

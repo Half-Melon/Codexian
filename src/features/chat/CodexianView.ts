@@ -11,6 +11,7 @@ import type CodexianPlugin from '../../main';
 import { createProviderIconSvg } from '../../shared/icons';
 import {
   createActiveDocumentFragment,
+  createDetachedDiv,
   hideElement,
   runAsync,
   setElementVisible,
@@ -265,8 +266,7 @@ export class CodexianView extends ItemView {
     const fragment = createActiveDocumentFragment();
 
     // Tab badges (left side in nav row, or in title slot for header mode)
-    this.tabBarContainerEl = activeDocument.createDiv();
-    this.tabBarContainerEl.className = 'codexian-tab-bar-container';
+    this.tabBarContainerEl = createDetachedDiv({ cls: 'codexian-tab-bar-container' });
     this.tabBar = new TabBar(this.tabBarContainerEl, {
       onTabClick: (tabId) => {
         this.handleTabClick(tabId);
@@ -281,8 +281,7 @@ export class CodexianView extends ItemView {
     fragment.appendChild(this.tabBarContainerEl);
 
     // Header actions (right side)
-    this.headerActionsContent = activeDocument.createDiv();
-    this.headerActionsContent.className = 'codexian-header-actions';
+    this.headerActionsContent = createDetachedDiv({ cls: 'codexian-header-actions' });
 
     // New tab button (plus icon)
     const newTabBtn = this.headerActionsContent.createDiv({ cls: 'codexian-header-btn codexian-new-tab-btn' });
@@ -319,7 +318,7 @@ export class CodexianView extends ItemView {
     fragment.appendChild(this.headerActionsContent);
 
     // Create a wrapper div to hold the fragment (for input mode nav row)
-    const wrapper = activeDocument.createDiv();
+    const wrapper = createDetachedDiv();
     showElement(wrapper, 'contents');
     wrapper.appendChild(fragment);
     return wrapper;

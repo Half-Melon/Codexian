@@ -16,7 +16,13 @@ import type {
 } from '../../../core/types';
 import { t } from '../../../i18n/i18n';
 import { createProviderIconSvg } from '../../../shared/icons';
-import { hideElement, runAsync, setElementVisible, showElement } from '../../../utils/dom';
+import {
+  createDetachedSvg,
+  hideElement,
+  runAsync,
+  setElementVisible,
+  showElement,
+} from '../../../utils/dom';
 import { filterValidPaths, findConflictingPath, isDuplicatePath, isValidDirectoryPath, validateDirectoryPath } from '../../../utils/externalContext';
 import { expandHomePath, normalizePathForFilesystem } from '../../../utils/path';
 
@@ -927,13 +933,13 @@ export class ContextUsageMeter {
     const y2 = cy + radius * Math.sin(endRad);
 
     const gaugeEl = this.container.createDiv({ cls: 'codexian-context-meter-gauge' });
-    const svg = activeDocument.createSvg('svg');
+    const svg = createDetachedSvg('svg');
     svg.setAttribute('width', String(size));
     svg.setAttribute('height', String(size));
     svg.setAttribute('viewBox', `0 0 ${size} ${size}`);
 
     const arcPath = `M ${x1} ${y1} A ${radius} ${radius} 0 1 1 ${x2} ${y2}`;
-    const bgPath = activeDocument.createSvg('path');
+    const bgPath = createDetachedSvg('path');
     bgPath.addClass('codexian-meter-bg');
     bgPath.setAttribute('d', arcPath);
     bgPath.setAttribute('fill', 'none');
@@ -941,7 +947,7 @@ export class ContextUsageMeter {
     bgPath.setAttribute('stroke-linecap', 'round');
     svg.appendChild(bgPath);
 
-    this.fillPath = activeDocument.createSvg('path');
+    this.fillPath = createDetachedSvg('path');
     this.fillPath.addClass('codexian-meter-fill');
     this.fillPath.setAttribute('d', arcPath);
     this.fillPath.setAttribute('fill', 'none');

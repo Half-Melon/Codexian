@@ -163,6 +163,61 @@ function installActiveGlobals(): void {
       return activeWindowMock;
     },
   });
+
+  const getActiveDocument = () =>
+    (globalThis as typeof globalThis & {
+      activeDocument: Document & {
+        createFragment?: (callback?: (fragment: DocumentFragment) => void) => DocumentFragment;
+      };
+    }).activeDocument;
+
+  const applyOptions = (
+    el: HTMLElement,
+    options?: { cls?: string; text?: string; attr?: Record<string, string> },
+  ) => {
+    if (options?.cls) el.className = options.cls;
+    if (options?.text) el.textContent = options.text;
+    if (options?.attr) {
+      for (const [key, value] of Object.entries(options.attr)) {
+        el.setAttribute(key, value);
+      }
+    }
+    return el;
+  };
+
+  Object.defineProperties(globalThis, {
+    createDiv: {
+      configurable: true,
+      value: (options?: { cls?: string; text?: string; attr?: Record<string, string> }) =>
+        applyOptions(getActiveDocument().createElement('div'), options),
+    },
+    createEl: {
+      configurable: true,
+      value: (tag: string, options?: { cls?: string; text?: string; attr?: Record<string, string> }) =>
+        applyOptions(getActiveDocument().createElement(tag), options),
+    },
+    createFragment: {
+      configurable: true,
+      value: (callback?: (fragment: DocumentFragment) => void) => {
+        const doc = getActiveDocument();
+        const fragment = typeof doc.createDocumentFragment === 'function'
+          ? doc.createDocumentFragment()
+          : document.createDocumentFragment();
+        callback?.(fragment);
+        return fragment;
+      },
+    },
+    createSpan: {
+      configurable: true,
+      value: (options?: { cls?: string; text?: string; attr?: Record<string, string> }) =>
+        applyOptions(getActiveDocument().createElement('span'), options),
+    },
+    createSvg: {
+      configurable: true,
+      value: (tag: string) =>
+        getActiveDocument().createElementNS('http://www.w3.org/2000/svg', tag),
+    },
+  });
 }
 
 installElementHelpers();
